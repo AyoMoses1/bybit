@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import FirebaseWrapper from "@/components/FirebaseWrapper";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -13,7 +14,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased`}>{children}</body>
+      <body className={`antialiased`}>
+        <FirebaseWrapper>{children}</FirebaseWrapper>
+      </body>
     </html>
   );
 }
