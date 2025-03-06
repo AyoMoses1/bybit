@@ -23,10 +23,10 @@ const DataTableToolbar = ({ children }: any) => {
     setIsVisible((prev) => !prev);
   };
   return (
-    <div className="mb-4 flex flex-col gap-4 bg-white">
-      <div className="flex items-center justify-between rounded-lg border-4 border-double bg-white p-4">
+    <div className="mb-4 flex flex-col gap-4 bg-background">
+      <div className="flex items-center justify-between rounded-lg border-4 border-double bg-background p-4">
         <div>
-          <p className="text-sm text-gray-500">CURRENT BALANCE</p>
+          <p className="text-sm text-muted-foreground">CURRENT BALANCE</p>
           <div className="relative">
             {!isVisible ? (
               <Image
@@ -36,7 +36,7 @@ const DataTableToolbar = ({ children }: any) => {
                 height={100}
               />
             ) : (
-              <h2 className="text-2xl font-semibold text-black">
+              <h2 className="text-2xl font-semibold text-foreground">
                 <span>$</span> 624,125,000
               </h2>
             )}
@@ -45,10 +45,10 @@ const DataTableToolbar = ({ children }: any) => {
 
         <div
           onClick={toggleVisibility}
-          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg bg-gray-100"
+          className="flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg bg-muted"
         >
           {isVisible ? (
-            <EyeClosed className="text-greyScale-400" />
+            <EyeClosed className="text-muted-foreground" />
           ) : (
             <ShowEyeIconSVG />
           )}
@@ -87,12 +87,12 @@ const tabsData = [
 export const DataTableTabs = () => {
   return (
     <Tabs defaultValue="all">
-      <TabsList className="grid w-full grid-cols-4 rounded-lg border border-gray-300 bg-gray-50">
+      <TabsList className="grid w-full grid-cols-4 rounded-lg border border-border bg-muted">
         {tabsData.map((tab) => (
           <TabsTrigger
             key={tab.value}
             value={tab.value}
-            className={`flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-500 focus:outline-none data-[state=active]:bg-white data-[state=active]:text-black ${
+            className={`flex items-center justify-center px-4 py-2 text-sm font-medium text-muted-foreground focus:outline-none data-[state=active]:bg-background data-[state=active]:text-foreground ${
               tab.rounded || ""
             }`}
           >
@@ -118,7 +118,7 @@ export const DataTableTabs = () => {
 export const DataTableViewOptions = () => {
   return (
     <div className="flex space-x-4">
-      <div className="rounded-[8px] border-[1px] border-[#0D0D120F] p-2">
+      <div className="rounded-[8px] border-[1px] border-border p-2">
         <Image
           src={assetLib.britainFlag}
           alt="refresh icon"
@@ -126,7 +126,7 @@ export const DataTableViewOptions = () => {
           height={13.33}
         />
       </div>
-      <div className="rounded-[8px] border-[1px] border-[#0D0D120F] p-2">
+      <div className="rounded-[8px] border-[1px] border-border p-2">
         <Image
           src={assetLib.canadaFlag}
           alt="sort icon"
@@ -134,7 +134,7 @@ export const DataTableViewOptions = () => {
           height={13.33}
         />
       </div>
-      <div className="rounded-[8px] border-[1px] border-[#0D0D120F] p-2">
+      <div className="rounded-[8px] border-[1px] border-border p-2">
         <Image
           src={assetLib.logoLight}
           alt="sort icon"

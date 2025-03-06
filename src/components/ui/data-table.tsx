@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border py-5">
+    <div className="rounded-md border border-border bg-card py-5">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -77,23 +77,23 @@ export function DataTable<TData, TValue>({
                 <div className="flex h-full items-center justify-center gap-20">
                   <div>
                     <Image
-                      src={assetLib.emptyTable}
+                      src={assetLib.canadaFlag}
                       alt="No Transactions yet"
                       width={120}
                       height={120}
                     />
                   </div>
                   <div className="flex flex-col items-start">
-                    <p className="mb-[4px] text-lg font-semibold text-grey-900">
+                    <p className="mb-[4px] text-lg font-semibold text-foreground">
                       No Transactions yet
                     </p>
-                    <p className="text-start font-medium text-greyScale-400">
+                    <p className="text-start font-medium text-muted-foreground">
                       Start seamless transfers today. Fund your <br /> wallet to
                       make your first transaction
                     </p>
                     <Button
                       variant={"outline"}
-                      className="px-18 mt-[16px] w-[152px] rounded-[18px] py-[10px] text-[15px] font-semibold"
+                      className="mt-[16px] w-[152px] rounded-[18px] py-[10px] text-[15px] font-semibold"
                     >
                       Fund your wallet
                     </Button>
@@ -104,9 +104,8 @@ export function DataTable<TData, TValue>({
           )}
         </TableBody>
       </Table>
-      {/* <DataTablePagination table={table} /> */}
 
-      {/* <div className="flex items-center justify-between space-x-2 py-4 wrapper">
+      <div className="wrapper flex items-center justify-between space-x-2 py-4">
         <Button
           variant="outline"
           size="sm"
@@ -123,7 +122,7 @@ export function DataTable<TData, TValue>({
         >
           Next
         </Button>
-      </div> */}
+      </div>
     </div>
   );
 }

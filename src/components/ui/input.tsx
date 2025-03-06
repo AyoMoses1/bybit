@@ -20,7 +20,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             type === "password" ? (showPassword ? "text" : "password") : type
           }
           className={cn(
-            "border-greyScale-100 placeholder:text-greyScale-300 flex w-full rounded-xl border bg-white px-3.5 py-4 text-base leading-6 shadow-sm ring-offset-white file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-neutral-950 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-neutral-950 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-neutral-800 dark:bg-neutral-950 dark:ring-offset-neutral-950 dark:file:text-neutral-50 dark:placeholder:text-neutral-400 dark:focus-visible:ring-neutral-300",
+            "flex w-full rounded-xl border border-input bg-background px-3.5 py-4 text-base leading-6 shadow-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
             Icon && "pr-16",
             className,
           )}
@@ -28,7 +28,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           {...props}
         />
         {Icon && (
-          <div className="border-greyScale-100 absolute right-3.5 flex items-center justify-center">
+          <div className="absolute right-3.5 flex items-center justify-center">
             <Icon />
           </div>
         )}
@@ -39,7 +39,13 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             onClick={() => setShowPassword((prev) => !prev)}
             className="absolute right-3.5"
           >
-            <ShowEyeIconSVG fillColor={showPassword ? "#197266" : "#808897"} />
+            <ShowEyeIconSVG
+              fillColor={
+                showPassword
+                  ? "hsl(var(--primary))"
+                  : "hsl(var(--muted-foreground))"
+              }
+            />
           </button>
         )}
       </div>
