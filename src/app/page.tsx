@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useFirebase } from "../contexts/FirebaseContext";
 import { onValue } from "firebase/database";
 import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
+import { Button } from "@/components/ui/button";
 
 export default function UsersPage() {
   const firebase = useFirebase();
@@ -63,7 +64,8 @@ export default function UsersPage() {
   if (!authenticated) return <div>Authenticating...</div>;
 
   return (
-    <div>
+    <div className="p-4">
+      <Button size={"default"}>sss</Button>
       <h1>Users</h1>
       {users.length === 0 ? (
         <p>No users found</p>
