@@ -24,7 +24,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function DataTable<TData, TValue>({
+export function C<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -36,7 +36,7 @@ export function DataTable<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border border-border bg-card py-5">
+    <div className="rounded-md border border-border bg-card">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
@@ -54,7 +54,7 @@ export function DataTable<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
-        <TableBody>
+        <TableBody className="bg-[#FCFDFD]">
           {data.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
