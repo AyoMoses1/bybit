@@ -29,8 +29,10 @@ type MenuItemType = {
 const ROUTES = {
   dashboard: "/dashboard",
   users: "/users",
-  addAdmin: "/add-admin",
+  addAdmin: "/add-super-admin",
   updateAdmin: "/update-admin",
+  addFleetAdmin: "/add-fleet-admin",
+  updateFleetAdmin: "/update-fleet-admin",
   settings: "/settings",
   helpCenter: "/help-center",
 } as const;
@@ -38,8 +40,10 @@ const ROUTES = {
 const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.dashboard]: "Dashboard",
   [ROUTES.users]: "Users",
-  [ROUTES.addAdmin]: "Add admin",
-  [ROUTES.updateAdmin]: "Update admin",
+  [ROUTES.addAdmin]: "Add Super admin",
+  [ROUTES.updateAdmin]: "Update Super admin",
+  [ROUTES.addFleetAdmin]: "Add admin",
+  [ROUTES.updateFleetAdmin]: "Update admin",
   [ROUTES.settings]: "Settings",
   [ROUTES.helpCenter]: "Help Center",
 };
@@ -52,6 +56,13 @@ const Header = () => {
   const handleLogout = () => {
     document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     router.replace("/auth");
+  };
+
+  const getRouteTitle = (path: string) => {
+    const baseRoute = Object.keys(ROUTE_TITLES).find((route) =>
+      path.startsWith(route),
+    );
+    return baseRoute ? ROUTE_TITLES[baseRoute] : "Unknown Page";
   };
 
   return (
@@ -69,14 +80,17 @@ const Header = () => {
         <p className="font-[inter] text-xs text-[#8B8D97]">/</p>
 
         <h1 className="font-[Roboto] text-xs font-normal text-[#8B8D97]">
-          {pathname === ROUTES.addAdmin || pathname === ROUTES.updateAdmin ? (
+          {pathname === ROUTES.addAdmin ||
+          pathname.includes(ROUTES.updateAdmin) ||
+          pathname.includes(ROUTES.updateFleetAdmin) ||
+          pathname === ROUTES.addFleetAdmin ? (
             <div className="flex gap-3">
               <Link href={ROUTES.users} className="text-[#8B8D97]">
                 Users
               </Link>
               <p className="mx-1">/</p>
 
-              <p className="cursor-default"> {ROUTE_TITLES[pathname]}</p>
+              <p className="cursor-default">{getRouteTitle(pathname)}</p>
             </div>
           ) : (
             ROUTE_TITLES[pathname] || ROUTE_TITLES[ROUTES.dashboard]

@@ -8,11 +8,27 @@ import deleteIcon from "../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useUpdateUser, useUser } from "@/store/user/user";
 
-const Admin = () => {
-  const { data: user, isLoading } = useUser("admin");
+const Drivers = () => {
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
+
   const mutation = useUpdateUser();
 
   const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ getValue }) => formatDate(Number(getValue())),
+    },
     {
       accessorKey: "firstName",
       header: "First Name",
@@ -37,6 +53,7 @@ const Admin = () => {
       accessorKey: "profile_image",
       header: "Profile Image",
       cell: ({ getValue }) => {
+        console.log(getValue());
         const imageUrl = String(getValue() || "");
         return (
           <>
@@ -44,7 +61,7 @@ const Admin = () => {
               <img
                 src={imageUrl}
                 alt="Profile"
-                className="h-8 w-8 rounded-full"
+                className="h-10 w-10 rounded-full"
               />
             ) : (
               <div className="flex h-10 w-10 items-center justify-center rounded-full border">
@@ -63,6 +80,7 @@ const Admin = () => {
         const [isChecked, setIsChecked] = React.useState(
           row.original.approved ?? false,
         );
+
         const handleToggle = async (checked: boolean) => {
           mutation.mutate(
             { id: row.original.id, updatedData: { approved: checked } },
@@ -75,6 +93,7 @@ const Admin = () => {
         return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
       },
     },
+
     {
       accessorKey: "actions",
       header: "Actions",
@@ -87,7 +106,7 @@ const Admin = () => {
             }}
             className="flex w-fit items-center rounded-md border-[1px] border-[#B3261E] bg-[#FAFBFD] p-2"
           >
-            <Link href={`/update-admin/${row.original.id}`}>
+            <Link href="/update-fleet-admin">
               <div className="cursor-pointer pr-2">
                 <ArrowRight className="size-4 text-gray-600" />
               </div>
@@ -107,7 +126,9 @@ const Admin = () => {
     },
   ];
 
-  // console.log(user);
+  const { data: user, isLoading } = useUser("driver");
+
+  console.log(user);
 
   return (
     <div className="px-1">
@@ -130,4 +151,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Drivers;

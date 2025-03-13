@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import Logo from "../../../assets/svgs/20250218.svg";
 import {
   History,
@@ -62,15 +62,28 @@ const otherMenuItems = [
 ];
 
 function AppSidebar() {
+  const router = useRouter();
+
   const isActive = (url: string): boolean => {
     const pathname = usePathname();
     if (
       url === "/users" &&
-      ["/users", "/add-admin", "/update-admin"].includes(pathname)
+      [
+        "/users",
+        "/add-super-admin",
+        "/update-admin",
+        "/add-fleet-admin",
+        "/update-fleet-admin",
+      ].some((route) => pathname.startsWith(route))
     ) {
       return true;
     }
     return pathname === url;
+  };
+
+  const handleLogout = () => {
+    localStorage.clear();
+    router.push("/");
   };
 
   return (
@@ -129,12 +142,21 @@ function AppSidebar() {
                   )}
 
                   <SidebarMenuItem className="w-[85%]" key={item.title}>
-                    <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                      <Link href={item.url}>
-                        <item.icon className="size-5" />
-                        <span>{item.title}</span>
-                      </Link>
-                    </SidebarMenuButton>
+                    {item.url === "/logout" ? (
+                      <SidebarMenuButton asChild onClick={() => handleLogout()}>
+                        <button>
+                          <item.icon className="size-5" />
+                          <span>{item.title}</span>
+                        </button>
+                      </SidebarMenuButton>
+                    ) : (
+                      <SidebarMenuButton asChild isActive={isActive(item.url)}>
+                        <Link href={item.url}>
+                          <item.icon className="size-5" />
+                          <span>{item.title}</span>
+                        </Link>
+                      </SidebarMenuButton>
+                    )}
                   </SidebarMenuItem>
                 </div>
               ))}

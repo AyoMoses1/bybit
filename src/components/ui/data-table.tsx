@@ -36,13 +36,13 @@ export function C<TData, TValue>({
   });
 
   return (
-    <div className="rounded-md border border-border bg-card">
+    <div className="rounded-[20px] border-x border-x-border bg-card">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
+                <TableHead className="" key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -54,8 +54,9 @@ export function C<TData, TValue>({
             </TableRow>
           ))}
         </TableHeader>
+
         <TableBody className="bg-[#FCFDFD]">
-          {data.length > 0 ? (
+          {data?.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
@@ -85,18 +86,18 @@ export function C<TData, TValue>({
                   </div>
                   <div className="flex flex-col items-start">
                     <p className="mb-[4px] text-lg font-semibold text-foreground">
-                      No Transactions yet
+                      No data for this table yet
                     </p>
-                    <p className="text-start font-medium text-muted-foreground">
+                    {/* <p className="text-start font-medium text-muted-foreground">
                       Start seamless transfers today. Fund your <br /> wallet to
                       make your first transaction
-                    </p>
-                    <Button
+                    </p> */}
+                    {/* <Button
                       variant={"outline"}
                       className="mt-[16px] w-[152px] rounded-[18px] py-[10px] text-[15px] font-semibold"
                     >
                       Fund your wallet
-                    </Button>
+                    </Button> */}
                   </div>
                 </div>
               </TableCell>
@@ -104,25 +105,6 @@ export function C<TData, TValue>({
           )}
         </TableBody>
       </Table>
-
-      <div className="wrapper flex items-center justify-between space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Previous
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Next
-        </Button>
-      </div>
     </div>
   );
 }

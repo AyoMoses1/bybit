@@ -16,7 +16,7 @@ const AppSidebarLayout = ({ children }: { children: ReactNode }) => {
           {showSidebar ? <></> : <AppSidebar />}
 
           <div className="relative w-full overflow-auto">
-            <Header />
+            {showSidebar ? <></> : <Header />}
 
             {children}
           </div>
