@@ -7,6 +7,14 @@ body {
   background-color: #f5f6fa;
 }
 
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-text-fill-color: #fff !important;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
@@ -71,4 +79,21 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .border-image-gradient {
+    border-image-source: linear-gradient(
+      145.93deg,
+      rgba(244, 244, 244, 0.6) -3.66%,
+      rgba(244, 244, 244, 0.4) 101.09%
+    );
+    border-image-slice: 1;
+  }
+}
+
+.login-background {
+  background-image: url("../assets/svgs/Group 871.svg");
+  background-size: cover;
+  background-position: center;
 }

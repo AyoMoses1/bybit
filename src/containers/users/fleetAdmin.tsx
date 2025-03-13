@@ -8,11 +8,27 @@ import deleteIcon from "../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useUpdateUser, useUser } from "@/store/user/user";
 
-const Admin = () => {
-  const { data: user, isLoading } = useUser("admin");
+const FleetAdmin = () => {
+  const formatDate = (timestamp: number) => {
+    const date = new Date(timestamp);
+    return date.toLocaleString("en-US", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+    });
+  };
+
   const mutation = useUpdateUser();
 
   const columns: ColumnDef<any>[] = [
+    {
+      accessorKey: "createdAt",
+      header: "Date Created",
+      cell: ({ getValue }) => formatDate(Number(getValue())),
+    },
     {
       accessorKey: "firstName",
       header: "First Name",
@@ -38,6 +54,7 @@ const Admin = () => {
       header: "Profile Image",
       cell: ({ getValue }) => {
         const imageUrl = String(getValue() || "");
+
         return (
           <>
             {imageUrl ? (
@@ -63,6 +80,7 @@ const Admin = () => {
         const [isChecked, setIsChecked] = React.useState(
           row.original.approved ?? false,
         );
+
         const handleToggle = async (checked: boolean) => {
           mutation.mutate(
             { id: row.original.id, updatedData: { approved: checked } },
@@ -87,7 +105,7 @@ const Admin = () => {
             }}
             className="flex w-fit items-center rounded-md border-[1px] border-[#B3261E] bg-[#FAFBFD] p-2"
           >
-            <Link href={`/update-admin/${row.original.id}`}>
+            <Link href={`/update-fleet-admin/${row.original.id}`}>
               <div className="cursor-pointer pr-2">
                 <ArrowRight className="size-4 text-gray-600" />
               </div>
@@ -107,7 +125,7 @@ const Admin = () => {
     },
   ];
 
-  // console.log(user);
+  const { data: user, isLoading } = useUser("fleetadmin");
 
   return (
     <div className="px-1">
@@ -130,4 +148,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default FleetAdmin;

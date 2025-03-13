@@ -1,6 +1,10 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Admin from "@/containers/users/admin";
+import Customers from "@/containers/users/customers";
+import Drivers from "@/containers/users/drivers";
+import FleetAdmin from "@/containers/users/fleetAdmin";
+import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -9,10 +13,10 @@ const Users = () => {
   const tabsData = [
     { key: 1, title: "Customers" },
     { key: 2, title: "Drivers" },
-    { key: 3, title: "Fleet Admins" },
-    { key: 4, title: "Admins" },
+    { key: 3, title: "Admins" },
+    { key: 4, title: "Super Admins" },
   ];
-  const [selectedTab, setSelectedTab] = useState("Admins");
+  const [selectedTab, setSelectedTab] = useState("Customers");
 
   return (
     <div>
@@ -47,7 +51,15 @@ const Users = () => {
               placeholder="Search in table..."
             />
           </div>
-          <Link href={selectedTab === "Admins" ? "/add-admin" : ""}>
+          <Link
+            href={
+              selectedTab === "Super Admins"
+                ? "/add-super-admin"
+                : selectedTab === "Admins"
+                  ? "/add-fleet-admin"
+                  : ""
+            }
+          >
             <Button className="w-[194px] py-2" size={"default"}>
               <span className="pr-1">
                 <Plus className="size-3 font-semibold" />
@@ -60,15 +72,22 @@ const Users = () => {
 
       {/* TAB CONTENT */}
       {selectedTab === "Customers" ? (
-        <div>Customers</div>
+        <div>
+          <Customers />
+        </div>
       ) : selectedTab === "Drivers" ? (
-        <div>Drivers</div>
-      ) : selectedTab === "Fleet Admins" ? (
-        <div>Fleet Admins</div>
+        <div>
+          <Drivers />
+        </div>
       ) : selectedTab === "Admins" ? (
         <div>
-          {/* All Admins */}
-
+          {" "}
+          <div>
+            <FleetAdmin />
+          </div>
+        </div>
+      ) : selectedTab === "Super Admins" ? (
+        <div>
           <Admin />
         </div>
       ) : null}
@@ -76,4 +95,4 @@ const Users = () => {
   );
 };
 
-export default Users;
+export default ProtectedRoute(Users);
