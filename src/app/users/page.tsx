@@ -1,8 +1,8 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import Admin from "@/containers/users/admin";
-import Customers from "@/containers/users/customers";
-import Drivers from "@/containers/users/drivers";
+import Customers from "@/containers/users/customers/customers";
+import Drivers from "@/containers/users/drivers/drivers";
 import FleetAdmin from "@/containers/users/fleetAdmin";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { Plus, Search } from "lucide-react";

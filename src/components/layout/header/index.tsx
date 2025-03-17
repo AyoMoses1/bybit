@@ -1,22 +1,13 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
-import { BellIconSVG, ChevronDownIconSVG, MenuIconSVG } from "@/svgs";
-import {
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-  DropdownMenu,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import { useSidebar } from "@/components/ui/sidebar";
-import LogoutIconSVG from "@/svgs/LogOutIconSVG";
-import { assetLib } from "@/lib/assets";
-import { Home } from "lucide-react";
+import { ChevronDown, User } from "lucide-react";
 import home from "../../../assets/svgs/icon.svg";
 import Link from "next/link";
+import language from "../../../assets/svgs/system-uicons_translate.svg";
+import { useGetUserById } from "@/store/user/user";
+import { Locale, useTranslations } from "next-intl";
 
 // Type definitions
 type MenuItemType = {
@@ -31,8 +22,10 @@ const ROUTES = {
   users: "/users",
   addAdmin: "/add-super-admin",
   updateAdmin: "/update-admin",
+  customer: "/customer",
   addFleetAdmin: "/add-fleet-admin",
   updateFleetAdmin: "/update-fleet-admin",
+  driver: "/driver",
   settings: "/settings",
   helpCenter: "/help-center",
 } as const;
@@ -44,6 +37,8 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.updateAdmin]: "Update Super admin",
   [ROUTES.addFleetAdmin]: "Add admin",
   [ROUTES.updateFleetAdmin]: "Update admin",
+  [ROUTES.customer]: "Customer",
+  [ROUTES.driver]: "Driver",
   [ROUTES.settings]: "Settings",
   [ROUTES.helpCenter]: "Help Center",
 };
@@ -51,18 +46,34 @@ const ROUTE_TITLES: Record<string, string> = {
 const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
-  // const { setOpen } = useSidebar();
+  const [userInfo, setUserInfo] = useState<any>();
+  const [toggleLang, setToggleLang] = useState(false);
+  const locale = ["en", "fr"];
 
-  const handleLogout = () => {
-    document.cookie = "token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    router.replace("/auth");
-  };
+  const currentLocale = pathname.split("/")[1] as Locale;
+  const displayLanguage = currentLocale === "fr" ? "Français" : "English";
 
   const getRouteTitle = (path: string) => {
     const baseRoute = Object.keys(ROUTE_TITLES).find((route) =>
       path.startsWith(route),
     );
     return baseRoute ? ROUTE_TITLES[baseRoute] : "Unknown Page";
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const info = localStorage.getItem("userInfo");
+      if (info) {
+        setUserInfo(JSON.parse(info));
+      }
+    }
+  }, []);
+
+  const changeLanguage = (locale: Locale) => {
+    if (locale === currentLocale) return;
+
+    const newPath = `/${locale}${pathname.substring(3)}`;
+    router.push(newPath);
   };
 
   return (
@@ -83,6 +94,8 @@ const Header = () => {
           {pathname === ROUTES.addAdmin ||
           pathname.includes(ROUTES.updateAdmin) ||
           pathname.includes(ROUTES.updateFleetAdmin) ||
+          pathname.includes(ROUTES.customer) ||
+          pathname.includes(ROUTES.driver) ||
           pathname === ROUTES.addFleetAdmin ? (
             <div className="flex gap-3">
               <Link href={ROUTES.users} className="text-[#8B8D97]">
@@ -98,33 +111,63 @@ const Header = () => {
         </h1>
       </div>
 
-      {/* <div className="flex items-center gap-4">
-        <button className="flex h-10 w-10 items-center justify-center rounded-lg border border-gray-200 hover:bg-gray-50">
-          <BellIconSVG className="h-5 w-5" />
-        </button>
+      <div className="flex items-center gap-8">
+        {/* Language Switcher */}
+        <div className="group relative">
+          <div
+            onClick={(prev) => setToggleLang(!prev)}
+            className="flex cursor-pointer items-center gap-2"
+          >
+            <Image
+              src={language}
+              alt="Language icon"
+              width={24}
+              height={24}
+              className="object-contain"
+            />
+            <p className="text-sm font-normal capitalize text-[#646464]">
+              {displayLanguage}
+            </p>
+            <ChevronDown className="size-4" />
+          </div>
 
-        <DropdownMenu>
-          <DropdownMenuTrigger>
-            <div className="flex items-center gap-2 rounded-lg border border-gray-200 px-2 py-1.5 hover:bg-gray-50">
-              <Image
-                src={assetLib.avatar}
-                alt="Profile Picture"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-              <ChevronDownIconSVG className="h-5 w-5 text-gray-500" />
+          {/* Dropdown */}
+          {toggleLang && (
+            <div className="mt-2 rounded-md bg-white p-2 shadow-md">
+              {locale.map((locale) => (
+                <button
+                  key={locale}
+                  onClick={() => changeLanguage(locale)}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  {locale === "fr" ? "Français" : "English"}
+                </button>
+              ))}
             </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel className="text-gray-700">
-              My Account
-            </DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {renderMenuItems()}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div> */}
+          )}
+        </div>
+        <div className="flex cursor-pointer items-center gap-2">
+          <div className="h-7 w-7 rounded-full border bg-gray-200">
+            {userInfo?.profile_image ? (
+              <img
+                src={userInfo?.profile_image}
+                alt="Home icon"
+                width={28}
+                height={28}
+                className="cursor-pointer rounded-full object-contain"
+              />
+            ) : (
+              <div className="flex h-7 w-7 items-center justify-center rounded-full">
+                <User className="size-3" />
+              </div>
+            )}
+          </div>
+          <p className="text-sm font-bold capitalize text-[#404040]">
+            {userInfo?.firstName} {userInfo?.lastName}
+          </p>
+          <ChevronDown className="size-4" />
+        </div>
+      </div>
     </header>
   );
 };
