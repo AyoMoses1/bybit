@@ -65,7 +65,7 @@ const FleetAdmin = () => {
               />
             ) : (
               <div className="flex h-10 w-10 items-center justify-center rounded-full border">
-                <User className="size-1" />
+                <User className="size-4" />
               </div>
             )}
           </>
@@ -103,7 +103,7 @@ const FleetAdmin = () => {
               borderWidth: "1px",
               backgroundColor: "#FAFBFD",
             }}
-            className="flex w-fit items-center rounded-md border-[1px] border-[#B3261E] bg-[#FAFBFD] p-2"
+            className="flex w-fit items-center rounded-md border-[1px] border-[#D5D5D5] bg-[#FAFBFD] p-2"
           >
             <Link href={`/update-fleet-admin/${row.original.id}`}>
               <div className="cursor-pointer pr-2">

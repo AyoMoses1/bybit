@@ -74,6 +74,8 @@ function AppSidebar() {
         "/update-admin",
         "/add-fleet-admin",
         "/update-fleet-admin",
+        "/customer",
+        "/driver",
       ].some((route) => pathname.startsWith(route))
     ) {
       return true;

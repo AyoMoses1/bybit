@@ -4,7 +4,7 @@ import { ArrowRight, Trash2, User } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
-import deleteIcon from "../../assets/svgs/Vector (1).svg";
+import deleteIcon from "../../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useUpdateUser, useUser } from "@/store/user/user";
 
@@ -64,7 +64,7 @@ const Customers = () => {
               />
             ) : (
               <div className="flex h-10 w-10 items-center justify-center rounded-full border">
-                <User className="size-1" />
+                <User className="size-5" />
               </div>
             )}
           </>
@@ -102,9 +102,9 @@ const Customers = () => {
               borderWidth: "1px",
               backgroundColor: "#FAFBFD",
             }}
-            className="flex w-fit items-center rounded-md border-[1px] border-[#B3261E] bg-[#FAFBFD] p-2"
+            className="flex w-fit items-center rounded-md border-[1px] border-[#D5D5D5] bg-[#FAFBFD] p-2"
           >
-            <Link href="/update-fleet-admin">
+            <Link href={`/customer/${row.original.id}`}>
               <div className="cursor-pointer pr-2">
                 <ArrowRight className="size-4 text-gray-600" />
               </div>

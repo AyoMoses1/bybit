@@ -66,9 +66,10 @@ export default function UsersPage() {
 
           if (Array.isArray(adminUser)) {
             const user = adminUser.find((user) => user.email === data.email);
-            console.log(user);
+
             if (user.usertype === "admin" || user.usertype === "fleetadmin") {
               localStorage.setItem("authenticated", JSON.stringify(true));
+              localStorage.setItem("userInfo", JSON.stringify(user));
               setLoading(false);
 
               toast.success("Logged In successfully");
