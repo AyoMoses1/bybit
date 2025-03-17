@@ -3,6 +3,7 @@ import {
   createUser,
   fetchUser,
   fetchUserById,
+  fetchUserRides,
   fetchUsers,
   updateUser,
 } from "./userAction";
@@ -19,10 +20,10 @@ export const useUsers = () => {
   });
 };
 
-export const useUser = (type: string) => {
+export const useUser = (type: string, search?: string) => {
   return useQuery({
-    queryKey: [USER_STATE_KEY, type],
-    queryFn: () => fetchUser(type),
+    queryKey: [USER_STATE_KEY, type, search || undefined],
+    queryFn: () => fetchUser(type, search || ""),
     staleTime: Infinity,
     retry: 2,
   });
@@ -62,5 +63,14 @@ export const useCreateUser = () => {
     onError: (error) => {
       console.error("User creation failed:", error);
     },
+  });
+};
+
+export const useUsersRide = (id: string) => {
+  return useQuery({
+    queryKey: [USER_STATE_KEY, id],
+    queryFn: () => fetchUserRides(id),
+    staleTime: Infinity,
+    retry: 2,
   });
 };

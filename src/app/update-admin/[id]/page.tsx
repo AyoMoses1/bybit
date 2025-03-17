@@ -5,7 +5,7 @@ import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { useGetUserById, useUpdateUser } from "@/store/user/user";
 import { updateCustomerProfileImage } from "@/store/user/userAction";
 import { Camera } from "lucide-react";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
@@ -20,6 +20,7 @@ type User = {
 const UpdateAdmin = () => {
   const { id } = useParams();
   const mutation = useUpdateUser();
+  const router = useRouter();
   const userId = Array.isArray(id) ? id[0] : id;
   const { data: user } = useGetUserById(userId ?? "") as {
     data: User | undefined;
@@ -71,12 +72,12 @@ const UpdateAdmin = () => {
         },
         {
           onError: () => {
-            console.log("Something went wrong!");
             setLoading(false);
           },
           onSuccess: () => {
             setLoading(false);
             toast.success("User updated successfully");
+            router.push("/users");
           },
         },
       );

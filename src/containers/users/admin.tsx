@@ -8,8 +8,8 @@ import deleteIcon from "../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useUpdateUser, useUser } from "@/store/user/user";
 
-const Admin = () => {
-  const { data: user, isLoading } = useUser("admin");
+const Admin = ({ search }: { search?: string }) => {
+  const { data: user, isLoading } = useUser("admin", search);
   const mutation = useUpdateUser();
 
   const columns: ColumnDef<any>[] = [

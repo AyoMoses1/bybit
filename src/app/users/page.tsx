@@ -7,16 +7,38 @@ import FleetAdmin from "@/containers/users/fleetAdmin";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { Plus, Search } from "lucide-react";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const Users = () => {
-  const tabsData = [
-    { key: 1, title: "Customers" },
-    { key: 2, title: "Drivers" },
-    { key: 3, title: "Admins" },
-    { key: 4, title: "Super Admins" },
-  ];
+  const [userInfo, setUserInfo] = useState<any>();
   const [selectedTab, setSelectedTab] = useState("Customers");
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const tabsData =
+    userInfo?.userType === "fleetAdmin"
+      ? [
+          { key: 1, title: "Customers" },
+          { key: 2, title: "Drivers" },
+        ]
+      : [
+          { key: 1, title: "Customers" },
+          { key: 2, title: "Drivers" },
+          { key: 3, title: "Admins" },
+          { key: 4, title: "Super Admins" },
+        ];
+
+  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.value);
+  };
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const info = localStorage.getItem("userInfo");
+      if (info) {
+        setUserInfo(JSON.parse(info));
+      }
+    }
+  }, []);
 
   return (
     <div>
@@ -47,6 +69,8 @@ const Users = () => {
             <Search className="size-4 text-[#00000080]" />
             <input
               type="text"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full border-none bg-transparent text-sm text-[#6E7079] outline-none placeholder:text-[#00000080]"
               placeholder="Search in table..."
             />
@@ -73,22 +97,22 @@ const Users = () => {
       {/* TAB CONTENT */}
       {selectedTab === "Customers" ? (
         <div>
-          <Customers />
+          <Customers search={searchTerm} />
         </div>
       ) : selectedTab === "Drivers" ? (
         <div>
-          <Drivers />
+          <Drivers search={searchTerm} />
         </div>
       ) : selectedTab === "Admins" ? (
         <div>
           {" "}
           <div>
-            <FleetAdmin />
+            <FleetAdmin search={searchTerm} />
           </div>
         </div>
       ) : selectedTab === "Super Admins" ? (
         <div>
-          <Admin />
+          <Admin search={searchTerm} />
         </div>
       ) : null}
     </div>
