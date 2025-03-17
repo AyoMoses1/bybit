@@ -8,7 +8,7 @@ import deleteIcon from "../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useUpdateUser, useUser } from "@/store/user/user";
 
-const FleetAdmin = () => {
+const FleetAdmin = ({ search }: { search?: string }) => {
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
     return date.toLocaleString("en-US", {
@@ -125,7 +125,7 @@ const FleetAdmin = () => {
     },
   ];
 
-  const { data: user, isLoading } = useUser("fleetadmin");
+  const { data: user, isLoading } = useUser("fleetadmin", search);
 
   return (
     <div className="px-1">

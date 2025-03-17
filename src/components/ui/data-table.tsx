@@ -77,15 +77,15 @@ export function C<TData, TValue>({
               >
                 <div className="flex h-full items-center justify-center gap-20">
                   <div>
-                    <Image
+                    {/* <Image
                       src={assetLib.canadaFlag}
                       alt="No Transactions yet"
                       width={120}
                       height={120}
-                    />
+                    /> */}
                   </div>
                   <div className="flex flex-col items-start">
-                    <p className="mb-[4px] text-lg font-semibold text-foreground">
+                    <p className="mb-[4px] text-base font-medium text-foreground">
                       No data for this table yet
                     </p>
                     {/* <p className="text-start font-medium text-muted-foreground">

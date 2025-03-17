@@ -1,4 +1,4 @@
-import { onValue, ref, getDatabase, update, set } from "firebase/database";
+import { onValue, ref, getDatabase, update, set, off } from "firebase/database";
 import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import firebase from "@/lib/firebase";
 
@@ -43,7 +43,7 @@ export const fetchUsers = () => {
   });
 };
 
-export const fetchUser = (userType: string) => {
+export const fetchUser = (userType: string, search?: string) => {
   return new Promise((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -59,7 +59,13 @@ export const fetchUser = (userType: string) => {
                 id: key,
                 ...(value as any),
               }))
-              .filter((user) => user.usertype === userType)
+              .filter(
+                (user) =>
+                  user.usertype === userType &&
+                  (!search ||
+                    user.name?.toLowerCase().includes(search.toLowerCase()) ||
+                    user.email?.toLowerCase().includes(search.toLowerCase())),
+              )
               .sort(
                 (a, b) =>
                   new Date(b.createdAt || 0).getTime() -
@@ -178,4 +184,47 @@ export const updateCustomerProfileImage = async (
     console.error("Error updating profile image:", error);
     throw error;
   }
+};
+
+export const fetchUserRides = (userId: string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const userRef = ref(db, `bookings/`);
+
+      off(userRef);
+
+      const unsubscribe = onValue(
+        userRef,
+        (snapshot) => {
+          if (!snapshot.exists()) {
+            resolve(null);
+            return;
+          }
+
+          const data = snapshot.val();
+          // const rides = Object.entries(data).map(([id, value]: any) => ({
+          //   id,
+          //   pickupAddress: value.pickup?.add || "",
+          //   dropAddress: value.drop?.add || "",
+          //   discount: value.discount || 0,
+          //   cashPaymentAmount: value.cashPaymentAmount || 0,
+          //   cardPaymentAmount: value.cardPaymentAmount || 0,
+          //   ...value,
+          // }));
+
+          resolve(data);
+        },
+        (error) => {
+          console.error("Firebase error:", error);
+          reject(error);
+        },
+      );
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Fetch User Error:", error);
+      reject(error);
+    }
+  });
 };

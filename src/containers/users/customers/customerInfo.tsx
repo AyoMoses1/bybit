@@ -3,10 +3,12 @@ import { Camera, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGetUserById, useUpdateUser } from "@/store/user/user";
 import { updateCustomerProfileImage } from "@/store/user/userAction";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
+import Image from "next/image";
+import camera from "../../../assets/svgs/Group 1.svg";
 
 type User = {
   firstName: string;
@@ -16,10 +18,13 @@ type User = {
   profile_image?: string;
   approved: boolean;
   referralId: string;
+  verifyId: string;
+  verifyIdImage: string;
 };
 
 const CustomerInfo = () => {
   const [selectedValue, setSelectedValue] = useState("");
+  const router = useRouter();
   const { id } = useParams();
   const mutation = useUpdateUser();
   const userId = Array.isArray(id) ? id[0] : id;
@@ -33,6 +38,7 @@ const CustomerInfo = () => {
     mobile: "",
     email: "",
     referralId: "",
+    verifyId: "",
   });
 
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -43,28 +49,12 @@ const CustomerInfo = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedFile = event.target.files?.[0];
-
-    if (!selectedFile) return;
-
-    // Validate file size (100KB)
-    if (selectedFile.size > 100 * 1024) {
-      setError("File size must be less than 100KB");
-      return;
+    const file = event.target.files?.[0];
+    if (file) {
+      setFile(file);
+      const imageUrl = URL.createObjectURL(file);
+      setPreview(imageUrl);
     }
-
-    const img = new Image();
-    img.src = URL.createObjectURL(selectedFile);
-    img.onload = () => {
-      if (img.width !== img.height) {
-        setError("Image must be square.");
-        return;
-      }
-
-      setError(null);
-      setFile(selectedFile);
-      setPreview(URL.createObjectURL(selectedFile));
-    };
   };
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -90,11 +80,21 @@ const CustomerInfo = () => {
         downloadURL = selectedFile;
       }
 
+      let passportURL;
+      if (file instanceof File) {
+        passportURL = await updateCustomerProfileImage(file, userId ?? "");
+      } else {
+        passportURL = file;
+      }
+
       const updatedData = {
         firstName: data.firstName,
         lastName: data.lastName,
+        mobile: data.mobile,
+        verifyId: data.verifyId,
         approved: selectedValue === "approved" ? true : false,
         ...(downloadURL && { profile_image: downloadURL }),
+        ...(passportURL && { verifyIdImage: passportURL }),
       };
 
       mutation.mutate(
@@ -109,6 +109,7 @@ const CustomerInfo = () => {
           },
           onSuccess: () => {
             setLoading(false);
+            router.push("/users");
             toast.success("User updated successfully");
           },
         },
@@ -125,12 +126,15 @@ const CustomerInfo = () => {
       mobile: user?.mobile ?? "",
       email: user?.email ?? "",
       referralId: user?.referralId ?? "",
+      verifyId: user?.verifyId ?? "",
     });
     setSelectedValue(user?.approved ? "approved" : "not-approved");
+    setPreview(user?.verifyIdImage ?? "");
     setSelectedImage(user?.profile_image ?? "");
   }, [user]);
 
   console.log(user);
+
   return (
     <div className="py-6">
       <div className="rounded-lg bg-white px-8 py-12 shadow-md">
@@ -195,7 +199,6 @@ const CustomerInfo = () => {
                   type="tel"
                   className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
                   placeholder="+352 232323"
-                  disabled
                   value={data.mobile}
                   onChange={(event) =>
                     setData((prev) => ({
@@ -211,10 +214,16 @@ const CustomerInfo = () => {
                   ID/Passport Number
                 </label>
                 <input
-                  disabled
                   type="text"
                   className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
                   placeholder=""
+                  value={data.verifyId}
+                  onChange={(event) =>
+                    setData((prev) => ({
+                      ...prev,
+                      verifyId: event.target.value,
+                    }))
+                  }
                 />
               </div>
 
@@ -248,8 +257,14 @@ const CustomerInfo = () => {
                         className="h-full w-full rounded-lg object-cover"
                       />
                     ) : (
-                      <div className="h-[100px] w-[100px] rounded-[5px] bg-[#E2E6EC]">
-                        📷
+                      <div className="flex h-[100px] w-[100px] items-center justify-center rounded-[5px] bg-[#E2E6EC]">
+                        <Image
+                          src={camera}
+                          alt="Camera"
+                          width={40}
+                          height={40}
+                          className="object-contain"
+                        />
                       </div>
                     )}
                   </div>
@@ -259,24 +274,40 @@ const CustomerInfo = () => {
                     <p className="font-[Roboto] text-xs font-[300] italic text-[#000000]">
                       Please upload square image, size less than 100KB
                     </p>
-
-                    <label className="mt-2 flex cursor-pointer items-center rounded-lg border border-purple-400 px-4 py-2 hover:bg-purple-50">
-                      <span className="font-semibold text-purple-600">
-                        Choose File
-                      </span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        className="hidden"
-                        onChange={handleFileChange}
-                      />
-                    </label>
-                    {file && (
-                      <p className="mt-1 text-sm text-gray-600">{file.name}</p>
-                    )}
-                    {error && (
-                      <p className="mt-1 text-sm text-red-500">{error}</p>
-                    )}
+                    <div className="mt-[6px] flex items-center gap-6 bg-[#F8F8F8] px-2 py-3">
+                      <>
+                        <label className="">
+                          <p className="flex min-w-[110px] cursor-pointer items-center rounded-[20px] border border-[#913B81] px-4 py-2 font-semibold text-[#913B81]">
+                            Choose File
+                          </p>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={handleFileChange}
+                          />
+                        </label>
+                        {file ? (
+                          <>
+                            {" "}
+                            {file && (
+                              <p className="mt-1 max-w-[80px] truncate text-sm text-gray-600">
+                                {file.name}
+                              </p>
+                            )}
+                            {error && (
+                              <p className="mt-1 text-sm text-red-500">
+                                {error}
+                              </p>
+                            )}
+                          </>
+                        ) : (
+                          <p className="font-[Roboto] text-sm font-[300] text-[#3C3C3C]">
+                            No File Chosen
+                          </p>
+                        )}
+                      </>
+                    </div>
                   </div>
                 </div>
 
@@ -373,17 +404,10 @@ const CustomerInfo = () => {
                 </div>
               </div>
 
-              <div style={{ visibility: "hidden" }} className="w-full">
-                <label
-                  className={`font-[Roboto] text-sm font-normal text-[#A2A9B0]`}
-                >
-                  disabled
-                </label>
-                <input
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
-                  disabled
-                />
-              </div>
+              <div
+                className="h-[130px] w-full"
+                style={{ visibility: "hidden" }}
+              ></div>
             </div>
           </div>
         </div>

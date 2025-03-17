@@ -4,9 +4,11 @@ import CustomerInfo from "@/containers/users/customers/customerInfo";
 import CustomersRides from "@/containers/users/customers/customerRides";
 import CustomerWallet from "@/containers/users/customers/customerWallet";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
+import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
 const Customer = () => {
+  const { id } = useParams();
   const tabsData = [
     { key: 1, title: "Info", info: "Customer Information" },
     { key: 2, title: "Rides", info: "Customer’s Rides" },
@@ -49,7 +51,7 @@ const Customer = () => {
         </div>
       ) : selectedTab?.title === "Rides" ? (
         <div>
-          <CustomersRides />
+          <CustomersRides id={id ?? ""} />
         </div>
       ) : selectedTab?.title === "Admins" ? (
         <div>

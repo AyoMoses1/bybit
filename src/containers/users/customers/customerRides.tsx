@@ -6,22 +6,11 @@ import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import deleteIcon from "../../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
-import { useUpdateUser, useUser } from "@/store/user/user";
+import { useUpdateUser, useUser, useUsersRide } from "@/store/user/user";
 
-const CustomersRides = () => {
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
-
-  const mutation = useUpdateUser();
+const CustomersRides = ({ id }: { id: string | string[] }) => {
+  const userId = Array.isArray(id) ? id[0] : id;
+  const { data: rides, isLoading } = useUsersRide(userId ?? "");
 
   const columns: ColumnDef<any>[] = [
     {
@@ -51,8 +40,7 @@ const CustomersRides = () => {
     },
   ];
 
-  const { data: user, isLoading } = useUser("customer");
-  console.log(user);
+  console.log(rides);
 
   return (
     <div className="px-1">
@@ -67,7 +55,7 @@ const CustomersRides = () => {
         ) : (
           <>
             {" "}
-            <C columns={columns} data={Array.isArray(user) ? user : []} />
+            <C columns={columns} data={Array.isArray(rides) ? rides : []} />
           </>
         )}
       </div>
