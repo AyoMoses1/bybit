@@ -27,10 +27,6 @@ const Users = () => {
           { key: 4, title: "Super Admins" },
         ];
 
-  const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.value);
-  };
-
   useEffect(() => {
     if (typeof window !== "undefined") {
       const info = localStorage.getItem("userInfo");

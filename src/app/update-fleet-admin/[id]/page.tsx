@@ -74,7 +74,6 @@ const UpdateFleetAdmin = () => {
         },
         {
           onError: () => {
-            console.log("Something went wrong!");
             setLoading(false);
           },
           onSuccess: () => {
@@ -99,7 +98,6 @@ const UpdateFleetAdmin = () => {
     setSelectedImage(user?.profile_image ?? "");
   }, [user]);
 
-  console.log(user);
   return (
     <div className="p-6">
       <p className="pb-6 text-2xl font-semibold text-[#202224]">Update Admin</p>

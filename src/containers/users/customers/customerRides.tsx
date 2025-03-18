@@ -40,8 +40,6 @@ const CustomersRides = ({ id }: { id: string | string[] }) => {
     },
   ];
 
-  console.log(rides);
-
   return (
     <div className="px-1">
       <div>

@@ -53,11 +53,11 @@ const Customer = () => {
         <div>
           <CustomersRides id={id ?? ""} />
         </div>
-      ) : selectedTab?.title === "Admins" ? (
+      ) : selectedTab?.title === "Wallet" ? (
         <div>
           {" "}
           <div>
-            <CustomerWallet />
+            <CustomerWallet id={id ?? ""} />
           </div>
         </div>
       ) : selectedTab?.title === "Bank Details" ? (

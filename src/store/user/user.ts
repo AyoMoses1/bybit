@@ -5,6 +5,7 @@ import {
   fetchUserById,
   fetchUserRides,
   fetchUsers,
+  fetchUserWalletHistory,
   updateUser,
 } from "./userAction";
 
@@ -70,6 +71,15 @@ export const useUsersRide = (id: string) => {
   return useQuery({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchUserRides(id),
+    staleTime: Infinity,
+    retry: 2,
+  });
+};
+
+export const useUserWalletHistory = (id: string) => {
+  return useQuery({
+    queryKey: ["walletHistory", id],
+    queryFn: () => fetchUserWalletHistory(id),
     staleTime: Infinity,
     retry: 2,
   });

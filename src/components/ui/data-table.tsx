@@ -36,13 +36,13 @@ export function C<TData, TValue>({
   });
 
   return (
-    <div className="rounded-[20px] border-x border-x-border bg-card">
+    <div className="font-nunito rounded-[20px] border-x border-x-border bg-card">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
-                <TableHead className="" key={header.id}>
+                <TableHead className="text-sm font-extrabold" key={header.id}>
                   {header.isPlaceholder
                     ? null
                     : flexRender(
@@ -55,7 +55,7 @@ export function C<TData, TValue>({
           ))}
         </TableHeader>
 
-        <TableBody className="bg-[#FCFDFD]">
+        <TableBody className="bg-[#FCFDFD] text-[#6E7079]">
           {data?.length > 0 ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -85,19 +85,9 @@ export function C<TData, TValue>({
                     /> */}
                   </div>
                   <div className="flex flex-col items-start">
-                    <p className="mb-[4px] text-base font-medium text-foreground">
+                    <p className="mb-[4px] text-base font-medium text-[#6E7079] text-foreground">
                       No data for this table yet
                     </p>
-                    {/* <p className="text-start font-medium text-muted-foreground">
-                      Start seamless transfers today. Fund your <br /> wallet to
-                      make your first transaction
-                    </p> */}
-                    {/* <Button
-                      variant={"outline"}
-                      className="mt-[16px] w-[152px] rounded-[18px] py-[10px] text-[15px] font-semibold"
-                    >
-                      Fund your wallet
-                    </Button> */}
                   </div>
                 </div>
               </TableCell>

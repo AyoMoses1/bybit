@@ -129,7 +129,6 @@ export const updateUser = (id: string, updatedData: Record<string, any>) => {
 
       update(userRef, updatedData)
         .then(() => {
-          console.log("User updated successfully!");
           resolve();
         })
         .catch((error) => {
@@ -151,7 +150,6 @@ export const createUser = (updatedData: Record<string, any>) => {
 
       set(userRef, updatedData)
         .then(() => {
-          console.log("User created successfully!");
           resolve();
         })
         .catch((error) => {
@@ -224,6 +222,32 @@ export const fetchUserRides = (userId: string) => {
       return () => unsubscribe();
     } catch (error) {
       console.error("Fetch User Error:", error);
+      reject(error);
+    }
+  });
+};
+
+export const fetchUserWalletHistory = (id: string) => {
+  return new Promise((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const walletHistoryRef = ref(db, "walletHistory/" + id);
+
+      const unsubscribe = onValue(walletHistoryRef, (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const arr = Object.keys(data).map((i) => {
+            data[i].id = i;
+            return data[i];
+          });
+
+          resolve(arr.reverse());
+        } else {
+          resolve([]);
+        }
+      });
+      return () => unsubscribe();
+    } catch (error) {
       reject(error);
     }
   });

@@ -104,7 +104,6 @@ const CustomerInfo = () => {
         },
         {
           onError: () => {
-            console.log("Something went wrong!");
             setLoading(false);
           },
           onSuccess: () => {
@@ -133,10 +132,8 @@ const CustomerInfo = () => {
     setSelectedImage(user?.profile_image ?? "");
   }, [user]);
 
-  console.log(user);
-
   return (
-    <div className="py-6">
+    <div className="pb-6">
       <div className="rounded-lg bg-white px-8 py-12 shadow-md">
         <div className="flex justify-between gap-8">
           {/* Profile Image Upload */}

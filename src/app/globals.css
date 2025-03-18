@@ -97,3 +97,9 @@ input:-webkit-autofill:active {
   background-size: cover;
   background-position: center;
 }
+
+.card-background {
+  background-image: url("../assets/svgs/waveElements (1).svg");
+  background-size: cover;
+  background-position: center;
+}

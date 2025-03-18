@@ -7,20 +7,9 @@ import Link from "next/link";
 import deleteIcon from "../../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useUpdateUser, useUser } from "@/store/user/user";
+import { formatDate } from "@/utils/formatDate";
 
 const Drivers = ({ search }: { search?: string }) => {
-  const formatDate = (timestamp: number) => {
-    const date = new Date(timestamp);
-    return date.toLocaleString("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-    });
-  };
-
   const mutation = useUpdateUser();
 
   const columns: ColumnDef<any>[] = [
@@ -53,7 +42,6 @@ const Drivers = ({ search }: { search?: string }) => {
       accessorKey: "profile_image",
       header: "Profile Image",
       cell: ({ getValue }) => {
-        console.log(getValue());
         const imageUrl = String(getValue() || "");
         return (
           <>
