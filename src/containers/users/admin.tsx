@@ -107,8 +107,6 @@ const Admin = ({ search }: { search?: string }) => {
     },
   ];
 
-  // console.log(user);
-
   return (
     <div className="px-1">
       <div>

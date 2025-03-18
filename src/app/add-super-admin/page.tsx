@@ -26,9 +26,7 @@ const AddAdmin = () => {
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: FormData) => {
-    console.log("Form Data:", data);
-  };
+  const onSubmit = (data: FormData) => {};
 
   return (
     <div className="p-6">
