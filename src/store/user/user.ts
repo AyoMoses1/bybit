@@ -69,7 +69,7 @@ export const useCreateUser = () => {
 
 export const useUsersRide = (id: string) => {
   return useQuery({
-    queryKey: [USER_STATE_KEY, id],
+    queryKey: ["usersRide", id],
     queryFn: () => fetchUserRides(id),
     staleTime: Infinity,
     retry: 2,

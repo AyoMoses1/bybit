@@ -1,4 +1,14 @@
-import { onValue, ref, getDatabase, update, set, off } from "firebase/database";
+import {
+  onValue,
+  ref,
+  getDatabase,
+  update,
+  set,
+  off,
+  orderByChild,
+  equalTo,
+  query,
+} from "firebase/database";
 import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import firebase from "@/lib/firebase";
 
@@ -188,7 +198,11 @@ export const fetchUserRides = (userId: string) => {
   return new Promise((resolve, reject) => {
     try {
       const db = getDatabase();
-      const userRef = ref(db, `bookings/`);
+      const userRef = query(
+        ref(db, "bookings"),
+        orderByChild("customer"),
+        equalTo(userId),
+      );
 
       off(userRef);
 
@@ -201,17 +215,17 @@ export const fetchUserRides = (userId: string) => {
           }
 
           const data = snapshot.val();
-          // const rides = Object.entries(data).map(([id, value]: any) => ({
-          //   id,
-          //   pickupAddress: value.pickup?.add || "",
-          //   dropAddress: value.drop?.add || "",
-          //   discount: value.discount || 0,
-          //   cashPaymentAmount: value.cashPaymentAmount || 0,
-          //   cardPaymentAmount: value.cardPaymentAmount || 0,
-          //   ...value,
-          // }));
+          const rides = Object.entries(data).map(([id, value]: any) => ({
+            id,
+            pickupAddress: value.pickup?.add || "",
+            dropAddress: value.drop?.add || "",
+            discount: value.discount || 0,
+            cashPaymentAmount: value.cashPaymentAmount || 0,
+            cardPaymentAmount: value.cardPaymentAmount || 0,
+            ...value,
+          }));
 
-          resolve(data);
+          resolve(rides);
         },
         (error) => {
           console.error("Firebase error:", error);

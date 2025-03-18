@@ -58,6 +58,7 @@ export default {
       },
       fontFamily: {
         nunito: ['"Nunito Sans"', "sans-serif"],
+        inter: ['"Inter", "sans-serif"'],
       },
 
       borderRadius: {
