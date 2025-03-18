@@ -7,26 +7,42 @@ import Link from "next/link";
 import deleteIcon from "../../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useUpdateUser, useUser, useUsersRide } from "@/store/user/user";
+import { formatDate } from "@/utils/formatDate";
 
 const CustomersRides = ({ id }: { id: string | string[] }) => {
   const userId = Array.isArray(id) ? id[0] : id;
-  const { data: rides, isLoading } = useUsersRide(userId ?? "");
+  const { data: usersRide, isLoading } = useUsersRide(userId ?? "");
 
   const columns: ColumnDef<any>[] = [
     {
-      accessorKey: "bookingStatus",
+      accessorKey: "status",
       header: "Booking Status",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const value = getValue() as string;
+        return (
+          <span
+            className={`badge capitalize ${
+              value === "COMPLETE"
+                ? "badge-success"
+                : value === "CANCELLED"
+                  ? "badge-error"
+                  : ""
+            }`}
+          >
+            {value || "N/A"}
+          </span>
+        );
+      },
     },
     {
-      accessorKey: "bookingReference",
+      accessorKey: "reference",
       header: "Booking Reference",
       cell: ({ getValue }) => getValue() || "N/A",
     },
     {
       accessorKey: "bookingDate",
       header: "Booking Date",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => formatDate(Number(getValue())),
     },
     {
       accessorKey: "pickupAddress",
@@ -39,6 +55,8 @@ const CustomersRides = ({ id }: { id: string | string[] }) => {
       cell: ({ getValue }) => getValue() || "N/A",
     },
   ];
+
+  console.log(usersRide);
 
   return (
     <div className="px-1">
@@ -53,7 +71,10 @@ const CustomersRides = ({ id }: { id: string | string[] }) => {
         ) : (
           <>
             {" "}
-            <C columns={columns} data={Array.isArray(rides) ? rides : []} />
+            <C
+              columns={columns}
+              data={Array.isArray(usersRide) ? usersRide : []}
+            />
           </>
         )}
       </div>

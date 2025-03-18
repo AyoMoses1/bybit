@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Search, TrendingDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useGetUserById, useUserWalletHistory } from "@/store/user/user";
-import { formatDateTimeStamp } from "@/utils/formatDate";
+import { formatDate } from "@/utils/formatDate";
 
 type User = {
   walletBalance: string;
@@ -19,9 +19,9 @@ const CustomerWallet = ({ id }: { id: string | string[] }) => {
 
   const columns: ColumnDef<any>[] = [
     {
-      accessorKey: "requestDate",
+      accessorKey: "date",
       header: "Request Date",
-      cell: ({ getValue }) => formatDateTimeStamp(Number(getValue())),
+      cell: ({ getValue }) => formatDate(Number(getValue())),
     },
     {
       accessorKey: "amount",
@@ -37,7 +37,23 @@ const CustomerWallet = ({ id }: { id: string | string[] }) => {
     {
       accessorKey: "type",
       header: "Type",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const value = getValue() as string;
+
+        return (
+          <span
+            className={`badge ${
+              value === "Credit"
+                ? "badge-success"
+                : value === "Debit"
+                  ? "badge-error"
+                  : ""
+            }`}
+          >
+            {value || "N/A"}
+          </span>
+        );
+      },
     },
   ];
 
@@ -47,10 +63,13 @@ const CustomerWallet = ({ id }: { id: string | string[] }) => {
     <div className="px-1">
       <div>
         {/* Wallet Balance Card */}
-        <div className="card-background relative mb-6 h-[180px] w-72 rounded-2xl border border-[#913B8133] bg-white p-5 font-[Roboto] shadow-sm">
+        <div className="card-background relative z-0 mb-6 h-[180px] w-72 rounded-2xl border border-[#913B8133] bg-white p-5 font-[Roboto] shadow-sm">
           <h4 className="text-base text-[#606060]">Wallet Balance</h4>
           <h2 className="pt-1 text-[28px] font-bold text-[#202224]">
-            CFA {Number(user?.walletBalance).toLocaleString() ?? "0"}
+            CFA{" "}
+            {user?.walletBalance
+              ? (Number(user?.walletBalance).toLocaleString() ?? "0")
+              : "0"}
           </h2>
           <div className="absolute bottom-5 flex items-center font-[Roboto] text-base text-[#F93C65]">
             <span className="pr-[6px]">
