@@ -1,4 +1,4 @@
-import { C } from "@/components/ui/data-table";
+import { CustomTable } from "@/components/ui/data-table";
 import React, { useState } from "react";
 import { ArrowRight, Trash2, User } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
@@ -6,7 +6,7 @@ import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import deleteIcon from "../../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
-import { useUpdateUser, useUser } from "@/store/user/user";
+import { useUpdateUser, useUser } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
 
 const Drivers = ({ search }: { search?: string }) => {
@@ -129,7 +129,10 @@ const Drivers = ({ search }: { search?: string }) => {
         ) : (
           <>
             {" "}
-            <C columns={columns} data={Array.isArray(user) ? user : []} />
+            <CustomTable
+              columns={columns}
+              data={Array.isArray(user) ? user : []}
+            />
           </>
         )}
       </div>

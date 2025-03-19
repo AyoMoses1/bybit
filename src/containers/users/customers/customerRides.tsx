@@ -1,8 +1,8 @@
-import { C } from "@/components/ui/data-table";
+import { CustomTable } from "@/components/ui/data-table";
 import React, { useMemo, useState } from "react";
 import { Search } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useUsersRide } from "@/store/user/user";
+import { useUsersRide } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
 
 const CustomersRides = ({ id }: { id: string | string[] }) => {
@@ -95,7 +95,7 @@ const CustomersRides = ({ id }: { id: string | string[] }) => {
         ) : (
           <>
             {" "}
-            <C
+            <CustomTable
               columns={columns}
               data={Array.isArray(filteredRides) ? filteredRides : []}
             />

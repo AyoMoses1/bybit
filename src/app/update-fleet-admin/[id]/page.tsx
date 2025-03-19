@@ -1,8 +1,8 @@
 "use client";
 import { Camera, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useGetUserById, useUpdateUser } from "@/store/user/user";
-import { updateCustomerProfileImage } from "@/store/user/userAction";
+import { useGetUserById, useUpdateUser } from "@/lib/api/hooks/user";
+import { updateCustomerProfileImage } from "@/lib/api/apiHandlers/userService";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";

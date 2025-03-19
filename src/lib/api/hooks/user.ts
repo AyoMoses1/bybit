@@ -7,7 +7,7 @@ import {
   fetchUsers,
   fetchUserWalletHistory,
   updateUser,
-} from "./userAction";
+} from "../apiHandlers/userService";
 
 const USER_STATE_KEY = "user";
 

@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { login } from "./authAction";
+import { login } from "../apiHandlers/authService";
 
 const USER_STATE_KEY = "auth";
 
