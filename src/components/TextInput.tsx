@@ -21,7 +21,7 @@ const TextInput: React.FC<TextInputProps> = ({
     <div className="w-full">
       <label
         className={`block font-[Roboto] text-sm font-normal ${
-          disabled ? "text-gray-400" : "text-[#21272A]"
+          disabled ? "text-[#A2A9B0]" : "text-[#21272A]"
         }`}
       >
         {label}
