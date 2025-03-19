@@ -1,26 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { FC, useState } from "react";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { useGetUserById } from "@/store/user/user";
 
 type User = {
-  firstName: string;
-  lastName: string;
-  mobile: string;
-  email: string;
-  profile_image?: string;
-  approved: boolean;
-  referralId: string;
-  verifyId: string;
-  verifyIdImage: string;
+  bankName: string;
+  bankAccount: string;
+  bankCode: string;
 };
 
-const DriverBankDetails = ({ id }: { id: string | string[] }) => {
+type DriverBankDetailsProps = {
+  id: string | string[];
+};
+
+const DriverBankDetails: FC<DriverBankDetailsProps> = ({ id }) => {
   const userId = Array.isArray(id) ? id[0] : id;
   const { data: user } = useGetUserById(userId ?? "") as {
     data: User | undefined;
   };
+
   return (
     <div className="py-6">
       <div className="rounded-lg bg-white px-10 pb-6 shadow-md">
@@ -35,8 +34,10 @@ const DriverBankDetails = ({ id }: { id: string | string[] }) => {
               </label>
               <input
                 type="text"
+                disabled
                 className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
                 placeholder="e.g. 4352 232323"
+                value={user?.bankName}
               />
             </div>
 
@@ -48,6 +49,8 @@ const DriverBankDetails = ({ id }: { id: string | string[] }) => {
                 type="text"
                 className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
                 placeholder="e.g. 4352 232323"
+                disabled
+                value={user?.bankCode}
               />
             </div>
           </div>
@@ -61,6 +64,8 @@ const DriverBankDetails = ({ id }: { id: string | string[] }) => {
                 type="text"
                 className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
                 placeholder="e.g. 4352 232323"
+                disabled
+                value={user?.bankAccount}
               />
             </div>
           </div>

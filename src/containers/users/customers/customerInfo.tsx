@@ -9,6 +9,7 @@ import toast from "react-hot-toast";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import Image from "next/image";
 import camera from "../../../assets/svgs/Group 1.svg";
+import TextInput from "@/components/TextInput";
 
 type User = {
   firstName: string;
@@ -170,73 +171,51 @@ const CustomerInfo = () => {
           {/* Form Fields */}
           <div className="flex w-[85%] justify-between gap-16">
             <div className="flex w-full flex-wrap gap-4">
-              <div className="w-full">
-                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
-                  First Name
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
-                  placeholder="John"
-                  value={data.firstName}
-                  onChange={(event) =>
-                    setData((prev) => ({
-                      ...prev,
-                      firstName: event.target.value,
-                    }))
-                  }
-                />
-              </div>
+              <TextInput
+                type="text"
+                label="First Name"
+                placeholder="John"
+                value={data.firstName}
+                onChange={(event) =>
+                  setData((prev) => ({
+                    ...prev,
+                    firstName: event.target.value,
+                  }))
+                }
+              />
 
-              <div className="w-full">
-                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
-                  Mobile Number
-                </label>
-                <input
-                  type="tel"
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
-                  placeholder="+352 232323"
-                  value={data.mobile}
-                  onChange={(event) =>
-                    setData((prev) => ({
-                      ...prev,
-                      mobile: event.target.value,
-                    }))
-                  }
-                />
-              </div>
+              <TextInput
+                type="tel"
+                label="Mobile Number"
+                placeholder="+352 232323"
+                value={data.mobile}
+                onChange={(event) =>
+                  setData((prev) => ({
+                    ...prev,
+                    mobile: event.target.value,
+                  }))
+                }
+              />
 
-              <div className="w-full">
-                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
-                  ID/Passport Number
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
-                  placeholder=""
-                  value={data.verifyId}
-                  onChange={(event) =>
-                    setData((prev) => ({
-                      ...prev,
-                      verifyId: event.target.value,
-                    }))
-                  }
-                />
-              </div>
+              <TextInput
+                type="text"
+                label="ID/Passport Number"
+                placeholder=""
+                value={data.verifyId}
+                onChange={(event) =>
+                  setData((prev) => ({
+                    ...prev,
+                    verifyId: event.target.value,
+                  }))
+                }
+              />
 
-              <div className="w-full">
-                <label
-                  className={`block font-[Roboto] text-sm font-normal text-[#A2A9B0]`}
-                >
-                  Sign Up Referral
-                </label>
-                <input
-                  disabled
-                  type="text"
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
-                  placeholder="N/A"
-                />
-              </div>
+              <TextInput
+                type="text"
+                label="  Sign Up Referral"
+                placeholder="N/A"
+                disabled
+              />
 
               <div className="w-full">
                 <label
@@ -318,60 +297,44 @@ const CustomerInfo = () => {
             </div>
 
             <div className="flex w-full flex-wrap gap-4">
-              <div className="w-full">
-                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
-                  Last Name
-                </label>
-                <input
-                  type="text"
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
-                  placeholder="Last"
-                  value={data.lastName}
-                  onChange={(event) =>
-                    setData((prev) => ({
-                      ...prev,
-                      lastName: event.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div className="w-full">
-                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
-                  Email
-                </label>
-                <input
-                  type="email"
-                  disabled
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
-                  placeholder="email@vasas.com"
-                  value={data.email}
-                  onChange={(event) =>
-                    setData((prev) => ({
-                      ...prev,
-                      email: event.target.value,
-                    }))
-                  }
-                />
-              </div>
+              <TextInput
+                type="text"
+                label="Last Name"
+                placeholder="Last"
+                value={data.lastName}
+                onChange={(event) =>
+                  setData((prev) => ({
+                    ...prev,
+                    lastName: event.target.value,
+                  }))
+                }
+              />
 
-              <div className="w-full">
-                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
-                  Referral ID
-                </label>
-                <input
-                  disabled
-                  type="text"
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
-                  placeholder=""
-                  value={data.referralId}
-                  onChange={(event) =>
-                    setData((prev) => ({
-                      ...prev,
-                      referralId: event.target.value,
-                    }))
-                  }
-                />
-              </div>
+              <TextInput
+                type="email"
+                label="Email"
+                placeholder="email@vasas.com"
+                value={data.email}
+                onChange={(event) =>
+                  setData((prev) => ({
+                    ...prev,
+                    email: event.target.value,
+                  }))
+                }
+              />
+
+              <TextInput
+                type="text"
+                label="Referral ID"
+                placeholder=""
+                value={data.referralId}
+                onChange={(event) =>
+                  setData((prev) => ({
+                    ...prev,
+                    referralId: event.target.value,
+                  }))
+                }
+              />
 
               <div className="w-full">
                 <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
