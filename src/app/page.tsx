@@ -6,10 +6,10 @@ import { Eye, EyeOff } from "lucide-react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { useLogin } from "@/store/auth/auth";
+import { useLogin } from "@/lib/api/hooks/auth";
 import toast from "react-hot-toast";
 import { FirebaseError } from "firebase/app";
-import { useUsers } from "@/store/user/user";
+import { useUsers } from "@/lib/api/hooks/user";
 import { useRouter } from "next/navigation";
 
 export default function UsersPage() {

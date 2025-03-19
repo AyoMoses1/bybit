@@ -2,8 +2,8 @@
 
 import { Button } from "@/components/ui/button";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
-import { useGetUserById, useUpdateUser } from "@/store/user/user";
-import { updateCustomerProfileImage } from "@/store/user/userAction";
+import { useGetUserById, useUpdateUser } from "@/lib/api/hooks/user";
+import { updateCustomerProfileImage } from "@/lib/api/apiHandlers/userService";
 import { Camera } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";

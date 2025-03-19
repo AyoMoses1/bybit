@@ -24,7 +24,7 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
 }
 
-export function C<TData, TValue>({
+export function CustomTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
@@ -36,7 +36,7 @@ export function C<TData, TValue>({
   });
 
   return (
-    <div className="font-nunito rounded-[20px] border-x border-x-border bg-card">
+    <div className="rounded-[20px] border-x border-x-border bg-card font-nunito">
       <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (

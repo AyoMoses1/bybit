@@ -1,8 +1,8 @@
-import { C } from "@/components/ui/data-table";
+import { CustomTable } from "@/components/ui/data-table";
 import React, { useMemo, useState } from "react";
 import { Search, TrendingDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useGetUserById, useUserWalletHistory } from "@/store/user/user";
+import { useGetUserById, useUserWalletHistory } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
 
 type User = {
@@ -122,7 +122,7 @@ const DriverWallet = ({ id }: { id: string | string[] }) => {
         ) : (
           <>
             {" "}
-            <C
+            <CustomTable
               columns={columns}
               data={Array.isArray(filteredHistory) ? filteredHistory : []}
             />

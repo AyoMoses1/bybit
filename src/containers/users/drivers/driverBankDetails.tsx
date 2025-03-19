@@ -2,7 +2,7 @@
 
 import React, { FC, useState } from "react";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
-import { useGetUserById } from "@/store/user/user";
+import { useGetUserById } from "@/lib/api/hooks/user";
 
 type User = {
   bankName: string;

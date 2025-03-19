@@ -6,7 +6,7 @@ import { ChevronDown, User } from "lucide-react";
 import home from "../../../assets/svgs/icon.svg";
 import Link from "next/link";
 import language from "../../../assets/svgs/system-uicons_translate.svg";
-import { useGetUserById } from "@/store/user/user";
+import { useGetUserById } from "@/lib/api/hooks/user";
 import { Locale, useTranslations } from "next-intl";
 
 // Type definitions
