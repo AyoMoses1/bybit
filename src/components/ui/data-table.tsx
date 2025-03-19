@@ -122,7 +122,6 @@ export function CustomTable<TData, TValue>({
                 ))}
               </select>
 
-              {/* Custom Arrow - Ensure it's not blocking clicks */}
               <div className="pointer-events-none absolute right-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

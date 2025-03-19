@@ -119,6 +119,8 @@ const CustomerInfo = () => {
     }
   };
 
+  console.log(user);
+
   useEffect(() => {
     setData({
       firstName: user?.firstName ?? "",
