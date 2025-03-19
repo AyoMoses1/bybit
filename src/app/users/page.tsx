@@ -77,7 +77,9 @@ const Users = () => {
                 ? "/add-super-admin"
                 : selectedTab === "Admins"
                   ? "/add-fleet-admin"
-                  : ""
+                  : selectedTab === "Customers"
+                    ? "/add-customers"
+                    : ""
             }
           >
             <Button className="w-[194px] py-2" size={"default"}>
