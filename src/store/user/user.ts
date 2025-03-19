@@ -67,10 +67,10 @@ export const useCreateUser = () => {
   });
 };
 
-export const useUsersRide = (id: string) => {
+export const useUsersRide = (id: string, type: string) => {
   return useQuery({
-    queryKey: ["usersRide", id],
-    queryFn: () => fetchUserRides(id),
+    queryKey: ["usersRide", id, type],
+    queryFn: () => fetchUserRides(id, type),
     staleTime: Infinity,
     retry: 2,
   });

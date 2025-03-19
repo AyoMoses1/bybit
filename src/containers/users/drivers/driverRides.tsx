@@ -5,9 +5,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { useUsersRide } from "@/store/user/user";
 import { formatDate } from "@/utils/formatDate";
 
-const CustomersRides = ({ id }: { id: string | string[] }) => {
+const DriverRides = ({ id }: { id: string | string[] }) => {
   const userId = Array.isArray(id) ? id[0] : id;
-  const { data: usersRide, isLoading } = useUsersRide(userId ?? "", "customer");
+  const { data: usersRide, isLoading } = useUsersRide(userId ?? "", "driver");
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredRides = useMemo(() => {
@@ -106,4 +106,4 @@ const CustomersRides = ({ id }: { id: string | string[] }) => {
   );
 };
 
-export default CustomersRides;
+export default DriverRides;

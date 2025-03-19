@@ -9,7 +9,7 @@ type User = {
   walletBalance: string;
 };
 
-const CustomerWallet = ({ id }: { id: string | string[] }) => {
+const DriverWallet = ({ id }: { id: string | string[] }) => {
   const userId = Array.isArray(id) ? id[0] : id;
   const { data: user } = useGetUserById(userId ?? "") as {
     data: User | undefined;
@@ -133,4 +133,4 @@ const CustomerWallet = ({ id }: { id: string | string[] }) => {
   );
 };
 
-export default CustomerWallet;
+export default DriverWallet;

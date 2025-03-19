@@ -1,24 +1,28 @@
 "use client";
 import CustomersBankDetails from "@/containers/users/customers/customerBankDetails";
-import CustomerInfo from "@/containers/users/customers/customerInfo";
-import CustomersRides from "@/containers/users/customers/customerRides";
 import CustomerWallet from "@/containers/users/customers/customerWallet";
+import DriverBankDetails from "@/containers/users/drivers/driverBankDetails";
+import DriverCar from "@/containers/users/drivers/driverCar";
+import DriverInfo from "@/containers/users/drivers/driverInfo";
+import DriverRides from "@/containers/users/drivers/driverRides";
+import DriverWallet from "@/containers/users/drivers/driverWallet";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { useParams } from "next/navigation";
 import React, { useState } from "react";
 
-const Customer = () => {
+const Driver = () => {
   const { id } = useParams();
   const tabsData = [
-    { key: 1, title: "Info", info: "Customer Information" },
-    { key: 2, title: "Rides", info: "Customer’s Rides" },
-    { key: 3, title: "Wallet", info: "" },
-    { key: 4, title: "Bank Details", info: "" },
+    { key: 1, title: "Info", info: "Driver Information" },
+    { key: 2, title: "Rides", info: "Driver’s Rides" },
+    { key: 3, title: "Cars", info: "" },
+    { key: 4, title: "Wallet", info: "" },
+    { key: 5, title: "Bank Details", info: "" },
   ];
   const [selectedTab, setSelectedTab] = useState({
     key: 1,
     title: "Info",
-    info: "Customer Information",
+    info: "Driver Information",
   });
 
   return (
@@ -46,22 +50,29 @@ const Customer = () => {
       <div className="relative">
         {selectedTab?.title === "Info" ? (
           <div>
-            <CustomerInfo />
+            <DriverInfo />
           </div>
         ) : selectedTab?.title === "Rides" ? (
           <div>
-            <CustomersRides id={id ?? ""} />
+            <DriverRides id={id ?? ""} />
           </div>
         ) : selectedTab?.title === "Wallet" ? (
           <div>
             {" "}
             <div>
-              <CustomerWallet id={id ?? ""} />
+              <DriverWallet id={id ?? ""} />
+            </div>
+          </div>
+        ) : selectedTab?.title === "Cars" ? (
+          <div>
+            {" "}
+            <div>
+              <DriverCar id={id ?? ""} />
             </div>
           </div>
         ) : selectedTab?.title === "Bank Details" ? (
           <div>
-            <CustomersBankDetails />
+            <DriverBankDetails id={id ?? ""} />
           </div>
         ) : null}
       </div>
@@ -69,4 +80,4 @@ const Customer = () => {
   );
 };
 
-export default ProtectedRoute(Customer);
+export default ProtectedRoute(Driver);
