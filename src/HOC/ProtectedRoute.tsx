@@ -1,9 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 
-const ProtectedRoute = (WrappedComponent: React.FC) => {
+const ProtectedRoute = <P extends object>(WrappedComponent: FC<P>) => {
   return (props: any) => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);

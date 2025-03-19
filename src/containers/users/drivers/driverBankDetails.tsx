@@ -14,11 +14,12 @@ type DriverBankDetailsProps = {
   id: string | string[];
 };
 
-const CustomerBankDetails: FC<DriverBankDetailsProps> = ({ id }) => {
+const DriverBankDetails: FC<DriverBankDetailsProps> = ({ id }) => {
   const userId = Array.isArray(id) ? id[0] : id;
   const { data: user } = useGetUserById(userId ?? "") as {
     data: User | undefined;
   };
+
   return (
     <div className="py-6">
       <div className="rounded-lg bg-white px-10 pb-6 shadow-md">
@@ -74,4 +75,4 @@ const CustomerBankDetails: FC<DriverBankDetailsProps> = ({ id }) => {
   );
 };
 
-export default ProtectedRoute(CustomerBankDetails);
+export default ProtectedRoute(DriverBankDetails);

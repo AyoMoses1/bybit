@@ -194,13 +194,14 @@ export const updateCustomerProfileImage = async (
   }
 };
 
-export const fetchUserRides = (userId: string) => {
-  return new Promise((resolve, reject) => {
+export const fetchUserRides = (userId: string, type: string) => {
+  return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const userRef = query(
         ref(db, "bookings"),
         orderByChild("customer"),
+
         equalTo(userId),
       );
 
@@ -210,7 +211,7 @@ export const fetchUserRides = (userId: string) => {
         userRef,
         (snapshot) => {
           if (!snapshot.exists()) {
-            resolve(null);
+            resolve([]);
             return;
           }
 
@@ -225,7 +226,7 @@ export const fetchUserRides = (userId: string) => {
             ...value,
           }));
 
-          resolve(rides);
+          resolve(rides.reverse());
         },
         (error) => {
           console.error("Firebase error:", error);
@@ -242,26 +243,41 @@ export const fetchUserRides = (userId: string) => {
 };
 
 export const fetchUserWalletHistory = (id: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
-      const walletHistoryRef = ref(db, "walletHistory/" + id);
+      const walletHistoryRef = ref(db, `walletHistory/${id}`);
 
-      const unsubscribe = onValue(walletHistoryRef, (snapshot) => {
-        const data = snapshot.val();
-        if (data) {
-          const arr = Object.keys(data).map((i) => {
-            data[i].id = i;
-            return data[i];
-          });
+      const unsubscribe = onValue(
+        walletHistoryRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            const historyArray = Object.entries(data)
+              .map(([key, value]) => ({
+                id: key,
+                ...(value as any),
+              }))
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt || 0).getTime() -
+                  new Date(a.createdAt || 0).getTime(),
+              );
 
-          resolve(arr.reverse());
-        } else {
-          resolve([]);
-        }
-      });
+            resolve(historyArray.reverse());
+          } else {
+            resolve([]);
+          }
+        },
+        (error) => {
+          console.error("Firebase error:", error);
+          reject(error);
+        },
+      );
+
       return () => unsubscribe();
     } catch (error) {
+      console.error("Fetch Wallet History Error:", error);
       reject(error);
     }
   });

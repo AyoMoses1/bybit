@@ -94,7 +94,7 @@ const Drivers = ({ search }: { search?: string }) => {
             }}
             className="flex w-fit items-center rounded-md border-[1px] border-[#D5D5D5] bg-[#FAFBFD] p-2"
           >
-            <Link href="/update-fleet-admin">
+            <Link href={`/driver/${row.original.id}`}>
               <div className="cursor-pointer pr-2">
                 <ArrowRight className="size-4 text-gray-600" />
               </div>
