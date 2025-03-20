@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ArrowRight, X, Banknote, Car, SearchIcon } from "lucide-react";
+import { ArrowRight, X, SearchIcon, Download } from "lucide-react";
 import { CustomTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { formatDate } from "@/utils/formatDate";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useBookings } from "@/lib/api/hooks/useBooking";
 
 interface BookingHistoryTableProps {
-  data?: any[];
   search?: string;
   onSearchChange?: (search: string) => void;
   onCancelBooking?: (booking: any) => void;
@@ -31,9 +29,47 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
     usertype: string;
   } | null>(null);
 
-  const { data: bookings } = useBookings(
-    userInfo?.usertype || "",
+  // Load user info on component mount
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      try {
+        // Try finding user info in both possible storage keys
+        let user = null;
+        const storedUser = localStorage.getItem("user");
+        const storedUserInfo = localStorage.getItem("userInfo");
+
+        if (storedUser) {
+          user = JSON.parse(storedUser);
+          console.log("Found user info in 'user':", user);
+        } else if (storedUserInfo) {
+          user = JSON.parse(storedUserInfo);
+          console.log("Found user info in 'userInfo':", user);
+        }
+
+        if (user) {
+          setUserInfo({
+            id: user.id,
+            usertype: user.usertype || "customer",
+          });
+        } else {
+          console.warn(
+            "No user found in localStorage, using default test user",
+          );
+          // Set a default test user if needed
+          setUserInfo({
+            id: "testUserId123",
+            usertype: "customer",
+          });
+        }
+      } catch (e) {
+        console.error("Error getting user from localStorage:", e);
+      }
+    }
+  }, []);
+
+  const { data: bookings, isLoading: bookingsLoading } = useBookings(
     userInfo?.id || "",
+    userInfo?.usertype || "",
     searchQuery,
   );
 
@@ -51,11 +87,49 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
     onSearchChange?.("");
   };
 
-  // Format currency
-  //   const formatCurrency = (amount: number | string): string => {
-  //     if (!amount) return "N/A";
-  //     return `$${Number(amount).toFixed(2)}`;
-  //   };
+  // Export to CSV function
+  const exportToCSV = () => {
+    if (!bookings || bookings.length === 0) return;
+
+    // Create CSV content
+    const headers = [
+      "Reference",
+      "Booking Date",
+      "Driver Name",
+      "Vehicle Type",
+      "Status",
+      "Trip Cost",
+    ];
+
+    const csvRows = [
+      headers.join(","),
+      ...bookings.map((booking) => {
+        return [
+          booking.id || "",
+          formatDate(booking.bookingDate) || "",
+          booking.driver_name || "",
+          booking.carType || "",
+          booking.status || "",
+          booking.trip_cost ? `CFA ${booking.trip_cost}` : "",
+        ]
+          .map((value) => `"${value}"`)
+          .join(",");
+      }),
+    ];
+
+    const csvContent = csvRows.join("\n");
+
+    // Create and download CSV file
+    const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "booking_history.csv");
+    link.style.visibility = "hidden";
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   const columns: ColumnDef<any>[] = [
     {
@@ -102,12 +176,13 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
             textColor = "text-indigo-700";
             break;
           case "CANCELLED":
-            bgColor = "bg-red-200";
-            textColor = "text-red-400";
+            bgColor = "bg-red-100";
+            textColor = "text-red-500";
             break;
           case "COMPLETE":
-            bgColor = "bg-green-500";
-            textColor = "text-white";
+          case "COMPLETED":
+            bgColor = "bg-green-100";
+            textColor = "text-green-500";
             break;
           case "ACCEPTED":
             bgColor = "bg-blue-100";
@@ -118,20 +193,20 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
             textColor = "text-yellow-800";
             break;
           case "REACHED":
-            bgColor = "bg-green-500";
-            textColor = "text-white";
+            bgColor = "bg-green-100";
+            textColor = "text-green-500";
             break;
           case "PICKEDUP":
-            bgColor = "bg-blue-500";
-            textColor = "text-white";
+            bgColor = "bg-blue-100";
+            textColor = "text-blue-500";
             break;
           case "ARRIVED":
-            bgColor = "bg-amber-700";
-            textColor = "text-white";
+            bgColor = "bg-amber-100";
+            textColor = "text-amber-600";
             break;
           case "PAID":
             bgColor = "bg-green-100";
-            textColor = "text-green-800";
+            textColor = "text-green-500";
             break;
         }
 
@@ -168,6 +243,7 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
                 className="flex items-center justify-center border-r border-gray-200 p-2 hover:bg-gray-50"
                 onClick={(e) => {
                   e.stopPropagation();
+                  console.log("Cancel clicked for booking:", booking.id);
                   if (onCancelBooking) {
                     onCancelBooking(booking);
                   }
@@ -179,6 +255,7 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
                 className="flex items-center justify-center p-2 hover:bg-gray-50"
                 onClick={(e) => {
                   e.stopPropagation();
+                  console.log("View details clicked for booking:", booking.id);
                   if (onViewDetails) {
                     onViewDetails(booking);
                   }
@@ -195,29 +272,51 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
 
   return (
     <div>
-      <div className="flex items-center justify-end pb-4">
-        <div className="relative w-64">
+      <h2 className="mb-6 pl-4 text-2xl font-semibold text-gray-800">
+        Booking History
+      </h2>
+
+      <div className="mb-6 flex items-center justify-end">
+        <div className="relative flex items-center overflow-hidden rounded-full border border-gray-200 bg-white">
           <Input
-            placeholder="Search bookings..."
+            placeholder="Search in table..."
             value={searchQuery}
             onChange={handleSearchChange}
-            className="rounded-full pl-9 pr-8"
+            className="border-none pl-10 pr-12 shadow-none focus:ring-0"
           />
-          <div className="pointer-events-none absolute inset-y-0 left-3 flex items-center">
-            <SearchIcon className="h-4 w-4 text-gray-400" />
+
+          <div className="pointer-events-none absolute left-3">
+            <SearchIcon className="h-5 w-5 text-gray-400" />
           </div>
+
           {searchQuery && (
             <button
-              className="absolute inset-y-0 right-3 flex items-center"
+              className="absolute right-10 flex items-center"
               onClick={handleClearSearch}
             >
               <X size={16} className="text-gray-400 hover:text-gray-600" />
             </button>
           )}
         </div>
+        <div className="flex h-full items-center justify-center border-l border-gray-200 px-3">
+          <button
+            onClick={exportToCSV}
+            className="text-gray-500"
+            disabled={!bookings || bookings.length === 0}
+            title="Export to CSV"
+          >
+            <Download size={26} />
+          </button>
+        </div>
       </div>
 
-      <CustomTable columns={columns} data={bookings || []} />
+      {isLoading || bookingsLoading ? (
+        <div className="flex h-40 items-center justify-center rounded-md bg-white shadow">
+          <p className="text-gray-500">Loading bookings...</p>
+        </div>
+      ) : (
+        <CustomTable columns={columns} data={bookings || []} />
+      )}
     </div>
   );
 };
