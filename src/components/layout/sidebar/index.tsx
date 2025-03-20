@@ -80,6 +80,13 @@ function AppSidebar() {
     ) {
       return true;
     }
+
+    if (
+      url === "/cars" &&
+      ["/cars", "/add-car"].some((route) => pathname.startsWith(route))
+    ) {
+      return true;
+    }
     return pathname === url;
   };
 
