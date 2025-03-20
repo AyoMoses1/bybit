@@ -20,34 +20,29 @@ const BookingHistoryPage: React.FC = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const info = localStorage.getItem("userInfo");
-      if (info) {
-        setUserInfo(JSON.parse(info));
+      try {
+        const info = localStorage.getItem("userInfo");
+        if (info) {
+          setUserInfo(JSON.parse(info));
+          console.log("User info loaded from localStorage:", JSON.parse(info));
+        } else {
+          console.warn("No userInfo found in localStorage");
+          // Check if "user" is available instead
+          const user = localStorage.getItem("user");
+          if (user) {
+            const parsedUser = JSON.parse(user);
+            console.log("Found user in localStorage instead:", parsedUser);
+            setUserInfo({
+              id: parsedUser.id,
+              usertype: parsedUser.usertype || "customer",
+            });
+          }
+        }
+      } catch (error) {
+        console.error("Error loading user info from localStorage:", error);
       }
     }
   }, []);
-
-  // Fetch bookings with the user info
-  //   const {
-  //     data: bookings,
-  //     isLoading,
-  //     error,
-  //     refetch,
-  //   } = useUsersRide(userInfo?.id || "", userInfo?.usertype || "");
-
-  // Debug logs
-  //   useEffect(() => {
-  //     console.log("Current user info:", userInfo);
-  //     console.log("Bookings loading state:", isLoading);
-
-  //     if (error) {
-  //       console.error("Error fetching bookings:", error);
-  //     }
-
-  //     if (bookings) {
-  //       console.log("Fetched bookings:", bookings);
-  //     }
-  //   }, [userInfo, isLoading, bookings, error]);
 
   // Handle search change
   const handleSearchChange = (newSearch: string) => {
@@ -92,14 +87,14 @@ const BookingHistoryPage: React.FC = () => {
     }
   };
 
-  // Handle bid selection
-  //   const handleSelectBid = (booking: any) => {
-  //     router.push(`/bookings/${booking.id}/bids`);
-  //   };
-
-  //   Handle view details
+  // In your BookingHistoryPage component
   const handleViewDetails = (booking: any) => {
-    router.push(`/bookings/${booking.id}`);
+    if (booking && booking.id) {
+      console.log("View details for booking ID:", booking.id);
+
+      // Use the exact path that matches your folder structure
+      router.push(`/booking-history/${booking.id}`);
+    }
   };
 
   return (
@@ -109,7 +104,6 @@ const BookingHistoryPage: React.FC = () => {
           search={search}
           onSearchChange={handleSearchChange}
           onCancelBooking={handleCancelBooking}
-          // onSelectBid={handleSelectBid}
           onViewDetails={handleViewDetails}
           isLoading={false}
         />
