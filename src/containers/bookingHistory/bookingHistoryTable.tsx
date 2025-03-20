@@ -31,28 +31,21 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
     usertype: string;
   } | null>(null);
 
-  //   const { data } = useBookings("userId", "userType", searchQuery);
   const { data: bookings } = useBookings(
     userInfo?.usertype || "",
     userInfo?.id || "",
+    searchQuery,
   );
-  // For debugging
-  //   useEffect(() => {
-  //     console.log("Data received in table:", data);
-  //   }, [data]);
 
-  // Update local search state if prop changes
   useEffect(() => {
     setSearchQuery(search);
   }, [search]);
 
-  // Handle search input
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
     onSearchChange?.(e.target.value);
   };
 
-  // Clear search
   const handleClearSearch = () => {
     setSearchQuery("");
     onSearchChange?.("");
@@ -80,27 +73,7 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
     {
       accessorKey: "driver_name",
       header: "Driver Name",
-      cell: ({ row }) => {
-        const driverName = row.original.driver_name;
-        return driverName ? (
-          <div className="flex items-center gap-2">
-            {row.original.driver_image ? (
-              <img
-                src={row.original.driver_image}
-                alt={driverName}
-                className="h-6 w-6 rounded-full object-cover"
-              />
-            ) : (
-              <div className="flex h-6 w-6 items-center justify-center rounded-full bg-gray-200 text-xs">
-                {driverName.charAt(0)}
-              </div>
-            )}
-            <span>{driverName}</span>
-          </div>
-        ) : (
-          <span className="italic text-gray-500">Not assigned</span>
-        );
-      },
+      cell: ({ row }) => row.original.driver_name || "N/A",
     },
     {
       accessorKey: "carType",
@@ -109,7 +82,7 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
     },
     {
       accessorKey: "status",
-      header: "Status",
+      header: "Booking Status",
       cell: ({ row }) => {
         // Make sure status is a string, not an object
         const status = row.getValue("status");
@@ -176,77 +149,44 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
       header: "Trip Cost",
       cell: ({ row }) => (
         <div className="flex items-center gap-2">
-          {/* <Banknote size={16} className="text-gray-500" /> */}
-          <span className="font-medium">{row.original.trip_cost}</span>
+          <span className="font-medium">
+            {row.original.trip_cost ? `CFA ${row.original.trip_cost}` : "N/A"}
+          </span>
         </div>
       ),
     },
     {
       id: "actions",
-      header: "Actions",
+      header: "Action",
       cell: ({ row }) => {
         const booking = row.original;
-        const status = booking.status?.toUpperCase() || "";
-
-        const hasBids =
-          status === "NEW" &&
-          booking.driverOffers &&
-          Object.keys(booking.driverOffers || {}).length > 0;
-        const canCancel = status === "NEW" || status === "ACCEPTED";
 
         return (
-          <div className="flex space-x-2">
-            {/* Bid button */}
-            {hasBids && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="p-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (onSelectBid) {
-                    onSelectBid(booking);
-                  }
-                }}
-                title="Select Bid"
-              >
-                <Banknote size={16} />
-              </Button>
-            )}
-
-            {/* Cancel button */}
-            {canCancel && (
-              <Button
-                variant="outline"
-                size="sm"
-                className="p-2"
+          <div className="flex w-full">
+            <div className="grid w-full grid-cols-2 overflow-hidden rounded-md border border-gray-300">
+              <button
+                className="flex items-center justify-center border-r border-gray-200 p-2 hover:bg-gray-50"
                 onClick={(e) => {
                   e.stopPropagation();
                   if (onCancelBooking) {
                     onCancelBooking(booking);
                   }
                 }}
-                title="Cancel Booking"
               >
-                <X size={16} />
-              </Button>
-            )}
-
-            {/* View details button */}
-            <Button
-              variant="outline"
-              size="sm"
-              className="p-2"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onViewDetails) {
-                  onViewDetails(booking);
-                }
-              }}
-              title="View Details"
-            >
-              <ArrowRight size={16} />
-            </Button>
+                <X size={20} className="text-red-500" />
+              </button>
+              <button
+                className="flex items-center justify-center p-2 hover:bg-gray-50"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onViewDetails) {
+                    onViewDetails(booking);
+                  }
+                }}
+              >
+                <ArrowRight size={20} className="text-gray-500" />
+              </button>
+            </div>
           </div>
         );
       },
