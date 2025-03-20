@@ -31,7 +31,7 @@ export const useUser = (type: string, search?: string) => {
 };
 
 export const useGetUserById = (id: string) => {
-  return useQuery({
+  return useQuery<any>({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchUserById(id),
     staleTime: Infinity,

@@ -157,15 +157,6 @@ export const createUser = (updatedData: Record<string, any>) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, `users`);
-
-      set(userRef, updatedData)
-        .then(() => {
-          resolve();
-        })
-        .catch((error) => {
-          console.error("Error creating user:", error);
-          reject(error);
-        });
     } catch (error) {
       console.error("Create User Error:", error);
       reject(error);
