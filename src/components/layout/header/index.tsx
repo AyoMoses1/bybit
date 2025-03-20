@@ -26,6 +26,9 @@ const ROUTES = {
   addFleetAdmin: "/add-fleet-admin",
   updateFleetAdmin: "/update-fleet-admin",
   driver: "/driver",
+  cars: "/cars",
+  addCar: "/add-car",
+  updateCar: "/cars/",
   settings: "/settings",
   helpCenter: "/help-center",
 } as const;
@@ -39,6 +42,9 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.updateFleetAdmin]: "Update admin",
   [ROUTES.customer]: "Customer",
   [ROUTES.driver]: "Driver",
+  [ROUTES.cars]: "Cars",
+  [ROUTES.addCar]: "Add a car",
+  [ROUTES.updateCar]: "Update Car",
   [ROUTES.settings]: "Settings",
   [ROUTES.helpCenter]: "Help Center",
 };
@@ -100,6 +106,17 @@ const Header = () => {
             <div className="flex gap-3">
               <Link href={ROUTES.users} className="text-[#8B8D97]">
                 Users
+              </Link>
+              <p className="mx-1">/</p>
+
+              <p className="cursor-default">{getRouteTitle(pathname)}</p>
+            </div>
+          ) : pathname === ROUTES.cars ||
+            pathname.includes(ROUTES.updateCar) ||
+            pathname.includes(ROUTES.addCar) ? (
+            <div className="flex gap-3">
+              <Link href={ROUTES.cars} className="text-[#8B8D97]">
+                Cars
               </Link>
               <p className="mx-1">/</p>
 
