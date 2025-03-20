@@ -44,7 +44,7 @@ interface BookingType {
   driverOffers?: Record<string, any>;
 }
 
-export default function BookingDetailPage() {
+const BookingDetailPage = () => {
   const params = useParams();
   const router = useRouter();
   const { toast } = useToast();
@@ -157,6 +157,12 @@ export default function BookingDetailPage() {
           <p className="text-red-500">
             Error loading booking details. Please try again.
           </p>
+          <button
+            onClick={handleGoBack}
+            className="rounded-md bg-blue-500 px-4 py-2 text-white hover:bg-blue-600"
+          >
+            Back to Booking History
+          </button>
         </div>
       </div>
     );
@@ -165,7 +171,7 @@ export default function BookingDetailPage() {
   const booking: BookingType = data;
 
   return (
-    <div className="min-h-screen w-full bg-gray-50 p-4">
+    <div className="min-h-screen bg-gray-50 p-4">
       <h1 className="mb-8 text-2xl font-bold text-gray-800">Booking Detail</h1>
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-3">
@@ -276,8 +282,9 @@ export default function BookingDetailPage() {
 
             <div className="grid grid-cols-2">
               {/* Left column */}
-              <div className="mr-0 border-r border-gray-200 pr-5">
-                <div className="border-b border-gray-200 py-4">
+              <div>
+                {/* Trip Cost */}
+                <div className="mr-4 border-b border-gray-200 py-4 pr-4">
                   <div className="flex justify-between">
                     <p className="text-gray-500">Trip Cost</p>
                     <p>
@@ -289,7 +296,7 @@ export default function BookingDetailPage() {
                 </div>
 
                 {/* Discount Amount */}
-                <div className="border-b border-gray-200 py-4">
+                <div className="mr-4 border-b border-gray-200 py-4 pr-4">
                   <div className="flex justify-between">
                     <p className="text-gray-500">Discount Amount</p>
                     <p>
@@ -299,7 +306,7 @@ export default function BookingDetailPage() {
                 </div>
 
                 {/* Driver Share */}
-                <div className="py-4">
+                <div className="mr-4 py-4 pr-4">
                   <div className="flex justify-between">
                     <p className="text-gray-500">Driver Share</p>
                     <p>
@@ -347,7 +354,9 @@ export default function BookingDetailPage() {
           </div>
         </div>
 
+        {/* Right Side (col span 1) */}
         <div className="md:col-span-1">
+          {/* Driver Information Card */}
           <div className="mb-6 rounded-xl bg-white p-6 shadow-sm">
             <h2 className="mb-6 text-xl font-semibold text-gray-800">
               Driver Information
@@ -453,3 +462,5 @@ export default function BookingDetailPage() {
     </div>
   );
 }
+
+export default BookingDetailPage
