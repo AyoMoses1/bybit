@@ -8,9 +8,13 @@ import {
   orderByChild,
   equalTo,
   query,
+  push,
+  remove,
 } from "firebase/database";
 import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
 import firebase from "@/lib/firebase";
+import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
+import toast from "react-hot-toast";
 
 export const fetchUsers = () => {
   return new Promise((resolve, reject) => {
@@ -73,7 +77,13 @@ export const fetchUser = (userType: string, search?: string) => {
                 (user) =>
                   user.usertype === userType &&
                   (!search ||
-                    user.name?.toLowerCase().includes(search.toLowerCase()) ||
+                    user.firstName
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase()) ||
+                    user.mobile?.toLowerCase().includes(search.toLowerCase()) ||
+                    user.lastName
+                      ?.toLowerCase()
+                      .includes(search.toLowerCase()) ||
                     user.email?.toLowerCase().includes(search.toLowerCase())),
               )
               .sort(
@@ -89,14 +99,12 @@ export const fetchUser = (userType: string, search?: string) => {
         },
         (error) => {
           console.error("Firebase error:", error);
-          reject(error);
         },
       );
 
       return () => unsubscribe();
     } catch (error) {
       console.error("Fetch User Error:", error);
-      reject(error);
     }
   });
 };
@@ -119,14 +127,12 @@ export const fetchUserById = (id: string) => {
         },
         (error) => {
           console.error("Firebase error:", error);
-          reject(error);
         },
       );
 
       return () => unsubscribe();
     } catch (error) {
       console.error("Fetch User Error:", error);
-      reject(error);
     }
   });
 };
@@ -152,13 +158,54 @@ export const updateUser = (id: string, updatedData: Record<string, any>) => {
   });
 };
 
-export const createUser = (updatedData: Record<string, any>) => {
+export const createUser = (updatedData: any) => {
+  return new Promise<void>((resolve, reject) => {
+    try {
+      const auth = getAuth();
+      const db = getDatabase();
+
+      createUserWithEmailAndPassword(auth, updatedData.email, "000000")
+        .then((userCredential) => {
+          const uid = userCredential.user.uid;
+
+          if (!uid) {
+            reject("Failed to retrieve UID from Firebase Auth");
+          }
+
+          const userRef = ref(db, `users/${uid}`);
+          return update(userRef, { ...updatedData, uid });
+        })
+        .then(() => {
+          resolve();
+        })
+        .catch((error: any) => {
+          if (error?.code === "auth/email-already-in-use") {
+            toast.error("Email already in use");
+          }
+        });
+    } catch (error) {
+      reject(error);
+    }
+  });
+};
+
+export const deleteUser = (id: string) => {
   return new Promise<void>((resolve, reject) => {
     try {
       const db = getDatabase();
-      const userRef = ref(db, `users`);
+      const userRef = ref(db, `users/${id}`);
+
+      remove(userRef)
+        .then(() => {
+          console.log("User deleted successfully!");
+          resolve();
+        })
+        .catch((error) => {
+          console.error("Error deleting user:", error);
+          reject(error);
+        });
     } catch (error) {
-      console.error("Create User Error:", error);
+      console.error("Delete User Error:", error);
       reject(error);
     }
   });

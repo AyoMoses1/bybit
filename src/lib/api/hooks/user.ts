@@ -1,6 +1,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   createUser,
+  deleteUser,
   fetchUser,
   fetchUserById,
   fetchUserRides,
@@ -8,6 +9,7 @@ import {
   fetchUserWalletHistory,
   updateUser,
 } from "../apiHandlers/userService";
+import toast from "react-hot-toast";
 
 const USER_STATE_KEY = "user";
 
@@ -63,6 +65,24 @@ export const useCreateUser = () => {
     },
     onError: (error) => {
       console.error("User creation failed:", error);
+    },
+  });
+};
+
+export const useDeleteUser = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (id: string) => deleteUser(id),
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
+      toast.success("User deleted successfully!");
+    },
+
+    onError: (error) => {
+      console.error("User deletion failed:", error);
+      toast.error("Failed to delete user. Please try again.");
     },
   });
 };

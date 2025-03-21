@@ -11,9 +11,9 @@ import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { z } from "zod";
 
-const AddFleetAdmin = () => {
+const AddDrivers = () => {
   const mutation = useCreateUser();
-  const [selectedValue] = useState("");
+  const [selectedValue, setSelectedValue] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 
@@ -22,6 +22,7 @@ const AddFleetAdmin = () => {
     lastName: z.string().min(2, "Name must be at least 3 characters"),
     email: z.string().email("Invalid email format"),
     mobile: z.string().min(5, "Must be a valid phone number"),
+    idNumber: z.string().min(8, "Must be at least 8 characters"),
     approvalStatus: z.string().nonempty("Approval status is required"),
   });
   type FormData = z.infer<typeof formSchema>;
@@ -43,7 +44,8 @@ const AddFleetAdmin = () => {
       email: data.email,
       mobile: data.mobile,
       approved: data.approvalStatus === "approved" ? true : false,
-      usertype: "fleetadmin",
+      verifyId: data.idNumber,
+      usertype: "driver",
       createdAt: new Date().getTime(),
     };
     mutation.mutate(
@@ -56,7 +58,7 @@ const AddFleetAdmin = () => {
         },
         onSuccess: () => {
           setLoading(false);
-          toast.success("Admin created successfully");
+          toast.success("Driver created successfully");
           router.push("/users");
         },
       },
@@ -65,7 +67,7 @@ const AddFleetAdmin = () => {
 
   return (
     <div className="p-6">
-      <p className="pb-6 text-2xl font-semibold text-[#202224]">Add Admin</p>
+      <p className="pb-6 text-2xl font-semibold text-[#202224]">Add Driver</p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="">
         <div className="rounded-lg bg-white px-10 py-12 shadow-md">
@@ -127,7 +129,19 @@ const AddFleetAdmin = () => {
               </div>
 
               <div className="mt-4 flex w-full gap-16">
-                <div className="zxl:w-[50%] md:w-[43%] lg:w-[45%] xl:w-[47%]">
+                <div className="w-1/2">
+                  <TextInput
+                    type="text"
+                    label="  Id / Passport Number"
+                    placeholder="N/A"
+                    {...register("idNumber")}
+                  />
+                  {errors.idNumber && (
+                    <p className="text-red-500">{errors.idNumber.message}</p>
+                  )}
+                </div>
+
+                <div className="w-1/2">
                   <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
                     Approval Status
                   </label>
@@ -170,7 +184,7 @@ const AddFleetAdmin = () => {
               className="w-[287px] py-[10px] disabled:opacity-70"
               size={"default"}
             >
-              {loading ? "Loading..." : "  Add Admin"}
+              {loading ? "Loading..." : "  Add Driver"}
             </Button>
           </div>
         </div>
@@ -179,4 +193,4 @@ const AddFleetAdmin = () => {
   );
 };
 
-export default ProtectedRoute(AddFleetAdmin);
+export default ProtectedRoute(AddDrivers);

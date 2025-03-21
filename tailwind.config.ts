@@ -60,6 +60,7 @@ export default {
         nunito: ['"Nunito Sans"', "sans-serif"],
         inter: ['"Inter", "sans-serif"'],
         roboto: ['"Roboto", "sans-serif"'],
+        source: ['"Source Sans 3", sans-serif'],
       },
 
       borderRadius: {

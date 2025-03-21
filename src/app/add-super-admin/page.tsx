@@ -4,11 +4,17 @@ import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
+import { useCreateUser } from "@/lib/api/hooks/user";
+import toast from "react-hot-toast";
 
 const AddAdmin = () => {
+  const mutation = useCreateUser();
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const formSchema = z.object({
     firstName: z.string().min(2, "Name must be at least 3 characters"),
     lastName: z.string().min(2, "Name must be at least 3 characters"),
@@ -21,12 +27,36 @@ const AddAdmin = () => {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isValid },
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
   });
 
-  const onSubmit = (data: FormData) => {};
+  const onSubmit = (data: FormData) => {
+    setLoading(true);
+    const updatedData = {
+      firstName: data.firstName,
+      lastName: data.lastName,
+      email: data.email,
+      usertype: "admin",
+      createdAt: new Date().getTime(),
+    };
+    mutation.mutate(
+      {
+        updatedData,
+      },
+      {
+        onError: () => {
+          setLoading(false);
+        },
+        onSuccess: () => {
+          setLoading(false);
+          toast.success("Driver created successfully");
+          router.push("/users");
+        },
+      },
+    );
+  };
 
   return (
     <div className="p-6">
@@ -103,8 +133,13 @@ const AddAdmin = () => {
 
           {/* Update Button */}
           <div className="mt-12 flex justify-center">
-            <Button className="w-[287px] py-[10px]" size={"default"}>
-              Add Admin
+            <Button
+              disabled={!isValid || !errors || loading}
+              type="submit"
+              className="w-[287px] py-[10px] disabled:opacity-70"
+              size={"default"}
+            >
+              {loading ? "Loading..." : "  Add Admin"}
             </Button>
           </div>
         </div>

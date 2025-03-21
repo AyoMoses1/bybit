@@ -16,7 +16,7 @@ const Users = () => {
   const [searchTerm, setSearchTerm] = useState("");
 
   const tabsData =
-    userInfo?.userType === "fleetAdmin"
+    userInfo?.usertype === "fleetadmin"
       ? [
           { key: 1, title: "Customers" },
           { key: 2, title: "Drivers" },
@@ -75,7 +75,9 @@ const Users = () => {
                   ? "/add-fleet-admin"
                   : selectedTab === "Customers"
                     ? "/add-customers"
-                    : ""
+                    : selectedTab === "Drivers"
+                      ? "/add-drivers"
+                      : ""
             }
           >
             <Button className="w-[194px] py-2" size={"default"}>
