@@ -8,7 +8,7 @@ const DriverCar = () => {
       <div className="mx-auto flex justify-between rounded-[14px] bg-white px-7 shadow-md">
         {/* Active Car */}
         <div className="pb-10 pr-4 pt-3">
-          <h2 className="mb-4 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
+          <h2 className="mb-6 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
             Active Car
           </h2>
           <div className="w-[200px] rounded-lg border border-[#34C759] bg-white px-6 py-6 shadow-md lg:w-[200px] xl:w-[450px]">
@@ -62,7 +62,7 @@ const DriverCar = () => {
 
         {/* Other Cars */}
         <div className="pb-10 pl-4 pt-3">
-          <h2 className="mb-4 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
+          <h2 className="mb-6 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
             Other Car
           </h2>
           <div className="w-[200px] rounded-lg border border-[#34C759] bg-white px-6 py-6 shadow-md lg:w-[200px] xl:w-[450px]">
