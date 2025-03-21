@@ -4,6 +4,7 @@ import { Search } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useUsersRide } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
+import SearchComponent from "@/components/SearchComponent";
 
 const CustomersRides = ({ id }: { id: string | string[] }) => {
   const userId = Array.isArray(id) ? id[0] : id;
@@ -73,16 +74,10 @@ const CustomersRides = ({ id }: { id: string | string[] }) => {
   return (
     <div className="px-1">
       <div className="z-90 absolute right-3 top-[-60px] flex items-center gap-4">
-        <div className="relative flex h-[38px] w-[234px] items-center gap-2 rounded-[19px] border-[0.6px] border-[#D5D5D5] bg-[#FAFAFA] px-3">
-          <Search className="size-4 text-[#00000080]" />
-          <input
-            type="text"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="w-full border-none bg-transparent text-sm text-[#6E7079] outline-none placeholder:text-[#00000080]"
-            placeholder="Search in table..."
-          />
-        </div>
+        <SearchComponent
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </div>
       <div>
         {isLoading ? (

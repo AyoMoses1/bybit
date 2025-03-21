@@ -1,4 +1,5 @@
 "use client";
+import SearchComponent from "@/components/SearchComponent";
 import { Button } from "@/components/ui/button";
 import Admin from "@/containers/users/admin";
 import Customers from "@/containers/users/customers/customers";
@@ -61,16 +62,11 @@ const Users = () => {
           </p>
         </div>
         <div className="flex items-center gap-4">
-          <div className="relative flex h-[38px] w-[234px] items-center gap-2 rounded-[19px] border-[0.6px] border-[#D5D5D5] bg-[#FAFAFA] px-3">
-            <Search className="size-4 text-[#00000080]" />
-            <input
-              type="text"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full border-none bg-transparent text-sm text-[#6E7079] outline-none placeholder:text-[#00000080]"
-              placeholder="Search in table..."
-            />
-          </div>
+          <SearchComponent
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+
           <Link
             href={
               selectedTab === "Super Admins"

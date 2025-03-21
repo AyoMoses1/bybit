@@ -4,6 +4,7 @@ import { Search, TrendingDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useGetUserById, useUserWalletHistory } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
+import SearchComponent from "@/components/SearchComponent";
 
 type User = {
   walletBalance: string;
@@ -100,16 +101,10 @@ const CustomerWallet = ({ id }: { id: string | string[] }) => {
             </p>
           </div>
           <div className="flex items-center gap-4">
-            <div className="relative flex h-[38px] w-[234px] items-center gap-2 rounded-[19px] border-[0.6px] border-[#D5D5D5] bg-[#FAFAFA] px-3">
-              <Search className="size-4 text-[#00000080]" />
-              <input
-                type="text"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full border-none bg-transparent text-sm text-[#6E7079] outline-none placeholder:text-[#00000080]"
-                placeholder="Search in table..."
-              />
-            </div>
+            <SearchComponent
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
         </div>
         {isLoading ? (
