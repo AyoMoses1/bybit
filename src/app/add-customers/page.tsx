@@ -37,6 +37,7 @@ const AddCustomers = () => {
   });
 
   const onSubmit = (data: FormData) => {
+    setLoading(true);
     const updatedData = {
       firstName: data.firstName,
       lastName: data.lastName,
@@ -44,6 +45,8 @@ const AddCustomers = () => {
       mobile: data.mobile,
       approved: data.approvalStatus === "approved" ? true : false,
       verifyId: data.idNumber,
+      usertype: "customer",
+      createdAt: new Date().getTime(),
     };
     mutation.mutate(
       {
@@ -175,14 +178,16 @@ const AddCustomers = () => {
 
           {/* Add Button */}
           <div className="mt-12 flex justify-center">
-            <Button
-              disabled={!isValid || !errors}
-              type="submit"
-              className="w-[287px] py-[10px] disabled:opacity-70"
-              size={"default"}
-            >
-              Add Customer
-            </Button>
+            <div className="mt-12 flex justify-center">
+              <Button
+                disabled={!isValid || !errors || loading}
+                type="submit"
+                className="w-[287px] py-[10px] disabled:opacity-70"
+                size={"default"}
+              >
+                {loading ? "Loading..." : "  Add Customer"}
+              </Button>
+            </div>
           </div>
         </div>
       </form>

@@ -29,6 +29,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+import { getAuth, signOut } from "firebase/auth";
 
 const mainMenuItems = [
   { url: "/dashboard", title: "Dashboard", icon: LayoutDashboard },
@@ -71,6 +72,8 @@ function AppSidebar() {
       [
         "/users",
         "/add-super-admin",
+        "/add-customers",
+        "/add-drivers",
         "/update-admin",
         "/add-fleet-admin",
         "/update-fleet-admin",
@@ -90,7 +93,9 @@ function AppSidebar() {
     return pathname === url;
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    const auth = getAuth();
+    await signOut(auth);
     localStorage.clear();
     router.push("/");
   };

@@ -3,8 +3,6 @@ import {
   ref,
   getDatabase,
   update,
-  set,
-  off,
   orderByChild,
   equalTo,
   query,
@@ -18,10 +16,7 @@ export const fetchCars = (userType: string, uid: string, search?: string) => {
   return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
-      const carRef =
-        userType === "admin"
-          ? ref(db, "cars")
-          : query(ref(db, "cars"), orderByChild(userType), equalTo(uid));
+      const carRef = ref(db, "cars");
 
       onValue(
         carRef,

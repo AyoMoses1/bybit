@@ -6,7 +6,8 @@ import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import deleteIcon from "../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
-import { useUpdateUser, useUser } from "@/lib/api/hooks/user";
+import { useDeleteUser, useUpdateUser, useUser } from "@/lib/api/hooks/user";
+import DeleteConfirmation from "@/components/deleteConfirmation";
 
 const Admin = ({ search }: { search?: string }) => {
   const { data: user, isLoading } = useUser("admin", search);
@@ -78,32 +79,34 @@ const Admin = ({ search }: { search?: string }) => {
     {
       accessorKey: "actions",
       header: "Actions",
-      cell: ({ row }) => (
-        <div>
-          <div
-            style={{
-              borderWidth: "1px",
-              backgroundColor: "#FAFBFD",
-            }}
-            className="flex w-fit items-center rounded-md border-[1px] border-[#D5D5D5] bg-[#FAFBFD] p-2"
-          >
-            <Link href={`/update-admin/${row.original.id}`}>
-              <div className="cursor-pointer pr-2">
-                <ArrowRight className="size-4 text-gray-600" />
-              </div>
-            </Link>
-            <div className="cursor-pointer border-l border-l-[#979797] px-2">
-              <Image
-                src={deleteIcon}
-                alt="Delete Icon"
-                width={10}
-                height={10}
-                className="rounded-full"
+      cell: ({ row }) => {
+        const deleteMutation = useDeleteUser();
+
+        const handleDelete = () => {
+          deleteMutation.mutate(row.original.id);
+        };
+        return (
+          <div>
+            <div
+              style={{
+                borderWidth: "1px",
+                backgroundColor: "#FAFBFD",
+              }}
+              className="flex w-fit items-center rounded-md border-[1px] border-[#D5D5D5] bg-[#FAFBFD] p-2"
+            >
+              <Link href={`/update-admin/${row.original.id}`}>
+                <div className="cursor-pointer pr-2">
+                  <ArrowRight className="size-4 text-gray-600" />
+                </div>
+              </Link>
+              <DeleteConfirmation
+                onClick={handleDelete}
+                text={`Are you sure you want to delete this user (${row.original.firstName + " " + row.original.lastName})? This action can not be undone`}
               />
             </div>
           </div>
-        </div>
-      ),
+        );
+      },
     },
   ];
 

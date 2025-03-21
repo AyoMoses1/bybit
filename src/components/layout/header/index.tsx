@@ -23,16 +23,19 @@ const ROUTES = {
   addAdmin: "/add-super-admin",
   updateAdmin: "/update-admin",
   customer: "/customer",
+  addCustomer: "/add-customers",
   addFleetAdmin: "/add-fleet-admin",
   bookingHistory: "/booking-history",
   bookingDetail: "/booking-history/[id]",
   updateFleetAdmin: "/update-fleet-admin",
   driver: "/driver",
+  addDriver: "/add-driver",
   cars: "/cars",
   addCar: "/add-car",
   updateCar: "/cars/",
   settings: "/settings",
   helpCenter: "/help-center",
+  reports: "/reports",
 } as const;
 
 const ROUTE_TITLES: Record<string, string> = {
@@ -43,7 +46,9 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.addFleetAdmin]: "Add admin",
   [ROUTES.updateFleetAdmin]: "Update admin",
   [ROUTES.customer]: "Customer",
+  [ROUTES.addCustomer]: "Add Customer",
   [ROUTES.driver]: "Driver",
+  [ROUTES.addDriver]: "Add Driver",
   [ROUTES.bookingHistory]: "Booking History",
   [ROUTES.bookingDetail]: "Booking Detail",
   [ROUTES.cars]: "Cars",
@@ -51,6 +56,7 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.updateCar]: "Update Car",
   [ROUTES.settings]: "Settings",
   [ROUTES.helpCenter]: "Help Center",
+  [ROUTES.reports]: "Reports",
 };
 
 const Header = () => {
@@ -109,6 +115,8 @@ const Header = () => {
           pathname.includes(ROUTES.updateAdmin) ||
           pathname.includes(ROUTES.updateFleetAdmin) ||
           pathname.includes(ROUTES.customer) ||
+          pathname.includes(ROUTES.addCustomer) ||
+          pathname.includes(ROUTES.addDriver) ||
           pathname.includes(ROUTES.driver) ||
           pathname === ROUTES.addFleetAdmin ? (
             <div className="flex gap-3">
