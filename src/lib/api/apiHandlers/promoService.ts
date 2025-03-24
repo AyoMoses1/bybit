@@ -1,0 +1,178 @@
+import {
+  onValue,
+  ref,
+  getDatabase,
+  update,
+  set,
+  off,
+  orderByChild,
+  equalTo,
+  query,
+  push,
+  remove,
+} from "firebase/database";
+import toast from "react-hot-toast";
+
+export interface PromoData {
+  id?: string;
+  promoName: string;
+  description?: string;
+  type: string;
+  code: string;
+  promoValue: number;
+  maxDiscountAllowed: number;
+  minimumOrderValue: number;
+  endDate?: number;
+  promoCountAvailable: number;
+  showInList?: boolean;
+  usedByCount?: number;
+  createdAt?: number;
+}
+
+export const fetchPromos = (): Promise<PromoData[]> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const promoRef = ref(db, "promos");
+
+      const unsubscribe = onValue(
+        promoRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            const promosArray = Object.entries(data)
+              .map(([key, value]) => ({
+                id: key,
+                ...(value as any),
+              }))
+              .sort(
+                (a, b) =>
+                  new Date(b.createdAt || 0).getTime() -
+                  new Date(a.createdAt || 0).getTime(),
+              );
+
+            resolve(promosArray as PromoData[]);
+          } else {
+            resolve([]);
+          }
+        },
+        (error) => {
+          console.error("Firebase error:", error);
+          reject(error);
+        },
+      );
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Fetch Promos Error:", error);
+      reject(error);
+    }
+  });
+};
+
+export const fetchPromoById = (id: string): Promise<PromoData | null> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const promoRef = ref(db, `promos/${id}`);
+
+      const unsubscribe = onValue(
+        promoRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            resolve({ id: id, ...data } as PromoData);
+          } else {
+            resolve(null);
+          }
+        },
+        (error) => {
+          console.error("Firebase error:", error);
+          reject(error);
+        },
+      );
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Fetch Promo Error:", error);
+      reject(error);
+    }
+  });
+};
+
+export const createPromo = (
+  promoData: Omit<PromoData, "id">,
+): Promise<PromoData> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const promoRef = ref(db, "promos");
+
+      // Add creation timestamp
+      const newPromoData = {
+        ...promoData,
+        createdAt: Date.now(),
+      };
+
+      // Generate a new key for the promo
+      const newPromoRef = push(promoRef);
+
+      set(newPromoRef, newPromoData)
+        .then(() => {
+          resolve({ id: newPromoRef.key as string, ...newPromoData });
+        })
+        .catch((error) => {
+          console.error("Error creating promo:", error);
+          reject(error);
+        });
+    } catch (error) {
+      console.error("Create Promo Error:", error);
+      reject(error);
+    }
+  });
+};
+
+export const updatePromo = (
+  id: string,
+  updatedData: Partial<PromoData>,
+): Promise<PromoData> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const promoRef = ref(db, `promos/${id}`);
+
+      update(promoRef, updatedData)
+        .then(() => {
+          resolve({ id, ...updatedData } as PromoData);
+        })
+        .catch((error) => {
+          console.error("Error updating promo:", error);
+          reject(error);
+        });
+    } catch (error) {
+      console.error("Update Promo Error:", error);
+      reject(error);
+    }
+  });
+};
+
+export const deletePromo = (id: string): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const promoRef = ref(db, `promos/${id}`);
+
+      remove(promoRef)
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          console.error("Error deleting promo:", error);
+          reject(error);
+        });
+    } catch (error) {
+      console.error("Delete Promo Error:", error);
+      reject(error);
+    }
+  });
+};
