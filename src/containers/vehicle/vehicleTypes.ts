@@ -9,11 +9,12 @@ export interface CarType {
   convenience_fees?: number;
   convenience_fee_type?: "flat" | "percentage";
   fleet_admin_fee?: number;
+  seat_capacity?: number;
   extra_info?: string;
   pos?: number;
-  seat_capacity?: number;
   active?: boolean;
   approved?: boolean;
+  [key: string]: string | number | boolean | File | CancellationSlab[] | undefined;
   cancelSlab?: CancellationSlab[];
 }
 
@@ -25,7 +26,9 @@ export interface CancellationSlab {
 
 export type EditCarTypeParams = {
   id?: string;
+  cartype: CarType;
+  method: "Add" | "Delete" | "UpdateImage" | "Edit";
   updatedData?: {
-    [key: string]: string | number | boolean | null | undefined | Record<string, unknown>;
+    [key: string]: string | number | boolean | undefined;
   };
 };
