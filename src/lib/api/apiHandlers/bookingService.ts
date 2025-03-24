@@ -10,8 +10,51 @@ import {
 import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import firebase from "@/lib/firebase";
 
+// Define interfaces for the booking data
+interface Location {
+  add?: string;
+  lat?: number;
+  lng?: number;
+}
+
+interface Booking {
+  id: string;
+  pickup?: Location;
+  drop?: Location;
+  pickupAddress: string;
+  dropAddress: string;
+  discount: number;
+  cashPaymentAmount: number;
+  cardPaymentAmount: number;
+  bookingDate?: string;
+  status?: string;
+  driver_name?: string;
+  carType?: string;
+  driver?: string;
+  pickup_image?: string;
+  deliver_image?: string;
+  reason?: string;
+  cancelledBy?: string;
+  [key: string]: unknown; // For other properties not explicitly defined
+}
+
+// Raw booking data structure from Firebase
+interface BookingData {
+  pickup?: Location;
+  drop?: Location;
+  discount?: number;
+  cashPaymentAmount?: number;
+  cardPaymentAmount?: number;
+  bookingDate?: string;
+  status?: string;
+  driver_name?: string;
+  carType?: string;
+  driver?: string;
+  [key: string]: unknown;
+}
+
 export const fetchBookings = (userId: string, userType: string, search?: string) => {
-  return new Promise<any[]>((resolve, reject) => {
+  return new Promise<Booking[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const bookingListRef = ref(db, `bookings/${userType}/${userId}`);
@@ -28,15 +71,18 @@ export const fetchBookings = (userId: string, userType: string, search?: string)
 
           const data = snapshot.val();
           const bookings = Object.entries(data)
-            .map(([id, value]: [string, any]) => ({
-              id,
-              pickupAddress: value.pickup?.add || "",
-              dropAddress: value.drop?.add || "",
-              discount: value.discount || 0,
-              cashPaymentAmount: value.cashPaymentAmount || 0,
-              cardPaymentAmount: value.cardPaymentAmount || 0,
-              ...value,
-            }))
+            .map(([id, value]) => {
+              const bookingData = value as BookingData;
+              return {
+                id,
+                pickupAddress: bookingData.pickup?.add || "",
+                dropAddress: bookingData.drop?.add || "",
+                discount: bookingData.discount || 0,
+                cashPaymentAmount: bookingData.cashPaymentAmount || 0,
+                cardPaymentAmount: bookingData.cardPaymentAmount || 0,
+                ...bookingData,
+              };
+            })
             .filter(booking => {
               if (!search) return true;
               
@@ -77,7 +123,7 @@ export const fetchUserRides = (userId: string, userType: string) => {
 };
 
 export const fetchActiveBookings = (userId: string, userType: string) => {
-  return new Promise<any[]>((resolve, reject) => {
+  return new Promise<Booking[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const bookingListRef = ref(db, `bookings/${userType}/${userId}`);
@@ -94,15 +140,21 @@ export const fetchActiveBookings = (userId: string, userType: string) => {
 
           const data = snapshot.val();
           const bookings = Object.entries(data)
-            .map(([id, value]: [string, any]) => ({
-              id,
-              pickupAddress: value.pickup?.add || "",
-              dropAddress: value.drop?.add || "",
-              ...value,
-            }))
+            .map(([id, value]) => {
+              const bookingData = value as BookingData;
+              return {
+                id,
+                pickupAddress: bookingData.pickup?.add || "",
+                dropAddress: bookingData.drop?.add || "",
+                discount: bookingData.discount || 0,
+                cashPaymentAmount: bookingData.cashPaymentAmount || 0,
+                cardPaymentAmount: bookingData.cardPaymentAmount || 0,
+                ...bookingData,
+              };
+            })
             .filter(booking => 
               ['PAYMENT_PENDING', 'NEW', 'ACCEPTED', 'ARRIVED', 'STARTED', 'REACHED', 'PENDING', 'PAID']
-              .includes(booking.status)
+              .includes(booking.status || '')
             )
             .sort((a, b) => {
               // Sort by date (newest first)
@@ -128,7 +180,7 @@ export const fetchActiveBookings = (userId: string, userType: string) => {
 };
 
 export const fetchBookingById = (id: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<Booking | null>((resolve, reject) => {
     try {
       const db = getDatabase();
       const bookingRef = ref(db, `bookings/${id}`);
@@ -136,7 +188,7 @@ export const fetchBookingById = (id: string) => {
       const unsubscribe = onValue(
         bookingRef,
         (snapshot) => {
-          const data = snapshot.val();
+          const data = snapshot.val() as BookingData | null;
           if (data) {
             resolve({ 
               id, 
@@ -165,7 +217,7 @@ export const fetchBookingById = (id: string) => {
   });
 };
 
-export const updateBooking = (id: string, updatedData: Record<string, any>) => {
+export const updateBooking = (id: string, updatedData: Record<string, unknown>) => {
   return new Promise<void>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -194,7 +246,7 @@ export const cancelBooking = (bookingId: string, reason: string, cancelledBy: st
       
       // First get the booking to check status and get driver info
       get(bookingRef).then((snapshot) => {
-        const booking = snapshot.val();
+        const booking = snapshot.val() as BookingData | null;
         
         if (!booking) {
           reject(new Error("Booking not found"));
@@ -271,4 +323,3 @@ export const updateBookingImage = async (
     throw error;
   }
 };
-
