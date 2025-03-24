@@ -1,8 +1,7 @@
 export const assetLib = {
   // LOGO SVGS
   avatar: "/imgs/avatar.png",
-  logoLight: "/svgs/logo.svg",
-
+  logoLight: "/src/assets/svgs/20250218.svg",
   loginAuthImage: "/imgs/login-auth-image.png",
   signupAuthImage: "/imgs/signup-auth-image.png",
 

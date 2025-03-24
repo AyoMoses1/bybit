@@ -256,7 +256,7 @@ const Sidebar = React.forwardRef<
         >
           <div
             data-sidebar="sidebar"
-            className="flex h-full w-full flex-col bg-secondary group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-border group-data-[variant=floating]:shadow"
+            className="flex h-screen w-full flex-col bg-[#1E1E1E] text-background group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:border group-data-[variant=floating]:border-border group-data-[variant=floating]:shadow"
           >
             {children}
           </div>
@@ -520,13 +520,13 @@ const SidebarMenuItem = React.forwardRef<
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
 const sidebarMenuButtonVariants = cva(
-  "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-lg py-2 px-3 text-left text-sm sm:text-base border border-transparent text-muted-foreground outline-none ring-ring transition-[width,height,padding] hover:bg-accent hover:text-accent-foreground focus-visible:ring-2 active:bg-accent active:text-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-secondary data-[active=true]:!text-primary data-[active=true]:border-border data-[active=true]:font-medium data-[active=true]:text-accent-foreground data-[state=open]:hover:bg-accent data-[state=open]:hover:text-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
+  "peer/menu-button flex w-full items-center tracking-[0.3px] gap-3 overflow-hidden rounded-lg h-[50px]  px-3 text-left text-sm sm:text-base border border-transparent font-semibold text-[#FAFAFA] outline-none ring-ring transition-[width,height,padding] hover:bg-[#DA4CBF] hover:text-[#FAFAFA] focus-visible:ring-2 active:bg-[#DA4CBF] active:text-[#FAFAFA] disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-[#DA4CBF] data-[active=true]:!text-[#FAFAFA]  data-[active=true]:font-semibold data-[active=true]:text-[#FAFAFA] data-[state=open]:hover:bg-accent data-[state=open]:hover:text-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "hover:bg-accent hover:text-accent-foreground",
+        default: "hover:bg-[#DA4CBF] hover:text-[#FAFAFA]",
         outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--border))] hover:bg-accent hover:text-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--accent))]",
+          "bg-[#DA4CBF] shadow-[0_0_0_1px_hsl(var(--border))] hover:bg-[#DA4CBF] hover:text-[#FAFAFA] hover:shadow-[0_0_0_1px_hsl(var(--accent))]",
       },
       size: {
         default: "text-sm",

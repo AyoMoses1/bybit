@@ -1,166 +1,187 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useFirebase } from "../contexts/FirebaseContext";
-import { onValue } from "firebase/database";
-import { onAuthStateChanged, signInWithEmailAndPassword } from "firebase/auth";
-import { Moon, Sun } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardHeader,
-  CardFooter,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "@/components/ui/card";
-
-// Define types for user data
-interface UserData {
-  id: string;
-  name?: string;
-  email?: string;
-  phone?: string;
-  role?: string;
-  createdAt?: number | string;
-  [key: string]: any; // Allow for other properties
-}
+import { Eye, EyeOff } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useLogin } from "@/lib/api/hooks/auth";
+import toast from "react-hot-toast";
+import { FirebaseError } from "firebase/app";
+import { useUsers } from "@/lib/api/hooks/user";
+import { useRouter } from "next/navigation";
 
 export default function UsersPage() {
-  const firebase = useFirebase();
-  const [users, setUsers] = useState<UserData[]>([]);
-  const [error, setError] = useState<string | null>(null);
-  const [authenticated, setAuthenticated] = useState(false);
-  const [isDark, setIsDark] = useState(false);
+  const mutation = useLogin();
+  const router = useRouter();
+  const { refetch } = useUsers();
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  // Theme management effect
-  useEffect(() => {
-    // Initialize based on system preference or saved preference
-    const savedTheme = localStorage.getItem("theme");
+  const formSchema = z.object({
+    email: z.string().email("Invalid email"),
+    password: z
+      .string()
+      .min(5, "Password must be at least 5 characters long")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[a-z]/, "Password must contain at least one lowercase letter")
+      .regex(/\d/, "Password must contain at least one number")
+      .regex(
+        /[^A-Za-z0-9]/,
+        "Password must contain at least one special character",
+      ),
+  });
 
-    if (
-      savedTheme === "dark" ||
-      (!savedTheme && window.matchMedia("(prefers-color-scheme: dark)").matches)
-    ) {
-      setIsDark(true);
-      document.documentElement.classList.add("dark");
-    }
-  }, []);
+  type FormData = z.infer<typeof formSchema>;
 
-  // Toggle theme function
-  const toggleTheme = () => {
-    if (isDark) {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    } else {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    }
-    setIsDark(!isDark);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+  });
+
+  const onSubmit = (data: FormData) => {
+    setLoading(true);
+    const credentials = {
+      email: data.email,
+      password: data.password,
+    };
+    mutation.mutate(
+      { credentials },
+      {
+        onError: (error) => {
+          setLoading(false);
+          if (error instanceof FirebaseError) {
+            if (error.code === "auth/invalid-credential") {
+              toast.error("Invalid Credentials");
+            }
+          }
+        },
+        onSuccess: async () => {
+          const { data: adminUser } = await refetch();
+
+          if (Array.isArray(adminUser)) {
+            const user = adminUser.find((user) => user.email === data.email);
+
+            if (user.usertype === "admin" || user.usertype === "fleetadmin") {
+              localStorage.setItem("authenticated", JSON.stringify(true));
+              localStorage.setItem("userInfo", JSON.stringify(user));
+              setLoading(false);
+
+              toast.success("Logged In successfully");
+              router.push("/dashboard");
+            } else {
+              toast.error("Invalid Credentials");
+              setLoading(false);
+            }
+          }
+        },
+      },
+    );
   };
 
   useEffect(() => {
-    // First check authentication state
-    const unsubAuth = onAuthStateChanged(firebase.auth, (user) => {
-      if (user) {
-        setAuthenticated(true);
-      } else {
-        signInWithEmailAndPassword(
-          firebase.auth,
-          "info@valonconsultinggroup.com",
-          "SecurePassword@123!",
-        )
-          .then(() => setAuthenticated(true))
-          .catch((err: Error) =>
-            setError("Authentication failed: " + err.message),
-          );
-      }
-    });
+    const userAuthenticated = localStorage.getItem("authenticated");
 
-    return () => unsubAuth();
-  }, [firebase.auth]);
-
-  useEffect(() => {
-    // Only fetch users when authenticated
-    if (!authenticated) return;
-
-    try {
-      const userRef = firebase.usersRef;
-      const unsubscribe = onValue(
-        userRef,
-        (snapshot) => {
-          const data = snapshot.val();
-          if (data) {
-            const usersArray = Object.entries(data).map(([key, value]) => ({
-              id: key,
-              ...(value as any),
-            }));
-            setUsers(usersArray);
-          }
-        },
-        (error: Error) => {
-          setError(error.message);
-        },
-      );
-
-      return () => unsubscribe();
-    } catch (error) {
-      setError((error as Error).message);
+    if (userAuthenticated === "true") {
+      router.push("/dashboard");
     }
-  }, [firebase, authenticated]);
-
-  if (error) return <div className="p-4">Error: {error}</div>;
-  if (!authenticated) return <div className="p-4">Authenticating...</div>;
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background p-4 transition-colors duration-300">
-      <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-foreground">Users</h1>
-        <Button
-          onClick={toggleTheme}
-          variant="outline"
-          size="icon"
-          className="rounded-md"
-          aria-label="Toggle theme"
-        >
-          {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
-        </Button>
-      </div>
+    <form onSubmit={handleSubmit(onSubmit)} className="">
+      <div className="login-background bg-[url('../assets/svgs/Group 871.svg')] flex h-screen w-full items-center justify-center bg-cover bg-center p-4 font-[Poppins]">
+        <div className="flex min-h-screen items-center justify-center bg-opacity-80">
+          <div className="w-[720px] rounded-[20px] border-[3px] border-[#F4F4F499] bg-[#F4F4F466] px-8 py-12 shadow-lg backdrop-blur-[30px]">
+            <h2 className="text-center text-[36px] font-bold text-white">
+              Log In
+            </h2>
+            <p className="mt-2 text-center text-base font-medium text-white">
+              Don’t have an account yet?{" "}
+              <span className="cursor-pointer text-[#FFAFF0]">Sign Up</span>
+            </p>
 
-      {users.length === 0 ? (
-        <p className="text-foreground">No users found</p>
-      ) : (
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {users.map((user) => (
-            <Card key={user.id} className="transition-shadow hover:shadow-lg">
-              <CardHeader>
-                <CardTitle>{user.name || "User"}</CardTitle>
-                <CardDescription>{user.email}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-2">
-                  {user.phone && <p className="text-sm">📱 {user.phone}</p>}
-                  {user.role && (
-                    <p className="text-sm">
-                      🔑 Role: <span className="font-medium">{user.role}</span>
-                    </p>
+            <div className="mt-6 font-[Roboto]">
+              <label className="text-base font-semibold text-white">
+                Email Address
+              </label>
+              <input
+                type="email"
+                {...register("email")}
+                autoComplete="new-password"
+                autoCorrect="off"
+                spellCheck="false"
+                placeholder="example@gmail.com"
+                className="mt-1 w-full border-b-[3px] border-b-[#FAFAFA] bg-transparent p-3 text-base text-white outline-none"
+              />
+              {errors.email && (
+                <p className="text-red-500">{errors.email.message}</p>
+              )}
+            </div>
+
+            <div className="mt-6">
+              <label className="text-base font-semibold text-white">
+                Password
+              </label>
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  {...register("password")}
+                  placeholder="*******"
+                  autoComplete="new-password"
+                  autoCorrect="off"
+                  spellCheck="false"
+                  className="mt-1 w-full border-b-[3px] border-b-[#FAFAFA] bg-transparent p-3 text-base text-white outline-none"
+                />
+
+                <span
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-4 cursor-pointer text-gray-400"
+                >
+                  {showPassword ? (
+                    <EyeOff className="text-[#FAFAFA]" />
+                  ) : (
+                    <Eye className="text-[#FAFAFA]" />
                   )}
-                  {user.createdAt && (
-                    <p className="text-sm">
-                      📅 Joined: {new Date(user.createdAt).toLocaleDateString()}
-                    </p>
-                  )}
-                </div>
-              </CardContent>
-              <CardFooter className="justify-end">
-                <Button variant="outline" size="sm">
-                  View Profile
-                </Button>
-              </CardFooter>
-            </Card>
-          ))}
+                </span>
+              </div>
+              {errors.password && (
+                <p className="text-red-500">{errors.password.message}</p>
+              )}
+            </div>
+
+            <div className="mt-4 flex items-center justify-between text-gray-300">
+              <label className="flex items-center space-x-2">
+                <input type="checkbox" className="h-4 w-4 accent-[#913B81]" />
+                <span className="text-sm font-bold text-white">
+                  Remember me
+                </span>
+              </label>
+              <a
+                href="#"
+                className="text-sm font-bold text-white hover:text-[#913B81]"
+              >
+                Forgot Password?
+              </a>
+            </div>
+
+            <div className="mt-8 flex items-center justify-center">
+              <Button
+                disabled={!isValid || loading}
+                type="submit"
+                className="w-[287px] py-[10px] text-center disabled:opacity-70"
+                size={"default"}
+              >
+                {loading ? "Loading..." : "Sign In"}
+              </Button>
+            </div>
+          </div>
         </div>
-      )}
-    </div>
+      </div>
+    </form>
   );
 }

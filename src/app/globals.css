@@ -3,7 +3,16 @@
 @tailwind utilities;
 
 body {
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Source Sans 3", sans-serif;
+  background-color: #f5f6fa;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  transition: background-color 5000s ease-in-out 0s !important;
+  -webkit-text-fill-color: #fff !important;
 }
 
 @layer base {
@@ -16,12 +25,13 @@ body {
     --popover-foreground: 240 10% 3.9%;
     --primary: 240 5.9% 10%;
     --primary-foreground: 0 0% 98%;
-    --secondary: 240 4.8% 95.9%;
+    --dark: #1e1e1e;
+    --secondary: #da4cbf;
     --secondary-foreground: 240 5.9% 10%;
     --muted: 240 4.8% 95.9%;
     --muted-foreground: 240 3.8% 46.1%;
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: #da4cbf;
+    --accent-foreground: #fafafa;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 0 0% 98%;
     --border: 240 5.9% 90%;
@@ -43,16 +53,16 @@ body {
     --popover-foreground: 0 0% 98%;
     --primary: 0 0% 98%;
     --primary-foreground: 240 5.9% 10%;
-    --secondary: 240 3.7% 15.9%;
+    --secondary: #da4cbf;
     --secondary-foreground: 0 0% 98%;
     --muted: 240 3.7% 15.9%;
     --muted-foreground: 240 5% 64.9%;
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
+    --accent: #da4cbf;
+    --accent-foreground: #fafafa;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 98%;
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
+    --border: #da4cbf;
+    --input: #da4cbf;
     --ring: 240 4.9% 83.9%;
     --chart-1: 220 70% 50%;
     --chart-2: 160 60% 45%;
@@ -69,4 +79,45 @@ body {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer utilities {
+  .border-image-gradient {
+    border-image-source: linear-gradient(
+      145.93deg,
+      rgba(244, 244, 244, 0.6) -3.66%,
+      rgba(244, 244, 244, 0.4) 101.09%
+    );
+    border-image-slice: 1;
+  }
+}
+
+@layer components {
+  .badge {
+    @apply rounded-full border-[0.2px] px-4 py-1 font-inter text-xs font-normal;
+  }
+
+  .badge-success {
+    @apply border-[#00B69B] bg-[#00B69B29] text-[#00B69B];
+  }
+
+  .badge-error {
+    @apply border-red-400 bg-red-100 text-red-600;
+  }
+
+  .badge-withdraw {
+    @apply border-[#5570F1] bg-[#E7EBFF] text-[#5570F1];
+  }
+}
+
+.login-background {
+  background-image: url("../assets/svgs/Group 871.svg");
+  background-size: cover;
+  background-position: center;
+}
+
+.card-background {
+  background-image: url("../assets/svgs/waveElements (1).svg");
+  background-size: cover;
+  background-position: center;
 }
