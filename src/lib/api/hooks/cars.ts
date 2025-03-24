@@ -46,7 +46,7 @@ export const useUpdateCar = () => {
       updateCars(id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
-      toast.success("Car details were updated successfully!");
+      // toast.success("Car details were updated successfully!");
     },
     onError: (error) => {
       console.error("Car update failed:", error);

@@ -56,7 +56,6 @@ const useBookingActions = (
     }
   };
 
-  // Handle view details
   const handleViewDetails = (booking: any) => {
     if (booking && booking.id) {
       console.log("View details for booking ID:", booking.id);

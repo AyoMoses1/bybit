@@ -7,7 +7,7 @@ const ExportButton: React.FC<ExportButtonProps> = ({
   disabled,
 }) => {
   return (
-    <div className="flex h-full items-center justify-center border-l border-gray-200 px-3">
+    <div className="flex h-full items-center justify-center border-gray-200 px-3">
       <button
         onClick={exportToCSV}
         className="text-gray-500"
