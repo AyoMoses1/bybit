@@ -26,6 +26,9 @@ const ROUTES = {
   addFleetAdmin: "/add-fleet-admin",
   bookingHistory: "/booking-history",
   bookingDetail: "/booking-history/[id]",
+  vehicleType: "/vehicle-type",
+  vehicleDetail: "/vehicle-type/[id]",
+  addVehicle: "/add-vehicle",
   updateFleetAdmin: "/update-fleet-admin",
   driver: "/driver",
   cars: "/cars",
@@ -46,6 +49,9 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.driver]: "Driver",
   [ROUTES.bookingHistory]: "Booking History",
   [ROUTES.bookingDetail]: "Booking Detail",
+  [ROUTES.vehicleType]: "Vehicle Type",
+  [ROUTES.vehicleDetail]: "User",
+  [ROUTES.addVehicle]: "Add Vehicle",
   [ROUTES.cars]: "Cars",
   [ROUTES.addCar]: "Add a car",
   [ROUTES.updateCar]: "Update Car",
@@ -125,6 +131,22 @@ const Header = () => {
               </Link>
               <p className="mx-1">/</p>
               <p className="cursor-default">Booking Detail</p>
+            </div>
+          ) : pathname.startsWith("/vehicle-type/") ? (
+            <div className="flex gap-3">
+              <Link href={ROUTES.vehicleType} className="text-[#8B8D97]">
+                Vehicle Type
+              </Link>
+              <p className="mx-1">/</p>
+              <p className="cursor-default">Vehicle Detail</p>
+            </div>
+          ) : pathname === ROUTES.addVehicle ? (
+            <div className="flex gap-3">
+              <Link href={ROUTES.vehicleType} className="text-[#8B8D97]">
+                Vehicle Type
+              </Link>
+              <p className="mx-1">/</p>
+              <p className="cursor-default">Add Vehicle</p>
             </div>
           ) : pathname === ROUTES.cars ||
             pathname.includes(ROUTES.updateCar) ||
