@@ -149,7 +149,7 @@ const Promos: React.FC = () => {
   return (
     <div className="px-1">
       <div className="mb-4 flex justify-end">
-        <Link href="/promo/new">
+        <Link href="/add-promo">
           <Button className="bg-purple-600 hover:bg-purple-700">
             Add New Promo
           </Button>

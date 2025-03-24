@@ -1,5 +1,6 @@
+"use client";
 import React, { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import { useCreatePromo } from "@/lib/api/hooks/usePromo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -60,7 +61,6 @@ const AddPromo: React.FC = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    // Convert string values to numbers where needed
     const processedData: PromoFormData = {
       ...formData,
       promo_discount_value: Number(formData.promo_discount_value),
