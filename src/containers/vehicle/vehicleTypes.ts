@@ -25,5 +25,7 @@ export interface CancellationSlab {
 
 export type EditCarTypeParams = {
   id?: string;
-  updatedData?: { [key: string]: any };
+  updatedData?: {
+    [key: string]: string | number | boolean | null | undefined | Record<string, unknown>;
+  };
 };
