@@ -5,11 +5,7 @@ import {
   update,
   off,
   remove,
-  push,
-  get,
-  query,
-  orderByChild,
-  equalTo
+  get
 } from "firebase/database";
 import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import firebase from "@/lib/firebase";
