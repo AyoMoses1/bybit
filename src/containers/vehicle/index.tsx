@@ -117,8 +117,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
 
     setDeleteDialogOpen(false);
 
-    toast.loading("Deleting vehicle type...", { id: "delete-toast" });
-
     const cartype: CarType = {
       id: vehicleToDelete.id,
       name: "",
@@ -130,11 +128,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
         method: "Delete",
       },
       {
-        onSuccess: () => {
-          toast.success("Vehicle type deleted successfully", {
-            id: "delete-toast",
-          });
-        },
         onError: (error) => {
           toast.error("Failed to delete vehicle type", { id: "delete-toast" });
         },
