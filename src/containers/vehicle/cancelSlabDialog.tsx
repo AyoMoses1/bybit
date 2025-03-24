@@ -2,7 +2,6 @@ import React from "react";
 import * as Dialog from "@radix-ui/react-dialog";
 import { CarType } from "./vehicleTypes";
 import { useEditCarType } from "@/lib/api/hooks/useVehicle";
-import { toast } from "react-hot-toast";
 import CancellationSlabsTable from "./cancelSlabTable";
 
 interface CancellationSlabsDialogProps {
@@ -41,9 +40,9 @@ const CancellationSlabsDialog: React.FC<CancellationSlabsDialogProps> = ({
             onUpdateVehicleType(updatedVehicleType);
           }
         },
-        onError: (error) => {
-          toast.error("Failed to update cancellation slab");
-        },
+        // onError: (error) => {
+        //   toast.error("Failed to update cancellation slab");
+        // },
       },
     );
   };
