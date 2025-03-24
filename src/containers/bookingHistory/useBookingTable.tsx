@@ -10,8 +10,8 @@ import useUserInfo from "./useUserInfo";
 export const useBookingTableData = (
   initialSearch: string = "",
   onSearchChange?: (search: string) => void,
-  onCancelBooking?: (booking: any) => void,
-  onViewDetails?: (booking: any) => void,
+  onCancelBooking?: (booking: Booking) => void,
+  onViewDetails?: (booking: Booking) => void,
 ) => {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const { userInfo } = useUserInfo();
@@ -53,7 +53,8 @@ export const useBookingTableData = (
       ...bookings.map((booking) => {
         return [
           booking.id || "",
-          formatDate(booking.bookingDate) || "",
+          formatDate(booking.bookingDate ? Number(booking.bookingDate) : 0) ||
+            "",
           booking.driver_name || "",
           booking.carType || "",
           booking.status || "",
