@@ -103,7 +103,7 @@ export const deleteCar = (id: string) => {
           reject(error);
         });
     } catch (error) {
-      console.error("Delete Car Error:", error);
+      // console.error("Delete Car Error:", error);
       reject(error);
     }
   });
