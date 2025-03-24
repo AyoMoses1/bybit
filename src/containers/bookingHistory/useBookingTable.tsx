@@ -36,11 +36,9 @@ export const useBookingTableData = (
     onSearchChange?.("");
   };
 
-  // Export to CSV function
   const exportToCSV = () => {
     if (!bookings || bookings.length === 0) return;
 
-    // Create CSV content
     const headers = [
       "Reference",
       "Booking Date",
@@ -68,7 +66,6 @@ export const useBookingTableData = (
 
     const csvContent = csvRows.join("\n");
 
-    // Create and download CSV file
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
