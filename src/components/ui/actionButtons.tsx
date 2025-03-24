@@ -3,10 +3,20 @@ import { ArrowRight, X } from "lucide-react";
 import { Booking } from "../../containers/bookingDetail/bookingTypes";
 
 interface ActionButtonsProps {
-  booking: Booking;
+  booking?: Booking;
   onCancelBooking?: (booking: Booking) => void;
   onViewDetails?: (booking: Booking) => void;
+  item?: any;
+  onEdit?: () => void;
+  onDelete?: () => void;
 }
+
+// export interface ActionButtonsProps {
+//   item: any; // Replace 'any' with the appropriate type if available
+//   onView: () => void;
+//   onEdit: () => void;
+//   onDelete: () => void;
+// }
 
 const ActionButtons: React.FC<ActionButtonsProps> = ({
   booking,
@@ -20,8 +30,10 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           className="flex items-center justify-center border-r border-gray-200 p-2 hover:bg-gray-50"
           onClick={(e) => {
             e.stopPropagation();
-            console.log("Cancel clicked for booking:", booking.id);
-            if (onCancelBooking) {
+            if (booking) {
+              console.log("Cancel clicked for booking:", booking.id);
+            }
+            if (onCancelBooking && booking) {
               onCancelBooking(booking);
             }
           }}
@@ -32,9 +44,11 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
           className="flex items-center justify-center p-2 hover:bg-gray-50"
           onClick={(e) => {
             e.stopPropagation();
-            console.log("View details clicked for booking:", booking.id);
-            if (onViewDetails) {
-              onViewDetails(booking);
+            if (booking) {
+              console.log("View details clicked for booking:", booking.id);
+              if (onViewDetails) {
+                onViewDetails(booking);
+              }
             }
           }}
         >
