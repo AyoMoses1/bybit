@@ -173,6 +173,7 @@ const CarsTable = ({ search }: { search?: string }) => {
             {" "}
             <CustomTable
               columns={columns}
+              empty="You currently have no registered car"
               data={Array.isArray(cars) ? cars : []}
             />
           </>

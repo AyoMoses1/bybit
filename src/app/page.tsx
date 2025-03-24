@@ -100,10 +100,6 @@ export default function UsersPage() {
             <h2 className="text-center text-[36px] font-bold text-white">
               Log In
             </h2>
-            {/* <p className="mt-2 text-center text-base font-medium text-white">
-              Don’t have an account yet?{" "}
-              <span className="cursor-pointer text-[#FFAFF0]">Sign Up</span>
-            </p> */}
 
             <div className="mt-6 font-[Roboto]">
               <label className="text-base font-semibold text-white">

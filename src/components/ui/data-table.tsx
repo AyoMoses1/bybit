@@ -30,11 +30,13 @@ import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  empty?: string;
 }
 
 export function CustomTable<TData, TValue>({
   columns,
   data,
+  empty,
 }: DataTableProps<TData, TValue>) {
   const table = useReactTable({
     data,
@@ -96,7 +98,7 @@ export function CustomTable<TData, TValue>({
                   </div>
                   <div className="flex flex-col items-start">
                     <p className="mb-[4px] text-base font-medium text-[#6E7079] text-foreground">
-                      No data for this table yet
+                      {empty || "No data for this table yet"}
                     </p>
                   </div>
                 </div>
@@ -108,7 +110,7 @@ export function CustomTable<TData, TValue>({
 
       <div className="mb-[60px] flex items-center justify-center">
         <div className="flex items-center justify-between gap-4 p-5">
-          <div className="font-roboto flex items-center gap-2 text-[#6E7079]">
+          <div className="flex items-center gap-2 font-roboto text-[#6E7079]">
             <div className="relative flex items-center gap-2 rounded-[8px] border-[0.4px] border-[#D5D5D5] bg-[#FAFBFD] px-2 py-1">
               <select
                 className={`cursor-pointer appearance-none bg-[#FAFBFD] bg-transparent text-sm font-semibold outline-none ${pageSize > 8 ? "pr-5" : "pr-3"}`}
@@ -141,9 +143,9 @@ export function CustomTable<TData, TValue>({
             <span className="text-sm font-semibold">per page</span>
           </div>
 
-          <div className="font-roboto flex items-center gap-4 text-[#6E7079]">
+          <div className="flex items-center gap-4 font-roboto text-[#6E7079]">
             <button
-              className="font-roboto flex items-center gap-1 rounded-[8px] border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-3 py-1 text-sm font-semibold text-[#6E7079]"
+              className="flex items-center gap-1 rounded-[8px] border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-3 py-1 font-roboto text-sm font-semibold text-[#6E7079]"
               disabled={!table.getCanPreviousPage()}
               onClick={() => table.previousPage()}
             >
@@ -165,7 +167,7 @@ export function CustomTable<TData, TValue>({
               of {data.length}
             </span>
             <button
-              className="font-roboto flex items-center gap-1 rounded-[8px] border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-3 py-1 text-sm font-semibold text-[#6E7079]"
+              className="flex items-center gap-1 rounded-[8px] border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-3 py-1 font-roboto text-sm font-semibold text-[#6E7079]"
               disabled={!table.getCanNextPage()}
               onClick={() => table.nextPage()}
             >
