@@ -2,7 +2,7 @@
 
 import { CustomTable } from "@/components/ui/data-table";
 import React from "react";
-import { ArrowRight, Trash2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
@@ -10,81 +10,92 @@ import Link from "next/link";
 import { formatDate } from "@/utils/formatDate";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 import { Button } from "@/components/ui/button";
-import { PromoData } from "@/lib/api/apiHandlers/promoService";
 import {
   useDeletePromo,
   usePromos,
   useUpdatePromo,
 } from "@/lib/api/hooks/usePromo";
+import { PromoData } from "@/lib/api/apiHandlers/promoService";
 
 const Promos: React.FC = () => {
   const { data: promos, isLoading } = usePromos();
   const updateMutation = useUpdatePromo();
 
-  console.log({ promos });
-
   const columns: ColumnDef<PromoData>[] = [
     {
-      accessorKey: "promoName",
+      accessorKey: "promo_name",
       header: "Promo Name",
       cell: ({ getValue }) => getValue() || "N/A",
     },
     {
-      accessorKey: "code",
+      accessorKey: "promo_code",
       header: "Code",
       cell: ({ getValue }) => getValue() || "N/A",
     },
     {
-      accessorKey: "description",
+      accessorKey: "promo_description",
       header: "Description",
       cell: ({ getValue }) => getValue() || "N/A",
     },
     {
-      accessorKey: "type",
+      accessorKey: "promo_discount_type",
       header: "Type",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const type = getValue() as string;
+        return type ? type.charAt(0).toUpperCase() + type.slice(1) : "N/A";
+      },
     },
     {
-      accessorKey: "promoValue",
+      accessorKey: "promo_discount_value",
       header: "Promo Value",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue, row }) => {
+        const value = getValue() as number;
+        const type = row.original.promo_discount_type;
+        return type === "percentage" ? `${value}%` : `$${value}`;
+      },
     },
     {
-      accessorKey: "maxDiscountAllowed",
+      accessorKey: "max_promo_discount_value",
       header: "Max Discount Allowed",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const value = getValue() as number;
+        return `$${value}`;
+      },
     },
     {
-      accessorKey: "minimumOrderValue",
+      accessorKey: "min_order",
       header: "Minimum Order Value",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const value = getValue() as number;
+        return `$${value}`;
+      },
     },
     {
-      accessorKey: "endDate",
+      accessorKey: "promo_validity",
       header: "End Date",
       cell: ({ row }) => {
-        const value = row.original.endDate;
+        const value = row.original.promo_validity;
         return value ? formatDate(Number(value)) : "N/A";
       },
     },
     {
-      accessorKey: "promoCountAvailable",
+      accessorKey: "promo_usage_limit",
       header: "Promo Count Available",
       cell: ({ getValue }) => getValue() || "N/A",
     },
     {
-      accessorKey: "showInList",
+      accessorKey: "promo_show",
       header: "Show in List",
       cell: ({ row }) => {
         const [isChecked, setIsChecked] = React.useState<boolean>(
-          row.original.showInList ?? false,
+          row.original.promo_show ?? false,
         );
 
         const handleToggle = async (checked: boolean) => {
           updateMutation.mutate(
             {
               id: row.original.id as string,
-              updatedData: { showInList: checked },
+              updatedData: { promo_show: checked },
             },
             {
               onError: () => setIsChecked(!checked),
@@ -96,7 +107,7 @@ const Promos: React.FC = () => {
       },
     },
     {
-      accessorKey: "usedByCount",
+      accessorKey: "user_avail",
       header: "Used by Count",
       cell: ({ getValue }) => getValue() || "0",
     },
@@ -127,7 +138,7 @@ const Promos: React.FC = () => {
             </Link>
             <DeleteConfirmation
               onClick={handleDelete}
-              text={`Are you sure you want to delete this promo (${row.original.promoName})? This action cannot be undone.`}
+              text={`Are you sure you want to delete this promo (${row.original.promo_name})? This action cannot be undone.`}
             />
           </div>
         );

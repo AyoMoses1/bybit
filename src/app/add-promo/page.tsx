@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
+import { useCreatePromo } from "@/lib/api/hooks/usePromo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -10,27 +11,28 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { PromoData } from "@/lib/api/apiHandlers/promoService";
-import { useCreatePromo } from "@/lib/api/hooks/usePromo";
+import { Label } from "@/components/ui/label";
 import { DatePicker } from "@/components/ui/datePicker";
 
-type PromoFormData = Omit<PromoData, "id">;
+type PromoFormData = Omit<PromoData, "id" | "tableData">;
 
 const AddPromo: React.FC = () => {
   const router = useRouter();
   const createPromoMutation = useCreatePromo();
 
   const [formData, setFormData] = useState<PromoFormData>({
-    promoName: "",
-    description: "",
-    type: "Percentage", // Default type
-    code: "",
-    promoValue: 0,
-    maxDiscountAllowed: 0,
-    minimumOrderValue: 0,
-    endDate: undefined,
-    promoCountAvailable: 0,
-    showInList: true,
-    usedByCount: 0,
+    promo_name: "",
+    promo_description: "",
+    promo_discount_type: "percentage", // Default type
+    promo_code: "",
+    promo_discount_value: 0,
+    max_promo_discount_value: 0,
+    min_order: 0,
+    promo_validity: undefined,
+    promo_usage_limit: 0,
+    promo_show: true,
+    user_avail: 0,
+    createdAt: Date.now(),
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -51,7 +53,7 @@ const AddPromo: React.FC = () => {
   const handleDateChange = (date: Date | null) => {
     setFormData((prev) => ({
       ...prev,
-      endDate: date ? date.getTime() : undefined,
+      promo_validity: date ? date.getTime() : undefined,
     }));
   };
 
@@ -61,10 +63,10 @@ const AddPromo: React.FC = () => {
     // Convert string values to numbers where needed
     const processedData: PromoFormData = {
       ...formData,
-      promoValue: Number(formData.promoValue),
-      maxDiscountAllowed: Number(formData.maxDiscountAllowed),
-      minimumOrderValue: Number(formData.minimumOrderValue),
-      promoCountAvailable: Number(formData.promoCountAvailable),
+      promo_discount_value: Number(formData.promo_discount_value),
+      max_promo_discount_value: Number(formData.max_promo_discount_value),
+      min_order: Number(formData.min_order),
+      promo_usage_limit: Number(formData.promo_usage_limit),
     };
 
     createPromoMutation.mutate(processedData, {
@@ -81,125 +83,134 @@ const AddPromo: React.FC = () => {
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Promo Name
-            </label>
+            <Label htmlFor="promo_name">Promo Name</Label>
             <Input
-              name="promoName"
-              value={formData.promoName}
+              id="promo_name"
+              name="promo_name"
+              value={formData.promo_name}
               onChange={handleChange}
               placeholder="Enter promo name"
               required
+              className="mt-1"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Description
-            </label>
+            <Label htmlFor="promo_description">Description</Label>
             <Input
-              name="description"
-              value={formData.description}
+              id="promo_description"
+              name="promo_description"
+              value={formData.promo_description}
               onChange={handleChange}
               placeholder="Enter description"
+              className="mt-1"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Type
-            </label>
+            <Label htmlFor="promo_discount_type">Type</Label>
             <Select
-              value={formData.type}
-              onValueChange={(value) => handleSelectChange("type", value)}
+              value={formData.promo_discount_type}
+              onValueChange={(value) =>
+                handleSelectChange("promo_discount_type", value)
+              }
             >
-              <SelectTrigger>
+              <SelectTrigger className="mt-1">
                 <SelectValue placeholder="Select type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="Percentage">Percentage</SelectItem>
-                <SelectItem value="Flat">Flat</SelectItem>
+                <SelectItem value="percentage">Percentage</SelectItem>
+                <SelectItem value="flat">Flat</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Promo Code
-            </label>
+            <Label htmlFor="promo_code">Promo Code</Label>
             <Input
-              name="code"
-              value={formData.code}
+              id="promo_code"
+              name="promo_code"
+              value={formData.promo_code}
               onChange={handleChange}
               placeholder="Enter promo code"
               required
+              className="mt-1"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Promo Value
-            </label>
+            <Label htmlFor="promo_discount_value">
+              Discount Value{" "}
+              {formData.promo_discount_type === "percentage" ? "(%)" : "($)"}
+            </Label>
             <Input
-              name="promoValue"
+              id="promo_discount_value"
+              name="promo_discount_value"
               type="number"
-              value={formData.promoValue.toString()}
+              value={formData.promo_discount_value.toString()}
               onChange={handleChange}
-              placeholder="Enter promo value"
+              placeholder={`Enter discount value ${formData.promo_discount_type === "percentage" ? "%" : "$"}`}
               required
+              className="mt-1"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Max Discount Allowed
-            </label>
+            <Label htmlFor="max_promo_discount_value">
+              Max Discount Allowed ($)
+            </Label>
             <Input
-              name="maxDiscountAllowed"
+              id="max_promo_discount_value"
+              name="max_promo_discount_value"
               type="number"
-              value={formData.maxDiscountAllowed.toString()}
+              value={formData.max_promo_discount_value.toString()}
               onChange={handleChange}
               placeholder="Enter max discount allowed"
               required
+              className="mt-1"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Minimum Order Value
-            </label>
+            <Label htmlFor="min_order">Minimum Order Value ($)</Label>
             <Input
-              name="minimumOrderValue"
+              id="min_order"
+              name="min_order"
               type="number"
-              value={formData.minimumOrderValue.toString()}
+              value={formData.min_order.toString()}
               onChange={handleChange}
               placeholder="Enter minimum order value"
               required
+              className="mt-1"
             />
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              End Date
-            </label>
-            <DatePicker
-              selected={formData.endDate ? new Date(formData.endDate) : null}
-              onChange={handleDateChange}
-              placeholderText="Select end date"
-            />
+            <Label htmlFor="promo_validity">Validity End Date</Label>
+            <div className="mt-1">
+              <DatePicker
+                selected={
+                  formData.promo_validity
+                    ? new Date(formData.promo_validity)
+                    : null
+                }
+                onChange={handleDateChange}
+                placeholderText="Select end date"
+              />
+            </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-gray-700">
-              Promo Count Available
-            </label>
+            <Label htmlFor="promo_usage_limit">Usage Limit</Label>
             <Input
-              name="promoCountAvailable"
+              id="promo_usage_limit"
+              name="promo_usage_limit"
               type="number"
-              value={formData.promoCountAvailable.toString()}
+              value={formData.promo_usage_limit.toString()}
               onChange={handleChange}
-              placeholder="Enter available count"
+              placeholder="Enter usage limit"
               required
+              className="mt-1"
             />
           </div>
         </div>

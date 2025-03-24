@@ -14,19 +14,22 @@ import {
 import toast from "react-hot-toast";
 
 export interface PromoData {
-  id?: string;
-  promoName: string;
-  description?: string;
-  type: string;
-  code: string;
-  promoValue: number;
-  maxDiscountAllowed: number;
-  minimumOrderValue: number;
-  endDate?: number;
-  promoCountAvailable: number;
-  showInList?: boolean;
-  usedByCount?: number;
+  id: string;
+  promo_name: string;
+  promo_code: string;
+  promo_description?: string;
+  promo_discount_type: "percentage" | "flat";
+  promo_discount_value: number;
+  max_promo_discount_value: number;
+  min_order: number;
+  promo_validity?: number;
+  promo_usage_limit: number;
+  promo_show?: boolean;
+  user_avail?: number;
   createdAt?: number;
+  tableData?: {
+    id: number;
+  };
 }
 
 export const fetchPromos = (): Promise<PromoData[]> => {
