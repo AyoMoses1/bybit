@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Download, Plus, X } from "lucide-react";
 import CancellationSlabForm from "./cancelSlabForm";
 import SearchComponent from "@/components/SearchComponent";
-import toast from "react-hot-toast";
 
 interface CancellationSlabsTableProps {
   vehicleType: CarType | null;
@@ -98,7 +97,7 @@ const CancellationSlabsTable: React.FC<CancellationSlabsTableProps> = ({
     const updatedVehicleType = { ...vehicleType };
 
     // Update the cancelSlab array
-    updatedVehicleType.cancelSlab = updatedVehicleType.cancelSlab
+    updatedVehicleType.cancelSlab = Array.isArray(updatedVehicleType.cancelSlab)
       ? updatedVehicleType.cancelSlab.filter((slab) => slab.id !== slabToDelete)
       : [];
 
