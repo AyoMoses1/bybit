@@ -1,4 +1,9 @@
-import { ColumnDef } from "@tanstack/react-table";
+export interface DriverOffer {
+  id?: string;
+  amount?: number;
+  driverId?: string;
+  status?: string;
+}
 
 export interface BookingType {
   id?: string;
@@ -27,14 +32,14 @@ export interface BookingType {
   pickup?: {
     add?: string;
     lat?: number;
-    lng?: number;
+  driverOffers?: Record<string, DriverOffer>;
   };
   drop?: {
     add?: string;
     lat?: number;
     lng?: number;
   };
-  driverOffers?: Record<string, any>;
+  driverOffers?: Record<string, DriverOffer>;
 }
 
 export interface CancelBookingRequest {
@@ -46,18 +51,9 @@ export interface CancelBookingRequest {
 export interface BookingHistoryTableProps {
   search?: string;
   onSearchChange?: (search: string) => void;
-  onCancelBooking?: (booking: any) => void;
-  onSelectBid?: (booking: any) => void;
-  onViewDetails?: (booking: any) => void;
-  isLoading?: boolean;
-}
-
-export interface BookingHistoryTableProps {
-  search?: string;
-  onSearchChange?: (search: string) => void;
-  onCancelBooking?: (booking: any) => void;
-  onSelectBid?: (booking: any) => void;
-  onViewDetails?: (booking: any) => void;
+  onCancelBooking?: (booking: Booking) => void;
+  onSelectBid?: (booking: Booking) => void;
+  onViewDetails?: (booking: Booking) => void;
   isLoading?: boolean;
 }
 
@@ -69,7 +65,8 @@ export interface Booking {
   status?: string;
   trip_cost?: string | number;
   reference?: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | undefined;
+
 }
 
 export interface SearchBarProps {
