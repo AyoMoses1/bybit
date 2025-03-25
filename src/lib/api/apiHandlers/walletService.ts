@@ -1,5 +1,35 @@
 import { getDatabase, ref, get, update, push } from 'firebase/database';
 import { toast } from 'react-hot-toast';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+
+// Push notification function
+export const requestPushMsg = async (
+  token: string, 
+  payload: { title: string; msg: string; screen?: string }
+) => {
+  try {
+    const url = 'https://exp.host/--/api/v2/push/send';
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        to: token,
+        title: payload.title,
+        body: payload.msg,
+        data: { screen: payload.screen || 'Wallet' },
+        sound: 'default',
+        priority: 'high',
+      }),
+    });
+    
+    return await response.json();
+  } catch (error) {
+    console.error('Push notification error:', error);
+  }
+};
 
 /**
  * Adds funds to a user's wallet (direct client-side implementation)
@@ -45,17 +75,42 @@ export const addToWallet = async (uid: string, amount: number): Promise<void> =>
     
     // Send push notification if user has a push token
     if (userData.pushToken) {
-      // You can implement push notification here if needed
-      // RequestPushMsg(userData.pushToken, {...});
+      await requestPushMsg(
+        userData.pushToken,
+        {
+          title: 'Wallet Update',
+          msg: 'Your wallet balance has been updated',
+          screen: 'Wallet'
+        }
+      );
     }
     
-    toast.success('Wallet balance updated successfully');
+    // No toast here - we'll handle it in the mutation
     return;
   } catch (error) {
     console.error('Error adding to wallet:', error);
-    toast.error(`Failed to update wallet: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    // No toast here either - we'll handle errors in the mutation
     throw error;
   }
 };
 
-
+/**
+ * Hook for adding to wallet (React Query compatible version)
+ */
+export const useAddToWallet = () => {
+  const queryClient = useQueryClient();
+  
+  return useMutation({
+    mutationFn: ({ uid, amount }: { uid: string; amount: number }) => {
+      return addToWallet(uid, amount);
+    },
+    onSuccess: (_, variables) => {
+      queryClient.invalidateQueries({ queryKey: ['userWallet', variables.uid] });
+      queryClient.invalidateQueries({ queryKey: ['walletHistory', variables.uid] });
+      toast.success('Wallet balance updated successfully');
+    },
+    onError: (error: Error) => {
+      toast.error(`Failed to update wallet: ${error.message}`);
+    }
+  });
+};
