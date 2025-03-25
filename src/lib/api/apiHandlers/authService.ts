@@ -1,4 +1,5 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
+import toast from "react-hot-toast";
 
 interface Credentials {
   email: string;
@@ -18,7 +19,10 @@ export const login = (credentials: Credentials): Promise<void> => {
           resolve();
         })
         .catch((error) => {
-          reject(error);
+          if (error.code === "auth/network-request-failed") {
+            toast.error("Network Request Error. Try again later");
+          }
+          // reject(error);
         });
     } catch (error) {
       reject(error);
