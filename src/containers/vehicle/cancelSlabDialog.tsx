@@ -24,25 +24,31 @@ const CancellationSlabsDialog: React.FC<CancellationSlabsDialogProps> = ({
   }
 
   const handleUpdateVehicleType = (updatedVehicleType: CarType) => {
+    // Create a clean copy while PRESERVING cancelSlab data
+    const cleanedVehicleType = JSON.parse(
+      JSON.stringify({
+        ...updatedVehicleType,
+        // Don't remove the cancelSlab property anymore
+      }),
+    );
+
+    // Check if we have valid cancellation slab data
+    console.log("Saving vehicle type with data:", cleanedVehicleType);
+
     mutation.mutate(
       {
-        cartype: {
-          ...updatedVehicleType,
-          cancellationSlabs: undefined,
-          cancelSlab: undefined,
-        },
+        cartype: cleanedVehicleType,
         method: "Edit",
       },
       {
         onSuccess: () => {
-          // toast.success("Cancellation slab updated successfully");
           if (onUpdateVehicleType) {
             onUpdateVehicleType(updatedVehicleType);
           }
         },
-        // onError: (error) => {
-        //   toast.error("Failed to update cancellation slab");
-        // },
+        onError: (error) => {
+          console.error("Failed to update with error:", error);
+        },
       },
     );
   };
@@ -52,6 +58,7 @@ const CancellationSlabsDialog: React.FC<CancellationSlabsDialogProps> = ({
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50" />
         <Dialog.Content className="fixed left-1/2 top-1/2 w-full max-w-[900px] -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white shadow-lg">
+          <Dialog.Title className="sr-only">Cancellation Slabs</Dialog.Title>
           <CancellationSlabsTable
             vehicleType={vehicleType}
             onUpdateVehicleType={handleUpdateVehicleType}
