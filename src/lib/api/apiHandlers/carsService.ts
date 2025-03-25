@@ -19,11 +19,17 @@ type Car = {
   year?: number;
   type?: string;
   price?: number;
+  active: boolean;
+  driver: string;
+  approved: boolean;
 };
 
 type CarType = {
   id: string;
   name: string;
+  active: boolean;
+  driver: string;
+  approved: boolean;
 };
 
 export const fetchCars = (userType: string, uid: string, search?: string) => {

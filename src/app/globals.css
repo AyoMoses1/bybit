@@ -108,6 +108,14 @@ input:-webkit-autofill:active {
   .badge-withdraw {
     @apply border-[#5570F1] bg-[#E7EBFF] text-[#5570F1];
   }
+
+  .badge-pending {
+    @apply border-[#6226EF] bg-[#E0D4FC] text-[#6226EF];
+  }
+
+  .badge-processed {
+    @apply border-[#5570F1] bg-[#E7EBFF] text-[#5570F1];
+  }
 }
 
 .login-background {
