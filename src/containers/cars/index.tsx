@@ -5,7 +5,12 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import { useGetUserById } from "@/lib/api/hooks/user";
-import { useCars, useDeleteCar, useUpdateCar } from "@/lib/api/hooks/cars";
+import {
+  UpdateCarPayload,
+  useCars,
+  useDeleteCar,
+  useUpdateCar,
+} from "@/lib/api/hooks/cars";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 
 type Car = {
@@ -26,13 +31,18 @@ type UserInfo = {
 };
 
 const CarsTable = ({ search }: { search?: string }) => {
-  const mutation = useUpdateCar();
+  const deleteMutation = useDeleteCar();
+
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { data: cars, isLoading } = useCars(
     userInfo?.usertype ?? "",
     userInfo?.id ?? "",
     search,
   );
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
 
   const DriverCell = ({ driverId }: { driverId: string }) => {
     const { data: driver, isLoading } = useGetUserById(driverId);
@@ -42,6 +52,38 @@ const CarsTable = ({ search }: { search?: string }) => {
         {driver?.firstName ?? "N/A"} {driver?.lastName ?? ""}
       </span>
     );
+  };
+
+  const ActiveStatusCell = ({ car }: { car: Car }) => {
+    const mutation = useUpdateCar();
+    const [isChecked, setIsChecked] = React.useState(car.active);
+
+    const handleToggle = (checked: boolean) => {
+      mutation.mutate(
+        { id: car.id, updatedData: { active: checked } as UpdateCarPayload },
+        {
+          onError: () => setIsChecked(!checked),
+        },
+      );
+    };
+
+    return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
+  };
+
+  const ApprovedStatusCell = ({ car }: { car: Car }) => {
+    const mutation = useUpdateCar();
+    const [isChecked, setIsChecked] = React.useState(car.approved);
+
+    const handleToggle = (checked: boolean) => {
+      mutation.mutate(
+        { id: car.id, updatedData: { approved: checked } as UpdateCarPayload },
+        {
+          onError: () => setIsChecked(!checked),
+        },
+      );
+    };
+
+    return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
   };
 
   const columns: ColumnDef<Car>[] = [
@@ -83,54 +125,17 @@ const CarsTable = ({ search }: { search?: string }) => {
     {
       accessorKey: "active",
       header: "Active Status",
-      cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.active ?? false,
-        );
-
-        const handleToggle = async (checked: boolean) => {
-          mutation.mutate(
-            { id: row.original.id, updatedData: { active: checked } },
-            {
-              onError: () => setIsChecked(!checked),
-            },
-          );
-        };
-
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
-      },
+      cell: ({ row }) => <ActiveStatusCell car={row.original} />,
     },
-
     {
       accessorKey: "approved",
       header: "Approved",
-      cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.approved ?? false,
-        );
-
-        const handleToggle = async (checked: boolean) => {
-          mutation.mutate(
-            { id: row.original.id, updatedData: { approved: checked } },
-            {
-              onError: () => setIsChecked(!checked),
-            },
-          );
-        };
-
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
-      },
+      cell: ({ row }) => <ApprovedStatusCell car={row.original} />,
     },
     {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const deleteMutation = useDeleteCar();
-
-        const handleDelete = () => {
-          deleteMutation.mutate(row.original.id);
-        };
-
         return (
           <div>
             <div
@@ -147,7 +152,7 @@ const CarsTable = ({ search }: { search?: string }) => {
               </Link>
 
               <DeleteConfirmation
-                onClick={handleDelete}
+                onClick={() => handleDelete(row.original.id)}
                 text={`Are you sure you want to delete this car (${row.original.vehicleMake})? This action can not be undone`}
               />
             </div>

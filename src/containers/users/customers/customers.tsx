@@ -9,6 +9,17 @@ import { formatDate } from "@/utils/formatDate";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 import Image from "next/image";
 
+type Customer = {
+  id: string;
+  createdAt: number;
+  firstName: string;
+  lastName: string;
+  mobile: string;
+  email: string;
+  profile_image?: string;
+  approved: boolean;
+};
+
 const Customers = ({ search }: { search?: string }) => {
   const mutation = useUpdateUser();
 
@@ -17,8 +28,22 @@ const Customers = ({ search }: { search?: string }) => {
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id);
   };
+  const [toggleStates, setToggleStates] = React.useState<
+    Record<string, boolean>
+  >({});
 
-  const columns: ColumnDef<any>[] = [
+  const handleToggle = (id: string, checked: boolean) => {
+    setToggleStates((prev) => ({ ...prev, [id]: checked }));
+
+    mutation.mutate(
+      { id, updatedData: { approved: checked } },
+      {
+        onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
+      },
+    );
+  };
+
+  const columns: ColumnDef<Customer>[] = [
     {
       accessorKey: "createdAt",
       header: "Date Created",
@@ -73,20 +98,14 @@ const Customers = ({ search }: { search?: string }) => {
       accessorKey: "approved",
       header: "Active Status",
       cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.approved ?? false,
+        return (
+          <Switch
+            checked={toggleStates[row.original.id] ?? row.original.approved}
+            onCheckedChange={(checked) =>
+              handleToggle(row.original.id, checked)
+            }
+          />
         );
-
-        const handleToggle = async (checked: boolean) => {
-          mutation.mutate(
-            { id: row.original.id, updatedData: { approved: checked } },
-            {
-              onError: () => setIsChecked(!checked),
-            },
-          );
-        };
-
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
       },
     },
     {
@@ -120,6 +139,19 @@ const Customers = ({ search }: { search?: string }) => {
 
   const { data: user, isLoading } = useUser("customer", search);
 
+  const customers: Customer[] = Array.isArray(user)
+    ? user.map((user) => ({
+        id: user.id,
+        createdAt: user.createdAt ? Number(user.createdAt) : Date.now(),
+        firstName: user.firstName || "",
+        lastName: user.lastName || "",
+        mobile: user.mobile || "",
+        email: user.email || "",
+        profile_image: user.profile_image || "",
+        approved: Boolean(user?.approved),
+      }))
+    : [];
+
   return (
     <div className="px-1">
       <div>
@@ -133,10 +165,7 @@ const Customers = ({ search }: { search?: string }) => {
         ) : (
           <>
             {" "}
-            <CustomTable
-              columns={columns}
-              data={Array.isArray(user) ? user : []}
-            />
+            <CustomTable columns={columns} data={customers} />
           </>
         )}
       </div>

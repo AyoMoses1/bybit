@@ -40,7 +40,7 @@ export const fetchDriversEarningReport = async (
       (mainArr[j].status === "PAID" || mainArr[j].status === "COMPLETE") &&
       mainArr[j].driver_share !== undefined
     ) {
-      let bdt = new Date(mainArr[j].tripdate);
+      const bdt = new Date(mainArr[j].tripdate);
       let uniqueKey =
         bdt.getFullYear() + "_" + bdt.getMonth() + "_" + mainArr[j].driver;
 
@@ -129,7 +129,7 @@ export const fetchEarningReport = async (search?: string) => {
       (mainArr[j].status === "CANCELLED" &&
         mainArr[j].hasOwnProperty("cancellationFee"))
     ) {
-      let bdt = new Date(mainArr[j].tripdate);
+      const bdt = new Date(mainArr[j].tripdate);
       let uniqueKey = bdt.getFullYear() + "_" + bdt.getMonth();
       if (renderobj[uniqueKey]) {
         if (status == "CANCELLED") {
@@ -303,8 +303,8 @@ export const fetchFleetEarningReport = async (
       mainArr[j].fleetCommission !== undefined &&
       mainArr[j].fleetCommission > 0
     ) {
-      let bdt = new Date(mainArr[j].tripdate);
-      let uniqueKey =
+      const bdt = new Date(mainArr[j].tripdate);
+      const uniqueKey =
         bdt.getFullYear() + "_" + bdt.getMonth() + "_" + mainArr[j].fleetadmin;
       if (renderobj[uniqueKey] && renderobj[uniqueKey].fleetCommission > 0) {
         renderobj[uniqueKey].fleetCommission = (
@@ -316,7 +316,7 @@ export const fetchFleetEarningReport = async (
       } else {
         onValue(singleUserRef(mainArr[j].fleetadmin), async (userdata) => {
           if (userdata.val()) {
-            let user = await userdata.val();
+            const user = await userdata.val();
             if (user) {
               renderobj[uniqueKey]["fleetadminName"] =
                 user.firstName + " " + user.lastName;

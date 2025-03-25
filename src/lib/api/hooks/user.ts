@@ -15,12 +15,15 @@ const USER_STATE_KEY = "user";
 
 export interface UserType {
   id: string;
-  name: string;
   email: string;
-  phone?: string;
+  mobile?: string;
   role: "admin" | "user" | "driver" | "fleetadmin";
   createdAt: string;
   updatedAt: string;
+  firstName: string;
+  lastName: string;
+  approved: boolean;
+  profile_image: string;
 }
 
 export const useUsers = () => {
@@ -43,7 +46,7 @@ export const useUser = (type: string, search?: string) => {
 };
 
 export const useGetUserById = (id: string) => {
-  return useQuery({
+  return useQuery<any>({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchUserById(id),
     staleTime: Infinity,

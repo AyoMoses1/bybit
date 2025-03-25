@@ -20,10 +20,12 @@ interface Car {
   price: number;
 }
 
-interface UpdateCarPayload {
+export type UpdateCarPayload = {
   id: string;
+  active?: boolean;
+  approved?: boolean;
   updatedData: Partial<Car>;
-}
+};
 
 export const useCars = (userType: string, uid: string, search?: string) => {
   return useQuery({
@@ -45,7 +47,7 @@ export const useCarTypes = () => {
 };
 
 export const useGetCarById = (id: string) => {
-  return useQuery<Car>({
+  return useQuery<any>({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchCarById(id),
     staleTime: Infinity,

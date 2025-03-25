@@ -1,18 +1,24 @@
 import { CustomTable } from "@/components/ui/data-table";
 import React, { useMemo, useState } from "react";
-import { Search } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useUsersRide } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
 import SearchComponent from "@/components/SearchComponent";
 
+type Ride = {
+  pickupAddress?: string;
+  dropAddress?: string;
+  status?: string;
+  reference?: string;
+};
+
 const DriverRides = ({ id }: { id: string | string[] }) => {
   const userId = Array.isArray(id) ? id[0] : id;
-  const { data: usersRide, isLoading } = useUsersRide(userId ?? "", "driver");
+  const { data: usersRide, isLoading } = useUsersRide(userId ?? "");
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredRides = useMemo(() => {
-    return (Array.isArray(usersRide) ? usersRide : []).filter((ride: any) => {
+    return (Array.isArray(usersRide) ? usersRide : []).filter((ride: Ride) => {
       const pickup = ride.pickupAddress?.toLowerCase() || "";
       const drop = ride.dropAddress?.toLowerCase() || "";
       const status = ride.status?.toLowerCase() || "";
@@ -28,7 +34,7 @@ const DriverRides = ({ id }: { id: string | string[] }) => {
     });
   }, [usersRide, searchTerm]);
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<Ride>[] = [
     {
       accessorKey: "status",
       header: "Booking Status",

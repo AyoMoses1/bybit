@@ -67,7 +67,7 @@ export default function UsersPage() {
           if (Array.isArray(adminUser)) {
             const user = adminUser.find((user) => user.email === data.email);
 
-            if (user.usertype === "admin" || user.usertype === "fleetadmin") {
+            if (user?.usertype === "admin" || user?.usertype === "fleetadmin") {
               localStorage.setItem("authenticated", JSON.stringify(true));
               localStorage.setItem("userInfo", JSON.stringify(user));
               setLoading(false);
@@ -90,7 +90,7 @@ export default function UsersPage() {
     if (userAuthenticated === "true") {
       router.push("/dashboard");
     }
-  }, []);
+  }, [router]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="">

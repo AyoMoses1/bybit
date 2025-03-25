@@ -1,10 +1,9 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React, { useState } from "react";
-import { ArrowRight, Trash2, User } from "lucide-react";
+import React from "react";
+import { ArrowRight, User } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
-import deleteIcon from "../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useDeleteUser, useUpdateUser, useUser } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
@@ -12,6 +11,11 @@ import DeleteConfirmation from "@/components/deleteConfirmation";
 
 const FleetAdmin = ({ search }: { search?: string }) => {
   const mutation = useUpdateUser();
+  const deleteMutation = useDeleteUser();
+
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
 
   const columns: ColumnDef<any>[] = [
     {
@@ -48,7 +52,9 @@ const FleetAdmin = ({ search }: { search?: string }) => {
         return (
           <>
             {imageUrl ? (
-              <img
+              <Image
+                width={32}
+                height={32}
                 src={imageUrl}
                 alt="Profile"
                 className="h-8 w-8 rounded-full"
@@ -87,11 +93,6 @@ const FleetAdmin = ({ search }: { search?: string }) => {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const deleteMutation = useDeleteUser();
-
-        const handleDelete = () => {
-          deleteMutation.mutate(row.original.id);
-        };
         return (
           <div>
             <div
@@ -107,7 +108,7 @@ const FleetAdmin = ({ search }: { search?: string }) => {
                 </div>
               </Link>
               <DeleteConfirmation
-                onClick={handleDelete}
+                onClick={() => handleDelete(row.original.id)}
                 text={`Are you sure you want to delete this user (${row.original.firstName + " " + row.original.lastName})? This action can not be undone`}
               />
             </div>

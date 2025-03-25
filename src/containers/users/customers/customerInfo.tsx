@@ -47,7 +47,6 @@ const CustomerInfo = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -151,7 +150,7 @@ const CustomerInfo = () => {
               className="relative flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full bg-[#ECECEE]"
             >
               {selectedImage ? (
-                <img
+                <Image
                   src={selectedImage}
                   alt="Uploaded preview"
                   className="h-full w-full rounded-full object-cover"
@@ -227,7 +226,7 @@ const CustomerInfo = () => {
                   {/* Image Preview Box */}
                   <div className="flex h-[100px] w-[100px] items-center justify-center rounded-[5px] border bg-[#E2E6EC]">
                     {preview ? (
-                      <img
+                      <Image
                         src={preview}
                         alt="Preview"
                         className="h-full w-full rounded-lg object-cover"
@@ -269,11 +268,6 @@ const CustomerInfo = () => {
                             {file && (
                               <p className="mt-1 max-w-[80px] truncate text-sm text-gray-600">
                                 {file.name}
-                              </p>
-                            )}
-                            {error && (
-                              <p className="mt-1 text-sm text-red-500">
-                                {error}
                               </p>
                             )}
                           </>

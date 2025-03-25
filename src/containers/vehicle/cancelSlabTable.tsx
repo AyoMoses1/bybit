@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Download, Plus, X } from "lucide-react";
 import CancellationSlabForm from "./cancelSlabForm";
 import SearchComponent from "@/components/SearchComponent";
-import toast from "react-hot-toast";
 
 interface CancellationSlabsTableProps {
   vehicleType: CarType | null;

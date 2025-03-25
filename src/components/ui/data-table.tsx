@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import {
   ColumnDef,
   flexRender,
@@ -16,16 +15,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { assetLib } from "@/lib/assets";
-import { Button } from "./button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@radix-ui/react-select";
-import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
+
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];

@@ -7,6 +7,7 @@ import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
+import Image from "next/image";
 
 type User = {
   firstName: string;
@@ -118,7 +119,7 @@ const UpdateFleetAdmin = () => {
               className="relative flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full bg-[#ECECEE]"
             >
               {selectedImage ? (
-                <img
+                <Image
                   src={selectedImage}
                   alt="Uploaded preview"
                   className="h-full w-full rounded-full object-cover"

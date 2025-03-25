@@ -1,6 +1,6 @@
 import { CustomTable } from "@/components/ui/data-table";
 import React, { useMemo, useState } from "react";
-import { Search, TrendingDown } from "lucide-react";
+import { TrendingDown } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useGetUserById, useUserWalletHistory } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
@@ -8,6 +8,13 @@ import SearchComponent from "@/components/SearchComponent";
 
 type User = {
   walletBalance: string;
+};
+
+type WalletTransaction = {
+  date: number;
+  amount: number;
+  transaction_id?: string;
+  type: string;
 };
 
 const CustomerWallet = ({ id }: { id: string | string[] }) => {
@@ -19,7 +26,7 @@ const CustomerWallet = ({ id }: { id: string | string[] }) => {
 
   const { data: walletHistory, isLoading } = useUserWalletHistory(userId ?? "");
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<WalletTransaction>[] = [
     {
       accessorKey: "date",
       header: "Request Date",
@@ -64,7 +71,7 @@ const CustomerWallet = ({ id }: { id: string | string[] }) => {
   const filteredHistory = useMemo(() => {
     if (!walletHistory) return [];
     return walletHistory.filter(
-      (item: any) =>
+      (item: WalletTransaction) =>
         item.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
         String(item.amount).includes(searchTerm) ||
         String(item.transaction_id).includes(searchTerm),

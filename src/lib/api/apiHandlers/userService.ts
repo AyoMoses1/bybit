@@ -23,6 +23,7 @@ interface User {
   profile_image?: string;
   createdAt?: string;
   usertype?: string;
+  approved: boolean;
 }
 
 interface Ride {
@@ -128,7 +129,7 @@ export const fetchUser = (userType: string, search?: string) => {
 };
 
 export const fetchUserById = (id: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<User>((resolve, reject) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, `users/${id}`);
@@ -140,7 +141,7 @@ export const fetchUserById = (id: string) => {
           if (data) {
             resolve({ id: id, ...data });
           } else {
-            resolve(null);
+            reject("User not found");
           }
         },
         (error) => {
