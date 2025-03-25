@@ -3,15 +3,29 @@ import React, { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useDriversReports } from "@/lib/api/hooks/reports";
 
+type DriverReport = {
+  year: number;
+  month: string;
+  driverName: string;
+  total_rides: number;
+  driverVehicleNo: string;
+  driverShare: number;
+};
+
+type UserInfo = {
+  id: string;
+  usertype: string;
+};
+
 const DriverEarningHistory = ({ search }: { search?: string }) => {
-  const [userInfo, setUserInfo] = useState<any>();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { data: reports, isLoading } = useDriversReports(
-    userInfo?.usertype,
-    userInfo?.id,
+    userInfo?.usertype ?? "",
+    userInfo?.id ?? "",
     search,
   );
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<DriverReport>[] = [
     {
       accessorKey: "year",
       header: "Year",

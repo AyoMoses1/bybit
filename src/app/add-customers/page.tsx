@@ -13,7 +13,7 @@ import { z } from "zod";
 
 const AddCustomers = () => {
   const mutation = useCreateUser();
-  const [selectedValue, setSelectedValue] = useState("");
+  const [selectedValue] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
 

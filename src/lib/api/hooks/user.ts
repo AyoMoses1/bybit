@@ -13,6 +13,16 @@ import toast from "react-hot-toast";
 
 const USER_STATE_KEY = "user";
 
+export interface UserType {
+  id: string;
+  name: string;
+  email: string;
+  phone?: string;
+  role: "admin" | "user" | "driver" | "fleetadmin";
+  createdAt: string;
+  updatedAt: string;
+}
+
 export const useUsers = () => {
   return useQuery({
     queryKey: [USER_STATE_KEY],
@@ -33,7 +43,7 @@ export const useUser = (type: string, search?: string) => {
 };
 
 export const useGetUserById = (id: string) => {
-  return useQuery<any>({
+  return useQuery({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchUserById(id),
     staleTime: Infinity,
@@ -44,8 +54,13 @@ export const useGetUserById = (id: string) => {
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ id, updatedData }: { id: string; updatedData: any }) =>
-      updateUser(id, updatedData),
+    mutationFn: ({
+      id,
+      updatedData,
+    }: {
+      id: string;
+      updatedData: Partial<UserType>;
+    }) => updateUser(id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
     },
@@ -58,7 +73,7 @@ export const useUpdateUser = () => {
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ updatedData }: { updatedData: any }) =>
+    mutationFn: ({ updatedData }: { updatedData: Partial<UserType> }) =>
       createUser(updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
@@ -87,10 +102,10 @@ export const useDeleteUser = () => {
   });
 };
 
-export const useUsersRide = (id: string, type: string) => {
+export const useUsersRide = (id: string) => {
   return useQuery({
-    queryKey: ["usersRide", id, type],
-    queryFn: () => fetchUserRides(id, type),
+    queryKey: ["usersRide", id],
+    queryFn: () => fetchUserRides(id),
     staleTime: Infinity,
     retry: 2,
   });

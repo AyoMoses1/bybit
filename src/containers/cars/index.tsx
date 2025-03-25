@@ -8,41 +8,49 @@ import { useGetUserById } from "@/lib/api/hooks/user";
 import { useCars, useDeleteCar, useUpdateCar } from "@/lib/api/hooks/cars";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 
+type Car = {
+  id: string;
+  driver: string;
+  carType: string;
+  vehicleNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
+  other_info: string;
+  active: boolean;
+  approved: boolean;
+};
+
+type UserInfo = {
+  id: string;
+  usertype: string;
+};
+
 const CarsTable = ({ search }: { search?: string }) => {
   const mutation = useUpdateCar();
-  const [userInfo, setUserInfo] = useState<any>();
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { data: cars, isLoading } = useCars(
-    userInfo?.usertype,
-    userInfo?.id,
+    userInfo?.usertype ?? "",
+    userInfo?.id ?? "",
     search,
   );
 
-  const columns: ColumnDef<any>[] = [
+  const DriverCell = ({ driverId }: { driverId: string }) => {
+    const { data: driver, isLoading } = useGetUserById(driverId);
+    if (isLoading) return <span>Loading...</span>;
+    return (
+      <span>
+        {driver?.firstName ?? "N/A"} {driver?.lastName ?? ""}
+      </span>
+    );
+  };
+
+  const columns: ColumnDef<Car>[] = [
     {
       accessorKey: "driver",
       header: "Driver",
-      cell: ({ getValue }) => {
-        const id = String(getValue() || "");
-
-        const { data: driver, isLoading } = useGetUserById(id);
-
-        if (isLoading) return <span>Loading...</span>;
-        if (!driver || Object.keys(driver).length === 0)
-          return <span>N/A</span>;
-
-        return (
-          <span>
-            {driver.firstName ? (
-              <>
-                {" "}
-                {driver.firstName ?? "N/A"} {driver.lastName ?? ""}
-              </>
-            ) : (
-              "N/A"
-            )}
-          </span>
-        );
-      },
+      cell: ({ getValue }) => (
+        <DriverCell driverId={String(getValue() || "")} />
+      ),
     },
 
     {

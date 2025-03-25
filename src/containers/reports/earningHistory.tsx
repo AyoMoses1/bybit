@@ -1,12 +1,23 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React, { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import { useDriversReports, useEarningReports } from "@/lib/api/hooks/reports";
+import { useEarningReports } from "@/lib/api/hooks/reports";
+
+type EarningReport = {
+  year: number;
+  month: string;
+  total_rides: number;
+  tripCost: number;
+  driverShare: number;
+  cancellationFee: number;
+  convenienceFee: number;
+  discountAmount: number;
+  myEarning: number;
+};
 
 const EarningHistory = ({ search }: { search?: string }) => {
   const { data: reports, isLoading } = useEarningReports(search);
 
-  const columns: ColumnDef<any>[] = [
+  const columns: ColumnDef<EarningReport>[] = [
     {
       accessorKey: "year",
       header: "Year",

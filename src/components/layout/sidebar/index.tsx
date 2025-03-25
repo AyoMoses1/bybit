@@ -64,9 +64,9 @@ const otherMenuItems = [
 
 function AppSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const isActive = (url: string): boolean => {
-    const pathname = usePathname();
     if (
       url === "/users" &&
       [

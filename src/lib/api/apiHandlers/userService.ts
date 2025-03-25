@@ -3,12 +3,10 @@ import {
   ref,
   getDatabase,
   update,
-  set,
   off,
   orderByChild,
   equalTo,
   query,
-  push,
   remove,
 } from "firebase/database";
 import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -16,8 +14,28 @@ import firebase from "@/lib/firebase";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import toast from "react-hot-toast";
 
+interface User {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  mobile?: string;
+  email?: string;
+  profile_image?: string;
+  createdAt?: string;
+  usertype?: string;
+}
+
+interface Ride {
+  id: string;
+  pickupAddress: string;
+  dropAddress: string;
+  discount: number;
+  cashPaymentAmount: number;
+  cardPaymentAmount: number;
+}
+
 export const fetchUsers = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise<User[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, "users");
@@ -58,7 +76,7 @@ export const fetchUsers = () => {
 };
 
 export const fetchUser = (userType: string, search?: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<User[]>((resolve) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, "users");
@@ -232,7 +250,7 @@ export const updateCustomerProfileImage = async (
   }
 };
 
-export const fetchUserRides = (userId: string, type: string) => {
+export const fetchUserRides = (userId: string) => {
   return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -254,15 +272,17 @@ export const fetchUserRides = (userId: string, type: string) => {
           }
 
           const data = snapshot.val();
-          const rides = Object.entries(data).map(([id, value]: any) => ({
-            id,
-            pickupAddress: value.pickup?.add || "",
-            dropAddress: value.drop?.add || "",
-            discount: value.discount || 0,
-            cashPaymentAmount: value.cashPaymentAmount || 0,
-            cardPaymentAmount: value.cardPaymentAmount || 0,
-            ...value,
-          }));
+          const rides: Ride[] = Object.entries(data).map(
+            ([id, value]: [string, any]) => ({
+              id,
+              pickupAddress: value.pickup?.add || "",
+              dropAddress: value.drop?.add || "",
+              discount: value.discount || 0,
+              cashPaymentAmount: value.cashPaymentAmount || 0,
+              cardPaymentAmount: value.cardPaymentAmount || 0,
+              ...value,
+            }),
+          );
 
           resolve(rides.reverse());
         },

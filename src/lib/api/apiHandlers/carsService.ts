@@ -3,14 +3,9 @@ import {
   ref,
   getDatabase,
   update,
-  orderByChild,
-  equalTo,
-  query,
   remove,
   push,
 } from "firebase/database";
-import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import firebase from "@/lib/firebase";
 
 export const fetchCars = (userType: string, uid: string, search?: string) => {
   return new Promise<any[]>((resolve, reject) => {

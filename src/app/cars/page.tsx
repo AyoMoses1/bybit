@@ -2,28 +2,13 @@
 import SearchComponent from "@/components/SearchComponent";
 import { Button } from "@/components/ui/button";
 import CarsTable from "@/containers/cars";
-import Admin from "@/containers/users/admin";
-import Customers from "@/containers/users/customers/customers";
-import Drivers from "@/containers/users/drivers/drivers";
-import FleetAdmin from "@/containers/users/fleetAdmin";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
-import { Plus, Search } from "lucide-react";
+import { Plus } from "lucide-react";
 import Link from "next/link";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 
 const Cars = () => {
-  const [userInfo, setUserInfo] = useState<any>();
-  const [selectedTab, setSelectedTab] = useState("Customers");
   const [searchTerm, setSearchTerm] = useState("");
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const info = localStorage.getItem("userInfo");
-      if (info) {
-        setUserInfo(JSON.parse(info));
-      }
-    }
-  }, []);
 
   return (
     <div className="mt-6">

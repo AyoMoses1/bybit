@@ -6,15 +6,7 @@ import { ChevronDown, User } from "lucide-react";
 import home from "../../../assets/svgs/icon.svg";
 import Link from "next/link";
 import language from "../../../assets/svgs/system-uicons_translate.svg";
-import { useGetUserById } from "@/lib/api/hooks/user";
-import { Locale, useTranslations } from "next-intl";
-
-// Type definitions
-type MenuItemType = {
-  label: string;
-  onClick?: () => void;
-  icon?: React.ComponentType<{ className?: string }>;
-};
+import { Locale } from "next-intl";
 
 // Constants
 const ROUTES = {
@@ -64,11 +56,16 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.helpCenter]: "Help Center",
   [ROUTES.reports]: "Reports",
 };
+interface UserInfo {
+  firstName?: string;
+  lastName?: string;
+  profile_image?: string;
+}
 
 const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
-  const [userInfo, setUserInfo] = useState<any>();
+  const [userInfo, setUserInfo] = useState<UserInfo>();
   const [toggleLang, setToggleLang] = useState(false);
   const locale = ["en", "fr"];
 
@@ -211,7 +208,7 @@ const Header = () => {
         <div className="flex cursor-pointer items-center gap-2">
           <div className="h-7 w-7 rounded-full border bg-gray-200">
             {userInfo?.profile_image ? (
-              <img
+              <Image
                 src={userInfo?.profile_image}
                 alt="Home icon"
                 width={28}
