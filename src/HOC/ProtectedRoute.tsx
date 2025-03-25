@@ -1,10 +1,12 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { FC, useEffect, useState } from "react";
+import { ComponentType, useEffect, useState } from "react";
 
-const ProtectedRoute = <P extends object>(WrappedComponent: FC<P>) => {
-  return (props: any) => {
+const ProtectedRoute = <P extends object>(
+  WrappedComponent: ComponentType<P>,
+) => {
+  const Wrapper = (props: P) => {
     const router = useRouter();
     const [loading, setLoading] = useState(true);
 
@@ -17,7 +19,7 @@ const ProtectedRoute = <P extends object>(WrappedComponent: FC<P>) => {
       } else {
         setLoading(false);
       }
-    }, []);
+    }, [router]);
 
     if (loading) {
       return <p>Loading...</p>;
@@ -25,6 +27,8 @@ const ProtectedRoute = <P extends object>(WrappedComponent: FC<P>) => {
 
     return <WrappedComponent {...props} />;
   };
+
+  return Wrapper;
 };
 
 export default ProtectedRoute;

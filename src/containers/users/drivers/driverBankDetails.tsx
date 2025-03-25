@@ -1,6 +1,6 @@
 "use client";
 
-import React, { FC, useState } from "react";
+import React, { FC } from "react";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { useGetUserById } from "@/lib/api/hooks/user";
 

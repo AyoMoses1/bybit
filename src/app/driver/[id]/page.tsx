@@ -1,6 +1,5 @@
 "use client";
-import CustomersBankDetails from "@/containers/users/customers/customerBankDetails";
-import CustomerWallet from "@/containers/users/customers/customerWallet";
+
 import DriverBankDetails from "@/containers/users/drivers/driverBankDetails";
 import DriverCar from "@/containers/users/drivers/driverCar";
 import DriverInfo from "@/containers/users/drivers/driverInfo";
@@ -67,7 +66,7 @@ const Driver = () => {
           <div>
             {" "}
             <div>
-              <DriverCar id={id ?? ""} />
+              <DriverCar />
             </div>
           </div>
         ) : selectedTab?.title === "Bank Details" ? (

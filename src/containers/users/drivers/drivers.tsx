@@ -1,19 +1,49 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React, { useState } from "react";
-import { ArrowRight, Trash2, User } from "lucide-react";
+import React from "react";
+import { ArrowRight, User } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
-import deleteIcon from "../../../assets/svgs/Vector (1).svg";
-import Image from "next/image";
 import { useDeleteUser, useUpdateUser, useUser } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
 import DeleteConfirmation from "@/components/deleteConfirmation";
+import Image from "next/image";
+
+type Driver = {
+  id: string;
+  createdAt: number;
+  firstName: string;
+  lastName: string;
+  mobile: string;
+  email: string;
+  profile_image?: string;
+  approved: boolean;
+};
 
 const Drivers = ({ search }: { search?: string }) => {
-  const mutation = useUpdateUser();
+  const deleteMutation = useDeleteUser();
 
-  const columns: ColumnDef<any>[] = [
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
+  const ApprovalSwitch = ({ driver }: { driver: Driver }) => {
+    const mutation = useUpdateUser();
+    const [isChecked, setIsChecked] = React.useState(driver.approved);
+
+    const handleToggle = async (checked: boolean) => {
+      mutation.mutate(
+        { id: driver.id, updatedData: { approved: checked } },
+        {
+          onError: () => setIsChecked(!checked),
+        },
+      );
+    };
+
+    return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
+  };
+
+  const columns: ColumnDef<Driver>[] = [
     {
       accessorKey: "createdAt",
       header: "Date Created",
@@ -47,7 +77,9 @@ const Drivers = ({ search }: { search?: string }) => {
         return (
           <>
             {imageUrl ? (
-              <img
+              <Image
+                width={40}
+                height={40}
                 src={imageUrl}
                 alt="Profile"
                 className="h-10 w-10 rounded-full"
@@ -65,33 +97,13 @@ const Drivers = ({ search }: { search?: string }) => {
     {
       accessorKey: "approved",
       header: "Active Status",
-      cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.approved ?? false,
-        );
-
-        const handleToggle = async (checked: boolean) => {
-          mutation.mutate(
-            { id: row.original.id, updatedData: { approved: checked } },
-            {
-              onError: () => setIsChecked(!checked),
-            },
-          );
-        };
-
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
-      },
+      cell: ({ row }) => <ApprovalSwitch driver={row.original} />,
     },
 
     {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const deleteMutation = useDeleteUser();
-
-        const handleDelete = () => {
-          deleteMutation.mutate(row.original.id);
-        };
         return (
           <div>
             <div
@@ -107,7 +119,7 @@ const Drivers = ({ search }: { search?: string }) => {
                 </div>
               </Link>
               <DeleteConfirmation
-                onClick={handleDelete}
+                onClick={() => handleDelete(row.original.id)}
                 text={`Are you sure you want to delete this user (${row.original.firstName + " " + row.original.lastName})? This action can not be undone`}
               />
             </div>
@@ -118,6 +130,17 @@ const Drivers = ({ search }: { search?: string }) => {
   ];
 
   const { data: user, isLoading } = useUser("driver", search);
+
+  const drivers: Driver[] = (Array.isArray(user) ? user : []).map((user) => ({
+    id: user.id,
+    createdAt: user.createdAt ? new Date(user.createdAt).getTime() : Date.now(),
+    firstName: user.firstName || "N/A",
+    lastName: user.lastName || "N/A",
+    mobile: user.mobile || "N/A",
+    email: user.email || "N/A",
+    profile_image: user.profile_image || "",
+    approved: Boolean(user.approved),
+  }));
 
   return (
     <div className="px-1">
@@ -132,10 +155,7 @@ const Drivers = ({ search }: { search?: string }) => {
         ) : (
           <>
             {" "}
-            <CustomTable
-              columns={columns}
-              data={Array.isArray(user) ? user : []}
-            />
+            <CustomTable columns={columns} data={drivers} />
           </>
         )}
       </div>

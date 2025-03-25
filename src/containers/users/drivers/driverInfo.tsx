@@ -46,7 +46,6 @@ const DriverInfo = () => {
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -152,8 +151,10 @@ const DriverInfo = () => {
               className="relative flex h-[70px] w-[70px] cursor-pointer items-center justify-center rounded-full bg-[#ECECEE]"
             >
               {selectedImage ? (
-                <img
+                <Image
                   src={selectedImage}
+                  width={70}
+                  height={70}
                   alt="Uploaded preview"
                   className="h-full w-full rounded-full object-cover"
                 />
@@ -250,9 +251,11 @@ const DriverInfo = () => {
                   {/* Image Preview Box */}
                   <div className="flex h-[100px] w-[100px] items-center justify-center rounded-[5px] border bg-[#E2E6EC]">
                     {preview ? (
-                      <img
+                      <Image
                         src={preview}
                         alt="Preview"
+                        width={100}
+                        height={100}
                         className="h-full w-full rounded-lg object-cover"
                       />
                     ) : (
@@ -292,11 +295,6 @@ const DriverInfo = () => {
                             {file && (
                               <p className="mt-1 max-w-[80px] truncate text-sm text-gray-600">
                                 {file.name}
-                              </p>
-                            )}
-                            {error && (
-                              <p className="mt-1 text-sm text-red-500">
-                                {error}
                               </p>
                             )}
                           </>

@@ -61,7 +61,7 @@ const Customer = () => {
           </div>
         ) : selectedTab?.title === "Bank Details" ? (
           <div>
-            <CustomersBankDetails />
+            <CustomersBankDetails id={id ?? ""} />
           </div>
         ) : null}
       </div>

@@ -1,6 +1,6 @@
 // components/ui/data-table/DataTableToolbar.js
 "use client";
-import React, { useState } from "react";
+import React, { ReactNode, useState } from "react";
 import { Input } from "@/components/ui/input";
 import {
   Select,
@@ -16,7 +16,7 @@ import Image from "next/image";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ShowEyeIconSVG } from "@/svgs";
 
-const DataTableToolbar = ({ children }: any) => {
+const DataTableToolbar = ({ children }: { children: ReactNode }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   const toggleVisibility = () => {

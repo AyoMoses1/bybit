@@ -1,19 +1,37 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React, { useState } from "react";
-import { ArrowRight, Trash2, User } from "lucide-react";
+import React from "react";
+import { ArrowRight, User } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
-import deleteIcon from "../../assets/svgs/Vector (1).svg";
-import Image from "next/image";
 import { useDeleteUser, useUpdateUser, useUser } from "@/lib/api/hooks/user";
 import DeleteConfirmation from "@/components/deleteConfirmation";
+import Image from "next/image";
+
+type UserAdmin = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  mobile: string;
+  email: string;
+  profile_image?: string;
+  approved: boolean;
+};
 
 const Admin = ({ search }: { search?: string }) => {
-  const { data: user, isLoading } = useUser("admin", search);
+  // const { data: user, isLoading } = useUser("admin", search);
+  const { data: user, isLoading } = useUser("admin", search) as {
+    data: UserAdmin[] | undefined;
+    isLoading: boolean;
+  };
   const mutation = useUpdateUser();
+  const deleteMutation = useDeleteUser();
 
-  const columns: ColumnDef<any>[] = [
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
+  const columns: ColumnDef<UserAdmin>[] = [
     {
       accessorKey: "firstName",
       header: "First Name",
@@ -42,10 +60,12 @@ const Admin = ({ search }: { search?: string }) => {
         return (
           <>
             {imageUrl ? (
-              <img
+              <Image
                 src={imageUrl}
                 alt="Profile"
                 className="h-8 w-8 rounded-full"
+                width={32}
+                height={32}
               />
             ) : (
               <div className="flex h-10 w-10 items-center justify-center rounded-full border">
@@ -61,14 +81,13 @@ const Admin = ({ search }: { search?: string }) => {
       accessorKey: "approved",
       header: "Active Status",
       cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.approved ?? false,
-        );
-        const handleToggle = async (checked: boolean) => {
+        const isChecked = row.original.approved;
+
+        const handleToggle = (checked: boolean) => {
           mutation.mutate(
             { id: row.original.id, updatedData: { approved: checked } },
             {
-              onError: () => setIsChecked(!checked),
+              onError: () => console.error("Update failed"),
             },
           );
         };
@@ -76,15 +95,11 @@ const Admin = ({ search }: { search?: string }) => {
         return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
       },
     },
+
     {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const deleteMutation = useDeleteUser();
-
-        const handleDelete = () => {
-          deleteMutation.mutate(row.original.id);
-        };
         return (
           <div>
             <div
@@ -100,7 +115,7 @@ const Admin = ({ search }: { search?: string }) => {
                 </div>
               </Link>
               <DeleteConfirmation
-                onClick={handleDelete}
+                onClick={() => handleDelete(row.original.id)}
                 text={`Are you sure you want to delete this user (${row.original.firstName + " " + row.original.lastName})? This action can not be undone`}
               />
             </div>

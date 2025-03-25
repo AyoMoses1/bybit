@@ -33,6 +33,7 @@ export const useUser = (type: string, search?: string) => {
 };
 
 export const useGetUserById = (id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return useQuery<any>({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchUserById(id),
@@ -44,6 +45,7 @@ export const useGetUserById = (id: string) => {
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: ({ id, updatedData }: { id: string; updatedData: any }) =>
       updateUser(id, updatedData),
     onSuccess: () => {
@@ -58,6 +60,7 @@ export const useUpdateUser = () => {
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     mutationFn: ({ updatedData }: { updatedData: any }) =>
       createUser(updatedData),
     onSuccess: () => {
@@ -90,7 +93,7 @@ export const useDeleteUser = () => {
 export const useUsersRide = (id: string, type: string) => {
   return useQuery({
     queryKey: ["usersRide", id, type],
-    queryFn: () => fetchUserRides(id, type),
+    queryFn: () => fetchUserRides(id),
     staleTime: Infinity,
     retry: 2,
   });

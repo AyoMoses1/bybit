@@ -19,6 +19,7 @@ import {
   Settings,
   UserPen,
   Power,
+  Banknote,
 } from "lucide-react";
 import {
   Sidebar,
@@ -40,10 +41,12 @@ const mainMenuItems = [
   { url: "/cars", title: "Cars", icon: CarFront },
   { url: "/add-to-wallet", title: "Add to Wallet", icon: WalletMinimal },
   { url: "/reports", title: "Reports", icon: ChartColumnBig },
+  { url: "/withdrawals", title: "Withdrawals", icon: Banknote },
   { url: "/promos", title: "Promos", icon: BadgePercent },
   { url: "/push-notification", title: "Push Notifications", icon: Bell },
   { url: "/sos", title: "SOS", icon: CircleAlert },
   { url: "/complaints", title: "Complaints", icon: MessageSquareWarning },
+
   // {
   //   url: "/beneficiaries",
   //   title: "Beneficiaries",
@@ -64,9 +67,9 @@ const otherMenuItems = [
 
 function AppSidebar() {
   const router = useRouter();
+  const pathname = usePathname();
 
   const isActive = (url: string): boolean => {
-    const pathname = usePathname();
     if (
       url === "/users" &&
       [

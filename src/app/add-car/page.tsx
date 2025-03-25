@@ -3,7 +3,7 @@ import { ChevronDown, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useUser } from "@/lib/api/hooks/user";
 import { updateCustomerProfileImage } from "@/lib/api/apiHandlers/userService";
-import { useParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import Image from "next/image";
@@ -18,16 +18,22 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+interface User {
+  id: string;
+  lastName: string;
+}
 
 const AddCar = () => {
   const router = useRouter();
   const mutation = useAddCar();
   const { data: users = [], isLoading } = useUser("driver") as {
-    data: any[];
+    data: { id: string; firstName: string; lastName: string }[];
     isLoading: boolean;
   };
 
-  const { data: carTypes } = useCarTypes();
+  const { data: carTypes } = useCarTypes() as {
+    data: { id: string; name: string }[];
+  };
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
 
@@ -37,7 +43,7 @@ const AddCar = () => {
   const [preview, setPreview] = useState<string | null>(null);
   const [error] = useState<string | null>(null);
 
-  const filteredDrivers = users?.filter((user: any) =>
+  const filteredDrivers = users?.filter((user) =>
     `${user.firstName} ${user.lastName}`
       .toLowerCase()
       .includes(search.toLowerCase()),
@@ -170,14 +176,14 @@ const AddCar = () => {
                     <PopoverTrigger asChild>
                       <button className="mt-1 flex h-[48px] w-full items-center justify-between border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-3 text-[#21272A] outline-none transition-colors">
                         {selectedDriver
-                          ? users?.find(
-                              (user: any) => user.id === selectedDriver,
-                            )?.firstName +
+                          ? (users?.find((user) => user.id === selectedDriver)
+                              ?.firstName ??
                             "" +
-                            " " +
-                            users?.find(
-                              (user: any) => user.id === selectedDriver,
-                            )?.lastName
+                              "" +
+                              " " +
+                              users?.find(
+                                (user: User) => user.id === selectedDriver,
+                              )?.lastName)
                           : "Search for a driver"}
                         <ChevronDown className="size-5 text-gray-500" />
                       </button>
@@ -237,9 +243,11 @@ const AddCar = () => {
                     {/* Image Preview Box */}
                     <div className="flex h-[100px] w-[100px] items-center justify-center rounded-[5px] border bg-[#E2E6EC]">
                       {preview ? (
-                        <img
+                        <Image
                           src={preview}
                           alt="Preview"
+                          width={40}
+                          height={40}
                           className="h-full w-full rounded-lg object-cover"
                         />
                       ) : (
