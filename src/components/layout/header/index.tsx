@@ -12,6 +12,7 @@ import { Locale } from "next-intl";
 const ROUTES = {
   dashboard: "/dashboard",
   users: "/users",
+  withdrawal: "/withdrawals",
   addAdmin: "/add-super-admin",
   updateAdmin: "/update-admin",
   customer: "/customer",
@@ -43,6 +44,7 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.customer]: "Customer",
   [ROUTES.addCustomer]: "Add Customer",
   [ROUTES.driver]: "Driver",
+  [ROUTES.withdrawal]: "Withdrawals",
   [ROUTES.addDriver]: "Add Driver",
   [ROUTES.bookingHistory]: "Booking History",
   [ROUTES.bookingDetail]: "Booking Detail",
