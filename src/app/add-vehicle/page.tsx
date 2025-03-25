@@ -3,16 +3,8 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useEditCarType } from "@/lib/api/hooks/useVehicle";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { toast } from "react-hot-toast";
 import TextInput from "@/components/TextInput";
 import { ChevronDown } from "lucide-react";
@@ -186,9 +178,11 @@ const AddVehicleTypePage = () => {
               <div className="mt-2 flex items-start space-x-4">
                 <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded bg-gray-100">
                   {imagePreview ? (
-                    <img
+                    <Image
                       src={imagePreview}
                       alt="Preview"
+                      width={40}
+                      height={40}
                       className="h-full w-full object-cover"
                     />
                   ) : (
