@@ -1,19 +1,17 @@
 "use client";
 import React, { useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { useBookingById } from "@/lib/api/hooks/useBooking";
 import { useToast } from "@/hooks/use-toast";
 import RideInformation from "@/containers/bookingDetail/rideInfo";
-import PaymentInformation from "@/containers/bookingDetail/paymentInfo"; 
+import PaymentInformation from "@/containers/bookingDetail/paymentInfo";
 import DriverInformation from "@/containers/bookingDetail/driverInfo";
 import CustomerInformation from "@/containers/bookingDetail/customerInfo";
 import { LoadingState } from "@/containers/bookingDetail/loadingError";
 import { BookingType } from "@/containers/bookingDetail/bookingTypes";
 
-
 const BookingDetailPage = () => {
   const params = useParams();
-  const router = useRouter();
   const { toast } = useToast();
 
   const id = params.id
@@ -50,11 +48,6 @@ const BookingDetailPage = () => {
       });
     }
   }, [data, error, toast]);
-
-  // Go back to bookings list
-  const handleGoBack = () => {
-    router.push("/booking-history");
-  };
 
   if (isLoading) {
     return <LoadingState />;

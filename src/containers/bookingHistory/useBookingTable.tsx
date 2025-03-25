@@ -10,8 +10,8 @@ import useUserInfo from "./useUserInfo";
 export const useBookingTableData = (
   initialSearch: string = "",
   onSearchChange?: (search: string) => void,
-  onCancelBooking?: (booking: any) => void,
-  onViewDetails?: (booking: any) => void,
+  onCancelBooking?: (booking: Booking) => void,
+  onViewDetails?: (booking: Booking) => void,
 ) => {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const { userInfo } = useUserInfo();
@@ -20,11 +20,44 @@ export const useBookingTableData = (
     setSearchQuery(initialSearch);
   }, [initialSearch]);
 
-  const { data: bookings, isLoading: bookingsLoading } = useBookings(
+  const { data: fetchedBookings, isLoading: bookingsLoading } = useBookings(
     userInfo?.id || "",
     userInfo?.usertype || "",
     searchQuery,
   );
+
+  const bookings: Booking[] =
+    fetchedBookings?.map((booking) => {
+      const cleanedBooking: Booking = {
+        id: booking.id,
+        bookingDate: booking.bookingDate,
+        driver_name: booking.driver_name,
+        carType: booking.carType,
+        status: booking.status,
+        trip_cost: booking.trip_cost as string | number | undefined,
+        reference: booking.reference as string | undefined,
+      };
+
+      // Copy all primitive properties that match our index signature
+      Object.entries(booking).forEach(([key, value]) => {
+        // Only include string, number, boolean, or undefined values
+        if (
+          typeof value === "string" ||
+          typeof value === "number" ||
+          typeof value === "boolean" ||
+          value === undefined
+        ) {
+          cleanedBooking[key] = value;
+        }
+        // For complex objects like pickup and drop, convert to string or omit them
+        else if (key === "pickup" || key === "drop") {
+          // Omit them from the cleaned booking object
+          // They'll still be accessible in the original booking object if needed
+        }
+      });
+
+      return cleanedBooking;
+    }) || [];
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
@@ -53,7 +86,8 @@ export const useBookingTableData = (
       ...bookings.map((booking) => {
         return [
           booking.id || "",
-          formatDate(booking.bookingDate) || "",
+          formatDate(booking.bookingDate ? Number(booking.bookingDate) : 0) ||
+            "",
           booking.driver_name || "",
           booking.carType || "",
           booking.status || "",

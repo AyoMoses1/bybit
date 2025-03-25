@@ -2,7 +2,7 @@ import { getDatabase, onValue, push, ref as dbRef, remove, set } from "firebase/
 import { getStorage, ref as storageRef, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 interface CarType {
-  [x: string]: any;
+  [x: string]: string | number | boolean | File | undefined;
   id?: string;
   name: string;
   image?: File | string;

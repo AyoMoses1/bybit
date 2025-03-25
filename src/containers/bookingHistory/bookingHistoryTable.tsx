@@ -1,10 +1,10 @@
 import React from "react";
 import { CustomTable } from "@/components/ui/data-table";
-import SearchBar from "../../components/ui/searchBar";
 import ExportButton from "../../components/ui/exportButton";
 import { useBookingTableData } from "./useBookingTable";
 import { LoadingState } from "../bookingDetail/loadingError";
 import { BookingHistoryTableProps } from "../bookingDetail/bookingTypes";
+import SearchComponent from "@/components/SearchComponent";
 
 const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
   search = "",
@@ -15,12 +15,10 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
 }) => {
   const {
     searchQuery,
-    setSearchQuery,
     bookings,
     bookingsLoading,
     columns,
     handleSearchChange,
-    handleClearSearch,
     exportToCSV,
   } = useBookingTableData(
     search,
@@ -36,11 +34,7 @@ const BookingHistoryTable: React.FC<BookingHistoryTableProps> = ({
       </h2>
 
       <div className="mb-6 flex items-center justify-end">
-        <SearchBar
-          searchQuery={searchQuery}
-          handleSearchChange={handleSearchChange}
-          handleClearSearch={handleClearSearch}
-        />
+        <SearchComponent value={searchQuery} onChange={handleSearchChange} />
         <ExportButton
           exportToCSV={exportToCSV}
           disabled={!bookings || bookings.length === 0}

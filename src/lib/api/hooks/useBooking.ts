@@ -7,6 +7,7 @@ import {
   updateBooking,
   updateBookingImage
 } from "../apiHandlers/bookingService";
+import { BookingType } from "@/containers/bookingDetail/bookingTypes";
 
 const BOOKING_STATE_KEY = "bookings";
 
@@ -54,7 +55,7 @@ export const useUpdateBooking = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ id, updatedData }: { id: string; updatedData: any }) =>
+    mutationFn: ({ id, updatedData }: { id: string; updatedData: Partial<BookingType> }) =>
       updateBooking(id, updatedData),
     onSuccess: (_, variables) => {
       // Invalidate relevant queries
