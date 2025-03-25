@@ -1,11 +1,10 @@
 "use client";
-import { Camera, ChevronDown, Search } from "lucide-react";
+import { ChevronDown, Search } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useGetUserById, useUpdateUser, useUser } from "@/lib/api/hooks/user";
+import { useUser } from "@/lib/api/hooks/user";
 import { updateCustomerProfileImage } from "@/lib/api/apiHandlers/userService";
 import { useParams, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import Image from "next/image";
 import camera from "../../../assets/svgs/Group 1.svg";
@@ -27,6 +26,12 @@ type Car = {
   driver: string;
 };
 
+type User = {
+  id: string;
+  firstName: string;
+  lastName: string;
+};
+
 const UpdateCar = () => {
   const router = useRouter();
   const { id } = useParams();
@@ -36,7 +41,7 @@ const UpdateCar = () => {
     data: Car | undefined;
   };
   const { data: users = [], isLoading } = useUser("driver") as {
-    data: any[];
+    data: User[];
     isLoading: boolean;
   };
 
@@ -50,13 +55,12 @@ const UpdateCar = () => {
   const [search, setSearch] = useState("");
   const [selectedDriver, setSelectedDriver] = useState("");
   const [selectedVehicleType, setSelectedVehicleType] = useState("");
-  const [selectedFile, setSelectedFile] = useState<File | string | null>(null);
   const [loading, setLoading] = useState(false);
   const [file, setFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [error] = useState<string | null>(null);
 
-  const filteredDrivers = users?.filter((user: any) =>
+  const filteredDrivers = users?.filter((user: User) =>
     `${user.firstName} ${user.lastName}`
       .toLowerCase()
       .includes(search.toLowerCase()),
@@ -173,12 +177,14 @@ const UpdateCar = () => {
                   <PopoverTrigger asChild>
                     <button className="mt-1 flex h-[48px] w-full items-center justify-between border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-3 text-[#21272A] outline-none transition-colors">
                       {selectedDriver
-                        ? users?.find((user: any) => user.id === selectedDriver)
-                            ?.firstName +
+                        ? users?.find(
+                            (user: User) => user.id === selectedDriver,
+                          )?.firstName +
                           "" +
                           " " +
-                          users?.find((user: any) => user.id === selectedDriver)
-                            ?.lastName
+                          users?.find(
+                            (user: User) => user.id === selectedDriver,
+                          )?.lastName
                         : "Search for a driver"}
                       <ChevronDown className="size-5 text-gray-500" />
                     </button>
@@ -203,7 +209,7 @@ const UpdateCar = () => {
                       {isLoading ? (
                         <p className="p-2 text-sm text-gray-500">Loading...</p>
                       ) : filteredDrivers?.length > 0 ? (
-                        filteredDrivers.map((user: any) => (
+                        filteredDrivers.map((user: User) => (
                           <div
                             key={user.id}
                             onClick={() => {
@@ -230,8 +236,10 @@ const UpdateCar = () => {
                   {/* Image Preview Box */}
                   <div className="flex h-[100px] w-[100px] items-center justify-center rounded-[5px] border bg-[#E2E6EC]">
                     {preview ? (
-                      <img
+                      <Image
                         src={preview}
+                        width={40}
+                        height={40}
                         alt="Preview"
                         className="h-full w-full rounded-lg object-cover"
                       />

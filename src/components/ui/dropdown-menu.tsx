@@ -44,10 +44,9 @@ const DropdownMenuSubTrigger = React.forwardRef<
 ));
 DropdownMenuSubTrigger.displayName = "DropdownMenuSubTrigger";
 
-export interface DropdownMenuSubContentProps
-  extends React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.SubContent
-  > {}
+type DropdownMenuSubContentProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.SubContent
+>;
 
 const DropdownMenuSubContent = React.forwardRef<
   HTMLDivElement,
@@ -64,10 +63,9 @@ const DropdownMenuSubContent = React.forwardRef<
 ));
 DropdownMenuSubContent.displayName = "DropdownMenuSubContent";
 
-export interface DropdownMenuContentProps
-  extends React.ComponentPropsWithoutRef<typeof DropdownMenuPrimitive.Content> {
-  sideOffset?: number;
-}
+type DropdownMenuContentProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Content
+>;
 
 const DropdownMenuContent = React.forwardRef<
   HTMLDivElement,
@@ -108,10 +106,9 @@ const DropdownMenuItem = React.forwardRef<
 ));
 DropdownMenuItem.displayName = "DropdownMenuItem";
 
-export interface DropdownMenuCheckboxItemProps
-  extends React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.CheckboxItem
-  > {}
+type DropdownMenuCheckboxItemProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.CheckboxItem
+>;
 
 const DropdownMenuCheckboxItem = React.forwardRef<
   HTMLDivElement,
@@ -136,10 +133,9 @@ const DropdownMenuCheckboxItem = React.forwardRef<
 ));
 DropdownMenuCheckboxItem.displayName = "DropdownMenuCheckboxItem";
 
-export interface DropdownMenuRadioItemProps
-  extends React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.RadioItem
-  > {}
+type DropdownMenuRadioItemProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.RadioItem
+>;
 
 const DropdownMenuRadioItem = React.forwardRef<
   HTMLDivElement,
@@ -184,10 +180,9 @@ const DropdownMenuLabel = React.forwardRef<
 ));
 DropdownMenuLabel.displayName = "DropdownMenuLabel";
 
-export interface DropdownMenuSeparatorProps
-  extends React.ComponentPropsWithoutRef<
-    typeof DropdownMenuPrimitive.Separator
-  > {}
+type DropdownMenuSeparatorProps = React.ComponentPropsWithoutRef<
+  typeof DropdownMenuPrimitive.Separator
+>;
 
 const DropdownMenuSeparator = React.forwardRef<
   HTMLDivElement,
@@ -201,8 +196,7 @@ const DropdownMenuSeparator = React.forwardRef<
 ));
 DropdownMenuSeparator.displayName = "DropdownMenuSeparator";
 
-export interface DropdownMenuShortcutProps
-  extends React.HTMLAttributes<HTMLSpanElement> {}
+type DropdownMenuShortcutProps = React.HTMLAttributes<HTMLSpanElement>;
 
 const DropdownMenuShortcut = ({
   className,

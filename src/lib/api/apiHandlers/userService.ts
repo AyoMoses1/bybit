@@ -3,12 +3,10 @@ import {
   ref,
   getDatabase,
   update,
-  set,
   off,
   orderByChild,
   equalTo,
   query,
-  push,
   remove,
 } from "firebase/database";
 import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
@@ -16,8 +14,19 @@ import firebase from "@/lib/firebase";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import toast from "react-hot-toast";
 
+interface User {
+  id: string;
+  firstName?: string;
+  lastName?: string;
+  mobile?: string;
+  email?: string;
+  profile_image?: string;
+  createdAt?: string;
+  usertype?: string;
+}
+
 export const fetchUsers = () => {
-  return new Promise((resolve, reject) => {
+  return new Promise<User[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, "users");
@@ -30,6 +39,7 @@ export const fetchUsers = () => {
             const usersArray = Object.entries(data)
               .map(([key, value]) => ({
                 id: key,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ...(value as any),
               }))
               .sort(
@@ -58,7 +68,7 @@ export const fetchUsers = () => {
 };
 
 export const fetchUser = (userType: string, search?: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<User[]>((resolve) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, "users");
@@ -71,6 +81,7 @@ export const fetchUser = (userType: string, search?: string) => {
             const usersArray = Object.entries(data)
               .map(([key, value]) => ({
                 id: key,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ...(value as any),
               }))
               .filter(
@@ -110,7 +121,7 @@ export const fetchUser = (userType: string, search?: string) => {
 };
 
 export const fetchUserById = (id: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, `users/${id}`);
@@ -136,7 +147,7 @@ export const fetchUserById = (id: string) => {
     }
   });
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateUser = (id: string, updatedData: Record<string, any>) => {
   return new Promise<void>((resolve, reject) => {
     try {
@@ -157,7 +168,7 @@ export const updateUser = (id: string, updatedData: Record<string, any>) => {
     }
   });
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createUser = (updatedData: any) => {
   return new Promise<void>((resolve, reject) => {
     try {
@@ -178,6 +189,7 @@ export const createUser = (updatedData: any) => {
         .then(() => {
           resolve();
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .catch((error: any) => {
           if (error?.code === "auth/email-already-in-use") {
             toast.error("Email already in use");
@@ -232,7 +244,8 @@ export const updateCustomerProfileImage = async (
   }
 };
 
-export const fetchUserRides = (userId: string, type: string) => {
+export const fetchUserRides = (userId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -254,6 +267,7 @@ export const fetchUserRides = (userId: string, type: string) => {
           }
 
           const data = snapshot.val();
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const rides = Object.entries(data).map(([id, value]: any) => ({
             id,
             pickupAddress: value.pickup?.add || "",
@@ -281,6 +295,7 @@ export const fetchUserRides = (userId: string, type: string) => {
 };
 
 export const fetchUserWalletHistory = (id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -294,6 +309,7 @@ export const fetchUserWalletHistory = (id: string) => {
             const historyArray = Object.entries(data)
               .map(([key, value]) => ({
                 id: key,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ...(value as any),
               }))
               .sort(

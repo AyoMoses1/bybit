@@ -1,6 +1,6 @@
 "use client";
 
-import { initializeApp, getApp, getApps } from "firebase/app";
+import { initializeApp, getApp, getApps, FirebaseApp } from "firebase/app";
 import {
   getDatabase,
   ref,
@@ -9,6 +9,7 @@ import {
   equalTo,
   DatabaseReference,
   Query,
+  Database,
 } from "firebase/database";
 import {
   initializeAuth,
@@ -26,7 +27,12 @@ import {
   Auth,
   UserCredential,
 } from "firebase/auth";
-import { getStorage, ref as stRef, StorageReference } from "firebase/storage";
+import {
+  getStorage,
+  ref as stRef,
+  StorageReference,
+  FirebaseStorage,
+} from "firebase/storage";
 
 // Firebase configuration interface
 interface FirebaseConfig {
@@ -54,12 +60,13 @@ const firebaseConfig: FirebaseConfig = {
 };
 
 // Firebase service interface
+
 interface FirebaseService {
-  app: any;
+  app: FirebaseApp;
   config: FirebaseConfig;
-  database: any;
+  database: Database;
   auth: Auth;
-  storage: any;
+  storage: FirebaseStorage;
   authRef: () => Auth;
   googleProvider: GoogleAuthProvider;
   appleProvider: OAuthProvider;
@@ -130,10 +137,10 @@ let firebase: FirebaseService;
 
 // Create full Firebase structure
 const createFullStructure = (
-  app: any,
-  db: any,
+  app: FirebaseApp,
+  db: Database,
   auth: Auth,
-  storage: any,
+  storage: FirebaseStorage,
   config: FirebaseConfig,
 ): FirebaseService => {
   return {

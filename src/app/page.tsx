@@ -67,7 +67,7 @@ export default function UsersPage() {
           if (Array.isArray(adminUser)) {
             const user = adminUser.find((user) => user.email === data.email);
 
-            if (user.usertype === "admin" || user.usertype === "fleetadmin") {
+            if (user?.usertype === "admin" || user?.usertype === "fleetadmin") {
               localStorage.setItem("authenticated", JSON.stringify(true));
               localStorage.setItem("userInfo", JSON.stringify(user));
               setLoading(false);
@@ -90,7 +90,7 @@ export default function UsersPage() {
     if (userAuthenticated === "true") {
       router.push("/dashboard");
     }
-  }, []);
+  }, [router]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="">
@@ -100,10 +100,6 @@ export default function UsersPage() {
             <h2 className="text-center text-[36px] font-bold text-white">
               Log In
             </h2>
-            <p className="mt-2 text-center text-base font-medium text-white">
-              Don’t have an account yet?{" "}
-              <span className="cursor-pointer text-[#FFAFF0]">Sign Up</span>
-            </p>
 
             <div className="mt-6 font-[Roboto]">
               <label className="text-base font-semibold text-white">

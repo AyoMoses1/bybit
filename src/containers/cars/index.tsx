@@ -5,44 +5,94 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
 import { useGetUserById } from "@/lib/api/hooks/user";
-import { useCars, useDeleteCar, useUpdateCar } from "@/lib/api/hooks/cars";
+import {
+  UpdateCarPayload,
+  useCars,
+  useDeleteCar,
+  useUpdateCar,
+} from "@/lib/api/hooks/cars";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 
+type Car = {
+  id: string;
+  driver: string;
+  carType: string;
+  vehicleNumber: string;
+  vehicleMake: string;
+  vehicleModel: string;
+  other_info: string;
+  active: boolean;
+  approved: boolean;
+};
+
+type UserInfo = {
+  id: string;
+  usertype: string;
+};
+
 const CarsTable = ({ search }: { search?: string }) => {
-  const mutation = useUpdateCar();
-  const [userInfo, setUserInfo] = useState<any>();
+  const deleteMutation = useDeleteCar();
+
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { data: cars, isLoading } = useCars(
-    userInfo?.usertype,
-    userInfo?.id,
+    userInfo?.usertype ?? "",
+    userInfo?.id ?? "",
     search,
   );
 
-  const columns: ColumnDef<any>[] = [
+  const handleDelete = (id: string) => {
+    deleteMutation.mutate(id);
+  };
+
+  const DriverCell = ({ driverId }: { driverId: string }) => {
+    const { data: driver, isLoading } = useGetUserById(driverId);
+    if (isLoading) return <span>Loading...</span>;
+    return (
+      <span>
+        {driver?.firstName ?? "N/A"} {driver?.lastName ?? ""}
+      </span>
+    );
+  };
+
+  const ActiveStatusCell = ({ car }: { car: Car }) => {
+    const mutation = useUpdateCar();
+    const [isChecked, setIsChecked] = React.useState(car.active);
+
+    const handleToggle = (checked: boolean) => {
+      mutation.mutate(
+        { id: car.id, updatedData: { active: checked } as UpdateCarPayload },
+        {
+          onError: () => setIsChecked(!checked),
+        },
+      );
+    };
+
+    return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
+  };
+
+  const ApprovedStatusCell = ({ car }: { car: Car }) => {
+    const mutation = useUpdateCar();
+    const [isChecked, setIsChecked] = React.useState(car.approved);
+
+    const handleToggle = (checked: boolean) => {
+      mutation.mutate(
+        { id: car.id, updatedData: { approved: checked } as UpdateCarPayload },
+        {
+          onError: () => setIsChecked(!checked),
+        },
+      );
+    };
+
+    return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
+  };
+
+  const columns: ColumnDef<Car>[] = [
     {
       accessorKey: "driver",
       header: "Driver",
-      cell: ({ getValue }) => {
-        const id = String(getValue() || "");
-
-        const { data: driver, isLoading } = useGetUserById(id);
-
-        if (isLoading) return <span>Loading...</span>;
-        if (!driver || Object.keys(driver).length === 0)
-          return <span>N/A</span>;
-
-        return (
-          <span>
-            {driver.firstName ? (
-              <>
-                {" "}
-                {driver.firstName ?? "N/A"} {driver.lastName ?? ""}
-              </>
-            ) : (
-              "N/A"
-            )}
-          </span>
-        );
-      },
+      cell: ({ getValue }) => (
+        <DriverCell driverId={String(getValue() || "")} />
+      ),
     },
 
     {
@@ -75,54 +125,17 @@ const CarsTable = ({ search }: { search?: string }) => {
     {
       accessorKey: "active",
       header: "Active Status",
-      cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.active ?? false,
-        );
-
-        const handleToggle = async (checked: boolean) => {
-          mutation.mutate(
-            { id: row.original.id, updatedData: { active: checked } },
-            {
-              onError: () => setIsChecked(!checked),
-            },
-          );
-        };
-
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
-      },
+      cell: ({ row }) => <ActiveStatusCell car={row.original} />,
     },
-
     {
       accessorKey: "approved",
       header: "Approved",
-      cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.approved ?? false,
-        );
-
-        const handleToggle = async (checked: boolean) => {
-          mutation.mutate(
-            { id: row.original.id, updatedData: { approved: checked } },
-            {
-              onError: () => setIsChecked(!checked),
-            },
-          );
-        };
-
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
-      },
+      cell: ({ row }) => <ApprovedStatusCell car={row.original} />,
     },
     {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const deleteMutation = useDeleteCar();
-
-        const handleDelete = () => {
-          deleteMutation.mutate(row.original.id);
-        };
-
         return (
           <div>
             <div
@@ -139,7 +152,7 @@ const CarsTable = ({ search }: { search?: string }) => {
               </Link>
 
               <DeleteConfirmation
-                onClick={handleDelete}
+                onClick={() => handleDelete(row.original.id)}
                 text={`Are you sure you want to delete this car (${row.original.vehicleMake})? This action can not be undone`}
               />
             </div>
@@ -173,6 +186,7 @@ const CarsTable = ({ search }: { search?: string }) => {
             {" "}
             <CustomTable
               columns={columns}
+              empty="You currently have no registered car"
               data={Array.isArray(cars) ? cars : []}
             />
           </>

@@ -4,11 +4,11 @@ import Image from "next/image";
 
 const DriverCar = () => {
   return (
-    <div className="font-source px-0 py-2">
+    <div className="px-0 py-2 font-source">
       <div className="mx-auto flex justify-between rounded-[14px] bg-white px-7 shadow-md">
         {/* Active Car */}
         <div className="pb-10 pr-4 pt-3">
-          <h2 className="mb-4 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
+          <h2 className="mb-6 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
             Active Car
           </h2>
           <div className="w-[200px] rounded-lg border border-[#34C759] bg-white px-6 py-6 shadow-md lg:w-[200px] xl:w-[450px]">
@@ -16,6 +16,8 @@ const DriverCar = () => {
               <Image
                 src={camera}
                 alt="Car"
+                height={100}
+                width={185}
                 className="h-[100px] w-[185px] rounded-sm object-cover"
               />
               <div className="">
@@ -62,7 +64,7 @@ const DriverCar = () => {
 
         {/* Other Cars */}
         <div className="pb-10 pl-4 pt-3">
-          <h2 className="mb-4 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
+          <h2 className="mb-6 text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
             Other Car
           </h2>
           <div className="w-[200px] rounded-lg border border-[#34C759] bg-white px-6 py-6 shadow-md lg:w-[200px] xl:w-[450px]">
@@ -70,6 +72,8 @@ const DriverCar = () => {
               <Image
                 src={camera}
                 alt="Car"
+                width={185}
+                height={100}
                 className="h-[100px] w-[185px] rounded-sm object-cover"
               />
               <div className="">

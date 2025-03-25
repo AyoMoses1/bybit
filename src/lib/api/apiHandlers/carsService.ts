@@ -3,17 +3,31 @@ import {
   ref,
   getDatabase,
   update,
-  orderByChild,
-  equalTo,
-  query,
   remove,
   push,
 } from "firebase/database";
-import { getDownloadURL, uploadBytesResumable } from "firebase/storage";
-import firebase from "@/lib/firebase";
+
+type Car = {
+  id: string;
+  carType?: string;
+  vehicleNumber?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
+  other_info?: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+  type?: string;
+  price?: number;
+};
+
+type CarType = {
+  id: string;
+  name: string;
+};
 
 export const fetchCars = (userType: string, uid: string, search?: string) => {
-  return new Promise<any[]>((resolve, reject) => {
+  return new Promise<Car[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const carRef = ref(db, "cars");
@@ -61,6 +75,7 @@ export const fetchCars = (userType: string, uid: string, search?: string) => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateCars = (id: string, updatedData: Record<string, any>) => {
   return new Promise<void>((resolve, reject) => {
     try {
@@ -105,7 +120,7 @@ export const deleteCar = (id: string) => {
 };
 
 export const fetchCarById = (id: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<Car>((resolve, reject) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, `cars/${id}`);
@@ -117,7 +132,7 @@ export const fetchCarById = (id: string) => {
           if (data) {
             resolve({ id: id, ...data });
           } else {
-            resolve(null);
+            // resolve("Can not get car details");
           }
         },
         (error) => {
@@ -135,7 +150,7 @@ export const fetchCarById = (id: string) => {
 };
 
 export const fetchCarTypes = () => {
-  return new Promise<any[]>((resolve, reject) => {
+  return new Promise<CarType[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const carRef = ref(db, "cartypes");
@@ -147,7 +162,7 @@ export const fetchCarTypes = () => {
             resolve([]);
             return;
           }
-          let data = snapshot.val();
+          const data = snapshot.val();
           const arr = Object.keys(data).map((i) => {
             data[i].id = i;
             return data[i];
@@ -167,7 +182,7 @@ export const fetchCarTypes = () => {
   });
 };
 
-export const addCar = (car: Record<string, any>) => {
+export const addCar = (car: Record<string, Car>) => {
   return new Promise<void>((resolve, reject) => {
     try {
       const db = getDatabase();
