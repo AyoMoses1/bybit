@@ -13,16 +13,16 @@ import {
 } from "@/lib/api/hooks/cars";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 
-type Car = {
+type CarType = {
   id: string;
-  driver: string;
-  carType: string;
-  vehicleNumber: string;
-  vehicleMake: string;
-  vehicleModel: string;
-  other_info: string;
-  active: boolean;
-  approved: boolean;
+  driver?: string;
+  carType?: string;
+  vehicleNumber?: string;
+  vehicleMake?: string;
+  vehicleModel?: string;
+  other_info?: string;
+  active?: boolean;
+  approved?: boolean;
 };
 
 type UserInfo = {
@@ -54,7 +54,7 @@ const CarsTable = ({ search }: { search?: string }) => {
     );
   };
 
-  const ActiveStatusCell = ({ car }: { car: Car }) => {
+  const ActiveStatusCell = ({ car }: { car: CarType }) => {
     const mutation = useUpdateCar();
     const [isChecked, setIsChecked] = React.useState(car.active);
 
@@ -70,7 +70,7 @@ const CarsTable = ({ search }: { search?: string }) => {
     return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
   };
 
-  const ApprovedStatusCell = ({ car }: { car: Car }) => {
+  const ApprovedStatusCell = ({ car }: { car: CarType }) => {
     const mutation = useUpdateCar();
     const [isChecked, setIsChecked] = React.useState(car.approved);
 
@@ -86,7 +86,7 @@ const CarsTable = ({ search }: { search?: string }) => {
     return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
   };
 
-  const columns: ColumnDef<Car>[] = [
+  const columns: ColumnDef<CarType>[] = [
     {
       accessorKey: "driver",
       header: "Driver",

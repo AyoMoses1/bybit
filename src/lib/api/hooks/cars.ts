@@ -22,9 +22,11 @@ interface Car {
   vehicleModel?: string;
   vehicleMake?: string;
   other_info?: string;
-  driver?: string;
   carType?: string;
   car_image?: string;
+  active: boolean;
+  driver: string;
+  approved: boolean;
 }
 
 export type UpdateCarPayload = {
