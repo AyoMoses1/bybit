@@ -32,7 +32,7 @@ export const requestPushMsg = async (
 };
 
 /**
- * Adds funds to a user's wallet (direct client-side implementation)
+ * Adds funds to a user's wallet 
  * @param uid User ID
  * @param amount Amount to add
  * @returns Promise that resolves when the operation is complete
@@ -85,11 +85,9 @@ export const addToWallet = async (uid: string, amount: number): Promise<void> =>
       );
     }
     
-    // No toast here - we'll handle it in the mutation
     return;
   } catch (error) {
     console.error('Error adding to wallet:', error);
-    // No toast here either - we'll handle errors in the mutation
     throw error;
   }
 };
