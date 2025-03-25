@@ -9,15 +9,41 @@ import { useDeleteUser, useUpdateUser, useUser } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 
+interface FleetAdminUser {
+  id: string;
+  createdAt?: string;
+  firstName?: string;
+  lastName?: string;
+  mobile?: string;
+  email?: string;
+  profile_image?: string;
+  approved?: boolean;
+}
+
 const FleetAdmin = ({ search }: { search?: string }) => {
-  const mutation = useUpdateUser();
   const deleteMutation = useDeleteUser();
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id);
   };
 
-  const columns: ColumnDef<any>[] = [
+  const ActiveStatusToggle = ({ user }: { user: FleetAdminUser }) => {
+    const [isChecked, setIsChecked] = React.useState(user.approved);
+    const mutation = useUpdateUser();
+
+    const handleToggle = async (checked: boolean) => {
+      mutation.mutate(
+        { id: user.id, updatedData: { approved: checked } },
+        {
+          onError: () => setIsChecked(!checked),
+        },
+      );
+    };
+
+    return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
+  };
+
+  const columns: ColumnDef<FleetAdminUser>[] = [
     {
       accessorKey: "createdAt",
       header: "Date Created",
@@ -73,20 +99,7 @@ const FleetAdmin = ({ search }: { search?: string }) => {
       accessorKey: "approved",
       header: "Active Status",
       cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState(
-          row.original.approved ?? false,
-        );
-
-        const handleToggle = async (checked: boolean) => {
-          mutation.mutate(
-            { id: row.original.id, updatedData: { approved: checked } },
-            {
-              onError: () => setIsChecked(!checked),
-            },
-          );
-        };
-
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
+        return <ActiveStatusToggle user={row.original} />;
       },
     },
     {

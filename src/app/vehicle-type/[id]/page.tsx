@@ -3,7 +3,6 @@ import React, { useState, useEffect } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { useCarTypes, useEditCarType } from "@/lib/api/hooks/useVehicle";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { toast } from "react-hot-toast";
@@ -65,14 +64,38 @@ const VehicleTypeEditPage = () => {
       setFormData({
         id: vehicle.id,
         name: vehicle.name || "",
-        base_fare: vehicle.base_fare || 0,
-        convenience_fees: vehicle.convenience_fees || 0,
-        convenience_fee_type: vehicle.convenience_fee_type || "percentage",
-        rate_per_hour: vehicle.rate_per_hour || 0,
-        min_fare: vehicle.min_fare || 0,
-        rate_per_unit_distance: vehicle.rate_per_unit_distance || 0,
-        pos: vehicle.pos || 0,
-        seat_capacity: vehicle.seat_capacity || 0,
+        base_fare:
+          typeof vehicle.base_fare === "number"
+            ? vehicle.base_fare
+            : parseFloat(vehicle.base_fare as string) || 0,
+        convenience_fees:
+          typeof vehicle.convenience_fees === "number"
+            ? vehicle.convenience_fees
+            : parseFloat(vehicle.convenience_fees as string) || 0,
+        convenience_fee_type:
+          typeof vehicle.convenience_fee_type === "string"
+            ? vehicle.convenience_fee_type
+            : "percentage",
+        rate_per_hour:
+          typeof vehicle.rate_per_hour === "number"
+            ? vehicle.rate_per_hour
+            : parseFloat(vehicle.rate_per_hour as string) || 0,
+        min_fare:
+          typeof vehicle.min_fare === "number"
+            ? vehicle.min_fare
+            : parseFloat(vehicle.min_fare as string) || 0,
+        rate_per_unit_distance:
+          typeof vehicle.rate_per_unit_distance === "number"
+            ? vehicle.rate_per_unit_distance
+            : parseFloat(vehicle.rate_per_unit_distance as string) || 0,
+        pos:
+          typeof vehicle.pos === "number"
+            ? vehicle.pos
+            : parseFloat(vehicle.pos as string) || 0,
+        seat_capacity:
+          typeof vehicle.seat_capacity === "number"
+            ? vehicle.seat_capacity
+            : parseInt(vehicle.seat_capacity as string, 10) || 0,
         image: vehicle.image || "",
       });
 
@@ -231,9 +254,11 @@ const VehicleTypeEditPage = () => {
                 <div className="mt-2 flex items-start space-x-4">
                   <div className="flex h-24 w-24 items-center justify-center overflow-hidden rounded bg-gray-100">
                     {imagePreview ? (
-                      <img
+                      <Image
                         src={imagePreview}
                         alt="Preview"
+                        width={40}
+                        height={40}
                         className="h-full w-full object-cover"
                       />
                     ) : (

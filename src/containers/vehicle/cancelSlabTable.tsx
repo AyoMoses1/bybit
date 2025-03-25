@@ -97,7 +97,7 @@ const CancellationSlabsTable: React.FC<CancellationSlabsTableProps> = ({
     const updatedVehicleType = { ...vehicleType };
 
     // Update the cancelSlab array
-    updatedVehicleType.cancelSlab = updatedVehicleType.cancelSlab
+    updatedVehicleType.cancelSlab = Array.isArray(updatedVehicleType.cancelSlab)
       ? updatedVehicleType.cancelSlab.filter((slab) => slab.id !== slabToDelete)
       : [];
 

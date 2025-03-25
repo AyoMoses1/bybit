@@ -4,7 +4,7 @@ import Image from "next/image";
 
 const DriverCar = () => {
   return (
-    <div className="font-source px-0 py-2">
+    <div className="px-0 py-2 font-source">
       <div className="mx-auto flex justify-between rounded-[14px] bg-white px-7 shadow-md">
         {/* Active Car */}
         <div className="pb-10 pr-4 pt-3">
@@ -16,6 +16,8 @@ const DriverCar = () => {
               <Image
                 src={camera}
                 alt="Car"
+                height={100}
+                width={185}
                 className="h-[100px] w-[185px] rounded-sm object-cover"
               />
               <div className="">
@@ -70,6 +72,8 @@ const DriverCar = () => {
               <Image
                 src={camera}
                 alt="Car"
+                width={185}
+                height={100}
                 className="h-[100px] w-[185px] rounded-sm object-cover"
               />
               <div className="">

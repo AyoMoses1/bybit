@@ -23,16 +23,6 @@ interface User {
   profile_image?: string;
   createdAt?: string;
   usertype?: string;
-  approved: boolean;
-}
-
-interface Ride {
-  id: string;
-  pickupAddress: string;
-  dropAddress: string;
-  discount: number;
-  cashPaymentAmount: number;
-  cardPaymentAmount: number;
 }
 
 export const fetchUsers = () => {
@@ -49,6 +39,7 @@ export const fetchUsers = () => {
             const usersArray = Object.entries(data)
               .map(([key, value]) => ({
                 id: key,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ...(value as any),
               }))
               .sort(
@@ -90,6 +81,7 @@ export const fetchUser = (userType: string, search?: string) => {
             const usersArray = Object.entries(data)
               .map(([key, value]) => ({
                 id: key,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ...(value as any),
               }))
               .filter(
@@ -129,7 +121,7 @@ export const fetchUser = (userType: string, search?: string) => {
 };
 
 export const fetchUserById = (id: string) => {
-  return new Promise<User>((resolve, reject) => {
+  return new Promise((resolve) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, `users/${id}`);
@@ -141,7 +133,7 @@ export const fetchUserById = (id: string) => {
           if (data) {
             resolve({ id: id, ...data });
           } else {
-            reject("User not found");
+            resolve(null);
           }
         },
         (error) => {
@@ -155,7 +147,7 @@ export const fetchUserById = (id: string) => {
     }
   });
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateUser = (id: string, updatedData: Record<string, any>) => {
   return new Promise<void>((resolve, reject) => {
     try {
@@ -176,7 +168,7 @@ export const updateUser = (id: string, updatedData: Record<string, any>) => {
     }
   });
 };
-
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createUser = (updatedData: any) => {
   return new Promise<void>((resolve, reject) => {
     try {
@@ -197,6 +189,7 @@ export const createUser = (updatedData: any) => {
         .then(() => {
           resolve();
         })
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         .catch((error: any) => {
           if (error?.code === "auth/email-already-in-use") {
             toast.error("Email already in use");
@@ -252,6 +245,7 @@ export const updateCustomerProfileImage = async (
 };
 
 export const fetchUserRides = (userId: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -273,17 +267,16 @@ export const fetchUserRides = (userId: string) => {
           }
 
           const data = snapshot.val();
-          const rides: Ride[] = Object.entries(data).map(
-            ([id, value]: [string, any]) => ({
-              id,
-              pickupAddress: value.pickup?.add || "",
-              dropAddress: value.drop?.add || "",
-              discount: value.discount || 0,
-              cashPaymentAmount: value.cashPaymentAmount || 0,
-              cardPaymentAmount: value.cardPaymentAmount || 0,
-              ...value,
-            }),
-          );
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const rides = Object.entries(data).map(([id, value]: any) => ({
+            id,
+            pickupAddress: value.pickup?.add || "",
+            dropAddress: value.drop?.add || "",
+            discount: value.discount || 0,
+            cashPaymentAmount: value.cashPaymentAmount || 0,
+            cardPaymentAmount: value.cardPaymentAmount || 0,
+            ...value,
+          }));
 
           resolve(rides.reverse());
         },
@@ -302,6 +295,7 @@ export const fetchUserRides = (userId: string) => {
 };
 
 export const fetchUserWalletHistory = (id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -315,6 +309,7 @@ export const fetchUserWalletHistory = (id: string) => {
             const historyArray = Object.entries(data)
               .map(([key, value]) => ({
                 id: key,
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 ...(value as any),
               }))
               .sort(

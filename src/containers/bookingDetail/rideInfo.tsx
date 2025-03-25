@@ -1,5 +1,5 @@
 import React from "react";
-import moment from "moment/min/moment-with-locales";
+import { formatDate } from "@/utils/formatDate";
 import StatusBadge from "./statusBadge";
 import { BookingType } from "./bookingTypes";
 
@@ -42,7 +42,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
               <p className="text-gray-500">Trip Start Date</p>
               <p>
                 {booking.tripdate
-                  ? moment(booking.tripdate).format("lll")
+                  ? formatDate(Number(booking.tripdate))
                   : "HRUQOA"}
               </p>
             </div>

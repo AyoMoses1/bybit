@@ -75,6 +75,7 @@ export const fetchCars = (userType: string, uid: string, search?: string) => {
   });
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const updateCars = (id: string, updatedData: Record<string, any>) => {
   return new Promise<void>((resolve, reject) => {
     try {
@@ -119,7 +120,7 @@ export const deleteCar = (id: string) => {
 };
 
 export const fetchCarById = (id: string) => {
-  return new Promise((resolve, reject) => {
+  return new Promise<Car>((resolve, reject) => {
     try {
       const db = getDatabase();
       const userRef = ref(db, `cars/${id}`);
@@ -131,7 +132,7 @@ export const fetchCarById = (id: string) => {
           if (data) {
             resolve({ id: id, ...data });
           } else {
-            resolve(null);
+            // resolve("Can not get car details");
           }
         },
         (error) => {

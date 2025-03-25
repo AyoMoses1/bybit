@@ -1,12 +1,20 @@
 import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 
-export const login = (credentials: Record<string, any>) => {
+interface Credentials {
+  email: string;
+  password: string;
+}
+export const login = (credentials: Credentials): Promise<void> => {
   return new Promise<void>((resolve, reject) => {
     try {
       const auth = getAuth();
 
-      signInWithEmailAndPassword(auth, credentials.email, credentials.password)
-        .then((res) => {
+      signInWithEmailAndPassword(
+        auth,
+        credentials?.email,
+        credentials?.password,
+      )
+        .then(() => {
           resolve();
         })
         .catch((error) => {

@@ -18,6 +18,13 @@ interface Car {
   year: number;
   type: string;
   price: number;
+  vehicleNumber?: string;
+  vehicleModel?: string;
+  vehicleMake?: string;
+  other_info?: string;
+  driver?: string;
+  carType?: string;
+  car_image?: string;
 }
 
 export type UpdateCarPayload = {
@@ -47,6 +54,7 @@ export const useCarTypes = () => {
 };
 
 export const useGetCarById = (id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return useQuery<any>({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchCarById(id),
@@ -96,7 +104,8 @@ export const useDeleteCar = () => {
 export const useAddCar = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (car: Car) => addCar(car),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: (car: any) => addCar(car),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
       toast.success("Car created successfully!");

@@ -13,19 +13,6 @@ import toast from "react-hot-toast";
 
 const USER_STATE_KEY = "user";
 
-export interface UserType {
-  id: string;
-  email: string;
-  mobile?: string;
-  role: "admin" | "user" | "driver" | "fleetadmin";
-  createdAt: string;
-  updatedAt: string;
-  firstName: string;
-  lastName: string;
-  approved: boolean;
-  profile_image: string;
-}
-
 export const useUsers = () => {
   return useQuery({
     queryKey: [USER_STATE_KEY],
@@ -46,6 +33,7 @@ export const useUser = (type: string, search?: string) => {
 };
 
 export const useGetUserById = (id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return useQuery<any>({
     queryKey: [USER_STATE_KEY, id],
     queryFn: () => fetchUserById(id),
@@ -57,13 +45,9 @@ export const useGetUserById = (id: string) => {
 export const useUpdateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      updatedData,
-    }: {
-      id: string;
-      updatedData: Partial<UserType>;
-    }) => updateUser(id, updatedData),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: ({ id, updatedData }: { id: string; updatedData: any }) =>
+      updateUser(id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
     },
@@ -76,7 +60,8 @@ export const useUpdateUser = () => {
 export const useCreateUser = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ updatedData }: { updatedData: Partial<UserType> }) =>
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: ({ updatedData }: { updatedData: any }) =>
       createUser(updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
@@ -105,9 +90,9 @@ export const useDeleteUser = () => {
   });
 };
 
-export const useUsersRide = (id: string) => {
+export const useUsersRide = (id: string, type: string) => {
   return useQuery({
-    queryKey: ["usersRide", id],
+    queryKey: ["usersRide", id, type],
     queryFn: () => fetchUserRides(id),
     staleTime: Infinity,
     retry: 2,

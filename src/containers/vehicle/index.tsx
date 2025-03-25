@@ -25,7 +25,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
   const [userData, setUserData] = useState<CarType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  // Delete confirmation dialog state
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [vehicleToDelete, setVehicleToDelete] = useState<{
     id: string;
@@ -42,22 +41,100 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
   const filteredCarTypes = React.useMemo(() => {
     if (!carTypes || !Array.isArray(carTypes)) return [];
 
-    if (!search) return carTypes;
+    if (!search) {
+      return [...carTypes].sort((a, b) => {
+        // First priority: created_at or createdAt timestamp if available
+        if (a.created_at && b.created_at) {
+          return (
+            (typeof b.created_at === "string" ||
+            typeof b.created_at === "number"
+              ? new Date(b.created_at).getTime()
+              : 0) -
+            (typeof a.created_at === "string" ||
+            typeof a.created_at === "number"
+              ? new Date(a.created_at).getTime()
+              : 0)
+          );
+        }
+
+        if (a.createdAt && b.createdAt) {
+          return b.createdAt &&
+            a.createdAt &&
+            typeof b.createdAt === "string" &&
+            typeof a.createdAt === "string"
+            ? new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+            : 0;
+        }
+
+        // Second priority: sort by ID if they look like timestamps or have sequential numbers
+        if (a.id && b.id) {
+          // Try to extract numeric part if IDs are strings with numbers
+          const aNum = parseInt(a.id.replace(/\D/g, ""));
+          const bNum = parseInt(b.id.replace(/\D/g, ""));
+
+          if (!isNaN(aNum) && !isNaN(bNum)) {
+            return bNum - aNum; // Higher numbers (newer) first
+          }
+        }
+
+        // Third priority: use position field if available (lower position comes first)
+        if (a.pos !== undefined && b.pos !== undefined) {
+          return (Number(a.pos) || 0) - (Number(b.pos) || 0);
+        }
+
+        // Fallback: alphabetical by name
+        return (a.name || "").localeCompare(b.name || "");
+      });
+    }
 
     const searchLower = search.toLowerCase().trim();
-    return carTypes.filter((carType) => {
-      return (
-        (carType.name && carType.name.toLowerCase().includes(searchLower)) ||
-        (carType.extra_info &&
-          carType.extra_info.toLowerCase().includes(searchLower)) ||
-        (carType.base_fare !== undefined &&
-          carType.base_fare.toString().includes(searchLower)) ||
-        (carType.rate_per_unit_distance !== undefined &&
-          carType.rate_per_unit_distance.toString().includes(searchLower)) ||
-        (carType.rate_per_hour !== undefined &&
-          carType.rate_per_hour.toString().includes(searchLower))
-      );
-    });
+    return carTypes
+      .filter((carType) => {
+        return (
+          (carType.name && carType.name.toLowerCase().includes(searchLower)) ||
+          (carType.extra_info &&
+            typeof carType.extra_info === "string" &&
+            carType.extra_info.toLowerCase().includes(searchLower)) ||
+          (carType.base_fare !== undefined &&
+            carType.base_fare.toString().includes(searchLower)) ||
+          (carType.rate_per_unit_distance !== undefined &&
+            carType.rate_per_unit_distance.toString().includes(searchLower)) ||
+          (carType.rate_per_hour !== undefined &&
+            carType.rate_per_hour.toString().includes(searchLower))
+        );
+      })
+      .sort((a, b) => {
+        // Use the same sorting logic for search results
+        if (a.created_at && b.created_at) {
+          return (
+            (typeof b.created_at === "string" ||
+            typeof b.created_at === "number"
+              ? new Date(b.created_at).getTime()
+              : 0) -
+            (typeof a.created_at === "string" ||
+            typeof a.created_at === "number"
+              ? new Date(a.created_at).getTime()
+              : 0)
+          );
+        }
+
+        if (a.createdAt && b.createdAt) {
+          return (
+            (typeof b.createdAt === "string" || typeof b.createdAt === "number"
+              ? new Date(b.createdAt).getTime()
+              : 0) -
+            (typeof a.createdAt === "string" || typeof a.createdAt === "number"
+              ? new Date(a.createdAt).getTime()
+              : 0)
+          );
+        }
+
+        if (a.pos !== undefined && b.pos !== undefined) {
+          return (Number(a.pos) || 0) - (Number(b.pos) || 0);
+        }
+
+        return (a.name || "").localeCompare(b.name || "");
+      });
   }, [carTypes, search]);
 
   const handleImageClick = (rowData: CarType): void => {
@@ -71,9 +148,10 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
     if (selectedImage && userData && userData.id) {
       setLoading(true);
 
-      const cartype: CarType = {
+      const cartype = {
         ...userData,
         image: selectedImage,
+        cancellation_slabs: undefined,
       };
 
       mutation.mutate(
@@ -86,9 +164,10 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
             setProfileModal(false);
             setSelectedImage(null);
             setLoading(false);
-            toast.success("Vehicle image updated successfully");
+            // toast.success("Vehicle image updated successfully");
+            refetch();
           },
-          onError: (error) => {
+          onError: () => {
             setLoading(false);
             toast.error("Failed to update vehicle image");
           },
@@ -116,12 +195,10 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
     if (!vehicleToDelete) return;
 
     setDeleteDialogOpen(false);
-
-    toast.loading("Deleting vehicle type...", { id: "delete-toast" });
-
-    const cartype: CarType = {
+    const cartype = {
       id: vehicleToDelete.id,
       name: "",
+      cancellation_slabs: undefined,
     };
 
     deleteMutation.mutate(
@@ -131,11 +208,10 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
       },
       {
         onSuccess: () => {
-          toast.success("Vehicle type deleted successfully", {
-            id: "delete-toast",
-          });
+          // toast.success("Vehicle type deleted successfully");
+          refetch();
         },
-        onError: (error) => {
+        onError: () => {
           toast.error("Failed to delete vehicle type", { id: "delete-toast" });
         },
       },
@@ -158,11 +234,15 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
             onClick={() => handleImageClick(row.original)}
             className="overflow-hidden rounded-md"
           >
-            <img
-              src={imageUrl}
-              alt="Vehicle Type"
-              className="h-12 w-12 object-cover"
-            />
+            <div className="relative h-12 w-12">
+              <Image
+                src={imageUrl}
+                alt="Vehicle Type"
+                className="object-cover"
+                fill
+                sizes="48px"
+              />
+            </div>
           </button>
         ) : (
           <div className="flex h-12 w-12 items-center justify-center rounded-md bg-gray-200">
@@ -350,17 +430,25 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
               </div>
 
               {selectedImage ? (
-                <img
-                  alt="Vehicle preview"
-                  className="h-48 w-48 object-contain"
-                  src={URL.createObjectURL(selectedImage)}
-                />
+                <div className="relative h-48 w-48">
+                  <Image
+                    alt="Vehicle preview"
+                    className="object-contain"
+                    fill
+                    sizes="12rem"
+                    src={URL.createObjectURL(selectedImage)}
+                  />
+                </div>
               ) : imageData ? (
-                <img
-                  alt="Current vehicle"
-                  className="h-48 w-48 object-contain"
-                  src={imageData}
-                />
+                <div className="relative h-48 w-48">
+                  <Image
+                    alt="Current vehicle"
+                    className="object-contain"
+                    fill
+                    sizes="12rem"
+                    src={imageData}
+                  />
+                </div>
               ) : null}
             </div>
 

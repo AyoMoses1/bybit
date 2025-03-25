@@ -120,6 +120,8 @@ const UpdateFleetAdmin = () => {
             >
               {selectedImage ? (
                 <Image
+                  width={70}
+                  height={70}
                   src={selectedImage}
                   alt="Uploaded preview"
                   className="h-full w-full rounded-full object-cover"

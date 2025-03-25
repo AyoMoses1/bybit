@@ -153,6 +153,8 @@ const DriverInfo = () => {
               {selectedImage ? (
                 <Image
                   src={selectedImage}
+                  width={70}
+                  height={70}
                   alt="Uploaded preview"
                   className="h-full w-full rounded-full object-cover"
                 />
@@ -252,6 +254,8 @@ const DriverInfo = () => {
                       <Image
                         src={preview}
                         alt="Preview"
+                        width={100}
+                        height={100}
                         className="h-full w-full rounded-lg object-cover"
                       />
                     ) : (

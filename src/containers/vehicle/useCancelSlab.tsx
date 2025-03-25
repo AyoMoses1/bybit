@@ -86,7 +86,9 @@ export const useCancellationSlabsTable = (
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onEditSlab && onEditSlab(row.original);
+                if (onEditSlab) {
+                  onEditSlab(row.original);
+                }
               }}
               className="flex h-12 w-12 items-center justify-center border-r border-gray-200 hover:bg-gray-50"
             >
@@ -95,7 +97,9 @@ export const useCancellationSlabsTable = (
             <button
               onClick={(e) => {
                 e.stopPropagation();
-                onDeleteSlab && onDeleteSlab(row.original.id || "");
+                if (onDeleteSlab) {
+                  onDeleteSlab(row.original.id || "");
+                }
               }}
               className="flex h-12 w-12 items-center justify-center text-red-500 hover:bg-gray-50"
             >

@@ -6,7 +6,6 @@ interface ActionButtonsProps {
   booking?: Booking;
   onCancelBooking?: (booking: Booking) => void;
   onViewDetails?: (booking: Booking) => void;
-  item?: any;
   onEdit?: () => void;
   onDelete?: () => void;
 }

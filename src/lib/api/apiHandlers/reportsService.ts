@@ -1,5 +1,5 @@
 import firebase from "@/lib/firebase";
-import { get, onValue } from "firebase/database";
+import { get } from "firebase/database";
 
 export const fetchDriversEarningReport = async (
   userType: string,
@@ -33,6 +33,7 @@ export const fetchDriversEarningReport = async (
     "December",
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderobj: Record<string, any> = {};
 
   Object.keys(mainArr).forEach((j) => {
@@ -41,7 +42,7 @@ export const fetchDriversEarningReport = async (
       mainArr[j].driver_share !== undefined
     ) {
       const bdt = new Date(mainArr[j].tripdate);
-      let uniqueKey =
+      const uniqueKey =
         bdt.getFullYear() + "_" + bdt.getMonth() + "_" + mainArr[j].driver;
 
       if (renderobj[uniqueKey] && renderobj[uniqueKey].driverShare > 0) {
@@ -119,6 +120,7 @@ export const fetchEarningReport = async (search?: string) => {
     "December",
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderobj: Record<string, any> = {};
 
   Object.keys(mainArr).map((j) => {
@@ -130,7 +132,7 @@ export const fetchEarningReport = async (search?: string) => {
         mainArr[j].hasOwnProperty("cancellationFee"))
     ) {
       const bdt = new Date(mainArr[j].tripdate);
-      let uniqueKey = bdt.getFullYear() + "_" + bdt.getMonth();
+      const uniqueKey = bdt.getFullYear() + "_" + bdt.getMonth();
       if (renderobj[uniqueKey]) {
         if (status == "CANCELLED") {
           if (renderobj[uniqueKey].hasOwnProperty("cancellationFee")) {
@@ -270,11 +272,12 @@ export const fetchFleetEarningReport = async (
 ) => {
   const { bookingListRef, settingsRef, singleUserRef } = firebase;
 
-  const settingsdata = await get(settingsRef);
-  const settings = settingsdata.val();
+  // Fetch settings
+  const settingsData = await get(settingsRef);
+  const settings = settingsData.val();
 
+  // Fetch booking list
   const snapshot = await get(bookingListRef(uid, userType));
-
   if (!snapshot.exists()) {
     return "No data available.";
   }
@@ -295,55 +298,67 @@ export const fetchFleetEarningReport = async (
     "December",
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const renderobj: Record<string, any> = {};
+  const fleetAdminIds = new Set<string>();
 
-  Object.keys(mainArr).map((j) => {
+  Object.keys(mainArr).forEach((j) => {
+    const trip = mainArr[j];
+
     if (
-      (mainArr[j].status === "PAID" || mainArr[j].status === "COMPLETE") &&
-      mainArr[j].fleetCommission !== undefined &&
-      mainArr[j].fleetCommission > 0
+      (trip.status === "PAID" || trip.status === "COMPLETE") &&
+      trip.fleetCommission !== undefined &&
+      trip.fleetCommission > 0
     ) {
-      const bdt = new Date(mainArr[j].tripdate);
-      const uniqueKey =
-        bdt.getFullYear() + "_" + bdt.getMonth() + "_" + mainArr[j].fleetadmin;
-      if (renderobj[uniqueKey] && renderobj[uniqueKey].fleetCommission > 0) {
+      const tripDate = new Date(trip.tripdate);
+      const uniqueKey = `${tripDate.getFullYear()}_${tripDate.getMonth()}_${trip.fleetadmin}`;
+
+      if (!renderobj[uniqueKey]) {
+        renderobj[uniqueKey] = {
+          dated: trip.tripdate,
+          year: tripDate.getFullYear(),
+          month: tripDate.getMonth(),
+          monthsName: monthsName[tripDate.getMonth()],
+          fleetCommission: parseFloat(trip.fleetCommission).toFixed(
+            settings.decimal,
+          ),
+          fleetUId: trip.fleetadmin,
+          uniqueKey,
+          total_rides: 1,
+          fleetadminName: "", // Placeholder for async user fetching
+        };
+        fleetAdminIds.add(trip.fleetadmin);
+      } else {
         renderobj[uniqueKey].fleetCommission = (
           parseFloat(renderobj[uniqueKey].fleetCommission) +
-          parseFloat(mainArr[j].fleetCommission)
+          parseFloat(trip.fleetCommission)
         ).toFixed(settings.decimal);
-        renderobj[uniqueKey]["total_rides"] =
-          renderobj[uniqueKey]["total_rides"] + 1;
-      } else {
-        onValue(singleUserRef(mainArr[j].fleetadmin), async (userdata) => {
-          if (userdata.val()) {
-            const user = await userdata.val();
-            if (user) {
-              renderobj[uniqueKey]["fleetadminName"] =
-                user.firstName + " " + user.lastName;
-            }
-          }
-        });
-
-        renderobj[uniqueKey] = {};
-        renderobj[uniqueKey]["dated"] = mainArr[j].tripdate;
-        renderobj[uniqueKey]["year"] = bdt.getFullYear();
-        renderobj[uniqueKey]["month"] = bdt.getMonth();
-        renderobj[uniqueKey]["monthsName"] = monthsName[bdt.getMonth()];
-        renderobj[uniqueKey]["fleetCommission"] = parseFloat(
-          mainArr[j].fleetCommission,
-        ).toFixed(settings.decimal);
-        renderobj[uniqueKey]["fleetUId"] = mainArr[j].fleetadmin;
-        renderobj[uniqueKey]["uniqueKey"] = uniqueKey;
-        renderobj[uniqueKey]["total_rides"] = 1;
+        renderobj[uniqueKey].total_rides += 1;
       }
     }
-    return null;
   });
+
+  // Fetch fleet admin names asynchronously
+  const userPromises = Array.from(fleetAdminIds).map(async (fleetUId) => {
+    const userSnapshot = await get(singleUserRef(fleetUId));
+    const user = userSnapshot.val();
+    if (user) {
+      Object.keys(renderobj).forEach((key) => {
+        if (renderobj[key].fleetUId === fleetUId) {
+          renderobj[key].fleetadminName = `${user.firstName} ${user.lastName}`;
+        }
+      });
+    }
+  });
+
+  await Promise.all(userPromises);
 
   let results = Object.values(renderobj).map((item) => ({
     ...item,
     fleetCommission: parseFloat(item.fleetCommission).toFixed(settings.decimal),
-    driverShare: parseFloat(item.driverShare).toFixed(settings.decimal),
+    driverShare: item.driverShare
+      ? parseFloat(item.driverShare).toFixed(settings.decimal)
+      : "0.00",
   }));
 
   if (search) {
@@ -352,7 +367,7 @@ export const fetchFleetEarningReport = async (
       (item) =>
         item.year.toString().includes(lowerCaseSearch) ||
         item.month.toString().includes(lowerCaseSearch) ||
-        item.fleetadmin_name.toLowerCase().includes(lowerCaseSearch),
+        item.fleetadminName.toLowerCase().includes(lowerCaseSearch),
     );
   }
 

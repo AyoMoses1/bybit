@@ -119,6 +119,8 @@ const UpdateAdmin = () => {
               {selectedImage ? (
                 <Image
                   src={selectedImage}
+                  width={70}
+                  height={70}
                   alt="Uploaded preview"
                   className="h-full w-full rounded-full object-cover"
                 />

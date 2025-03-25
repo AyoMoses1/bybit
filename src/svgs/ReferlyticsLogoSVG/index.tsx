@@ -1,9 +1,4 @@
-import { SvgProps } from "@/types/svgs";
-
-const ReferlyticsLogoSVG: React.FC<SvgProps> = ({
-  className,
-  fillColor = "#004E43",
-}) => {
+const ReferlyticsLogoSVG: React.FC = () => {
   return (
     <svg
       width="84"
