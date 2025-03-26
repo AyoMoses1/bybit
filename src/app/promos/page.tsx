@@ -20,6 +20,7 @@ import { PromoData } from "@/lib/api/apiHandlers/promoService";
 const Promos: React.FC = () => {
   const { data: promos, isLoading } = usePromos();
   const updateMutation = useUpdatePromo();
+  const deleteMutation = useDeletePromo();
 
   const columns: ColumnDef<PromoData>[] = [
     {
@@ -87,23 +88,27 @@ const Promos: React.FC = () => {
       accessorKey: "promo_show",
       header: "Show in List",
       cell: ({ row }) => {
-        const [isChecked, setIsChecked] = React.useState<boolean>(
-          row.original.promo_show ?? false,
-        );
-
-        const handleToggle = async (checked: boolean) => {
-          updateMutation.mutate(
-            {
-              id: row.original.id as string,
-              updatedData: { promo_show: checked },
-            },
-            {
-              onError: () => setIsChecked(!checked),
-            },
+        const PromoSwitch: React.FC<{ row: typeof row }> = ({ row }) => {
+          const [isChecked, setIsChecked] = React.useState<boolean>(
+            row.original.promo_show ?? false,
           );
+
+          const handleToggle = async (checked: boolean) => {
+            updateMutation.mutate(
+              {
+                id: row.original.id as string,
+                updatedData: { promo_show: checked },
+              },
+              {
+                onError: () => setIsChecked(!checked),
+              },
+            );
+          };
+
+          return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
         };
 
-        return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
+        return <PromoSwitch row={row} />;
       },
     },
     {
@@ -115,8 +120,6 @@ const Promos: React.FC = () => {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {
-        const deleteMutation = useDeletePromo();
-
         const handleDelete = () => {
           if (row.original.id) {
             deleteMutation.mutate(row.original.id);
