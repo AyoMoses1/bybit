@@ -120,6 +120,7 @@ interface FirebaseService {
   userRatingsRef: (uid: string) => DatabaseReference;
   carsRef: (uid: string, role: string) => Query | DatabaseReference;
   carAddRef: DatabaseReference;
+  auditRef: DatabaseReference;
   carEditRef: (id: string) => DatabaseReference;
   carImage: (id: string) => StorageReference;
   allLocationsRef: DatabaseReference;
@@ -223,6 +224,7 @@ const createFullStructure = (
             : ref(db, "bookings"),
     chatRef: (bookingId: string) => ref(db, "chats/" + bookingId + "/messages"),
     withdrawRef: ref(db, "withdraws/"),
+    auditRef: ref(db, "audit/"),
     languagesRef: ref(db, "languages"),
     languagesEditRef: (id: string) => ref(db, "languages/" + id),
     langEditRef: (id: string) => ref(db, `languages/${id}/keyValuePairs/`),

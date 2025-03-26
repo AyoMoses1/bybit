@@ -14,7 +14,7 @@ import firebase from "@/lib/firebase";
 import { createUserWithEmailAndPassword, getAuth } from "firebase/auth";
 import toast from "react-hot-toast";
 
-interface User {
+export type User = {
   id: string;
   firstName?: string;
   lastName?: string;
@@ -24,7 +24,7 @@ interface User {
   createdAt?: string;
   usertype?: string;
   approved?: boolean;
-}
+};
 
 export const fetchUsers = () => {
   return new Promise<User[]>((resolve, reject) => {

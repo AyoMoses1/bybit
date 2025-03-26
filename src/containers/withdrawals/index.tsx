@@ -1,5 +1,5 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import process from "../../assets/svgs/Group.svg";
 import cancel from "../../assets/svgs/Vector.svg";
@@ -15,6 +15,8 @@ import {
 } from "@/lib/api/hooks/withdrawals";
 import { formatDate } from "@/utils/formatDate";
 import Papa from "papaparse";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 export type WithdrawalType = {
   id: string;
@@ -36,11 +38,12 @@ const WithdrawalTable = ({
   clickExport?: boolean;
 }) => {
   const mutation = useProcessWithdrawal();
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
   const { data: withdrawals, isLoading } = useWithdrawals(search);
 
+  const { handleAudit } = useAuditLog();
+
   const handleProcessWithdrawal = (row: WithdrawalType) => {
-    console.log(row);
     setLoading(true);
     const data = row;
     mutation.mutate(
@@ -49,7 +52,14 @@ const WithdrawalTable = ({
         onError: () => {
           setLoading(false);
         },
-        onSuccess: async () => {},
+        onSuccess: async () => {
+          handleAudit(
+            "Withdrawals",
+            row.id,
+            AuditAction.UPDATE,
+            "Process Withdrawal",
+          );
+        },
       },
     );
   };
@@ -206,8 +216,6 @@ const WithdrawalTable = ({
     link.click();
     document.body.removeChild(link);
   };
-
-  console.log(withdrawals);
 
   useEffect(() => {
     if (clickExport) exportToCSV(withdrawals as WithdrawalType[]);
