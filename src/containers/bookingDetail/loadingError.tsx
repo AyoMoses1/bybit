@@ -28,4 +28,5 @@ export const ErrorState = ({ onGoBack }: { onGoBack: () => void }) => {
   );
 };
 
-export default { LoadingState, ErrorState };
+const components = { LoadingState, ErrorState };
+export default components;

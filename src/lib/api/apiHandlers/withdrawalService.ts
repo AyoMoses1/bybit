@@ -1,7 +1,7 @@
 import firebase from "@/lib/firebase";
 import { onValue } from "firebase/database";
 
-export const fetchWithdrawal = (search?: string) => {
+export const fetchWithdrawal = () => {
   return new Promise((resolve, reject) => {
     try {
       const { withdrawRef } = firebase;

@@ -4,14 +4,9 @@ import {
   getDatabase,
   update,
   set,
-  off,
-  orderByChild,
-  equalTo,
-  query,
   push,
   remove,
 } from "firebase/database";
-import toast from "react-hot-toast";
 
 export interface PromoData {
   id: string;
@@ -45,8 +40,8 @@ export const fetchPromos = (): Promise<PromoData[]> => {
           if (data) {
             const promosArray = Object.entries(data)
               .map(([key, value]) => ({
+                ...(value as Omit<PromoData, "id">),
                 id: key,
-                ...(value as any),
               }))
               .sort(
                 (a, b) =>
