@@ -1,8 +1,27 @@
-import { getDatabase, onValue, push, ref as dbRef, remove, set } from "firebase/database";
-import { getStorage, ref as storageRef, getDownloadURL, uploadBytesResumable } from "firebase/storage";
+import { CancellationSlab } from "@/containers/vehicle/vehicleTypes";
+import {
+  getDatabase,
+  onValue,
+  push,
+  ref as dbRef,
+  remove,
+  set,
+} from "firebase/database";
+import {
+  getStorage,
+  ref as storageRef,
+  getDownloadURL,
+  uploadBytesResumable,
+} from "firebase/storage";
 
 interface CarType {
-  [x: string]: string | number | boolean | File | undefined;
+  [key: string]:
+    | string
+    | number
+    | boolean
+    | File
+    | CancellationSlab[]
+    | undefined;
   id?: string;
   name: string;
   image?: File | string;
@@ -46,7 +65,10 @@ export const fetchCarTypes = (): Promise<CarType[]> => {
   });
 };
 
-export const editCarType = async ({ cartype, method }: EditCarTypeParams): Promise<void> => {
+export const editCarType = async ({
+  cartype,
+  method,
+}: EditCarTypeParams): Promise<void> => {
   const db = getDatabase();
   const storage = getStorage();
 
@@ -54,11 +76,18 @@ export const editCarType = async ({ cartype, method }: EditCarTypeParams): Promi
     await push(dbRef(db, "cartypes"), cartype);
   } else if (method === "Delete" && cartype.id) {
     await remove(dbRef(db, `cartypes/${cartype.id}`));
-  } else if (method === "UpdateImage" && cartype.id && cartype.image instanceof File) {
+  } else if (
+    method === "UpdateImage" &&
+    cartype.id &&
+    cartype.image instanceof File
+  ) {
     const imageRef = storageRef(storage, `cartypes/${cartype.id}`);
     await uploadBytesResumable(imageRef, cartype.image);
     const imageUrl = await getDownloadURL(imageRef);
-    await set(dbRef(db, `cartypes/${cartype.id}`), { ...cartype, image: imageUrl });
+    await set(dbRef(db, `cartypes/${cartype.id}`), {
+      ...cartype,
+      image: imageUrl,
+    });
   } else if (method === "Edit" && cartype.id) {
     await set(dbRef(db, `cartypes/${cartype.id}`), cartype);
   } else {
@@ -86,7 +115,7 @@ export const fetchCarTypeById = (id: string): Promise<CarType> => {
           console.error("Firebase error:", error);
           reject(error);
         },
-        { onlyOnce: true }
+        { onlyOnce: true },
       );
     } catch (error) {
       console.error("Fetch Car Type Error:", error);
