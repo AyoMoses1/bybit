@@ -1,6 +1,6 @@
-'use client'
+"use client";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/router";
+import { useRouter, useParams } from "next/navigation";
 import { useGetPromoById, useUpdatePromo } from "@/lib/api/hooks/usePromo";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,8 +19,10 @@ type PromoFormData = Omit<PromoData, "id" | "tableData">;
 
 const UpdatePromo: React.FC = () => {
   const router = useRouter();
-  const { id } = router.query;
-  const { data: promo, isLoading } = useGetPromoById(id as string);
+  const params = useParams();
+  const id = params.id as string;
+
+  const { data: promo, isLoading } = useGetPromoById(id);
   const updatePromoMutation = useUpdatePromo();
 
   const [formData, setFormData] = useState<PromoFormData>({
@@ -96,7 +98,7 @@ const UpdatePromo: React.FC = () => {
     };
 
     updatePromoMutation.mutate(
-      { id: id as string, updatedData: processedData },
+      { id, updatedData: processedData },
       {
         onSuccess: () => {
           router.push("/promos");
