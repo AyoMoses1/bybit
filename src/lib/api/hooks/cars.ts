@@ -33,6 +33,13 @@ export type UpdateCarPayload = {
   id: string;
   active?: boolean;
   approved?: boolean;
+  vehicleNumber?: string;
+  vehicleModel?: string;
+  vehicleMake?: string;
+  other_info?: string;
+  carType?: string;
+  car_image?: string;
+  driver: string;
   updatedData: Partial<Car>;
 };
 
@@ -68,13 +75,9 @@ export const useGetCarById = (id: string) => {
 export const useUpdateCar = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({
-      id,
-      updatedData,
-    }: {
-      id: string;
-      updatedData: UpdateCarPayload;
-    }) => updateCars(id, updatedData),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    mutationFn: ({ id, updatedData }: { id: string; updatedData: any }) =>
+      updateCars(id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
       // toast.success("Car details were updated successfully!");

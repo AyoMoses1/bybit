@@ -6,6 +6,7 @@ import React, { useState } from "react";
 
 const Withdrawals = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [clickExport, setClickExport] = useState(false);
   return (
     <div className="mt-6">
       <p className="px-5 text-[32px] font-semibold tracking-[-0.11px] text-[#202224]">
@@ -15,6 +16,7 @@ const Withdrawals = () => {
         <div className="flex items-center gap-4">
           <SearchComponent
             value={searchTerm}
+            onClick={() => setClickExport(!clickExport)}
             importTable={true}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -22,7 +24,7 @@ const Withdrawals = () => {
       </div>
 
       {/* Table*/}
-      <WithdrawalTable search={searchTerm} />
+      <WithdrawalTable search={searchTerm} clickExport={clickExport} />
     </div>
   );
 };
