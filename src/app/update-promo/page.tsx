@@ -1,3 +1,4 @@
+'use client'
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { useGetPromoById, useUpdatePromo } from "@/lib/api/hooks/usePromo";
