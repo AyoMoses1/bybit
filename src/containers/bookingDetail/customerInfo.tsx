@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { BookingType } from "./bookingTypes";
 
 const CustomerInformation = ({ customer }: { customer: BookingType }) => {
@@ -12,21 +11,19 @@ const CustomerInformation = ({ customer }: { customer: BookingType }) => {
       <div className="mb-6 flex flex-col items-center">
         <div className="mb-3 h-20 w-20 overflow-hidden rounded-full bg-gray-200">
           {customer.customer_image ? (
-            <Image
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={customer.customer_image}
               alt={customer.customer_name || "Customer"}
               className="h-full w-full object-cover"
-              width={40}
-              height={40}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Image
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
                 src="https://placehold.co/80x80"
                 alt="Customer"
                 className="h-full w-full object-cover"
-                width={40}
-                height={40}
               />
             </div>
           )}
