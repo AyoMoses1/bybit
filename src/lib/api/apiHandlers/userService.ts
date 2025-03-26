@@ -23,6 +23,7 @@ interface User {
   profile_image?: string;
   createdAt?: string;
   usertype?: string;
+  approved?: boolean;
 }
 
 export const fetchUsers = () => {

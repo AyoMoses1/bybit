@@ -1,5 +1,4 @@
 import React from "react";
-import Image from "next/image";
 import { BookingType } from "./bookingTypes";
 
 const DriverInformation = ({ driver }: { driver: BookingType }) => {
@@ -12,21 +11,20 @@ const DriverInformation = ({ driver }: { driver: BookingType }) => {
       <div className="mb-6 flex flex-col items-center">
         <div className="mb-3 h-20 w-20 overflow-hidden rounded-full bg-gray-200">
           {driver.driver_image ? (
-            <Image
+            // Using img tag with eslint-disable to prevent warnings
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
               src={driver.driver_image}
               alt={driver.driver_name || "Driver"}
               className="h-full w-full object-cover"
-              width={40}
-              height={40}
             />
           ) : (
             <div className="flex h-full w-full items-center justify-center">
-              <Image
-                src="https://placehold.co/80x80"
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src="/default-avatar.png"
                 alt="Driver"
                 className="h-full w-full object-cover"
-                width={40}
-                height={40}
               />
             </div>
           )}
