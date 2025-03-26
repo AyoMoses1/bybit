@@ -87,13 +87,13 @@ const UpdateCar = () => {
       }
 
       const updatedData = {
-        vehicleNumber: data.vehicleNumber,
-        vehicleModel: data.vehicleModel,
-        vehicleMake: data.vehicleMake,
-        other_info: data?.other_info,
-        driver: selectedDriver,
-        carType: selectedVehicleType,
-        ...(passportURL && { car_image: passportURL }),
+        vehicleNumber: data.vehicleNumber ?? "",
+        vehicleModel: data.vehicleModel ?? "",
+        vehicleMake: data.vehicleMake ?? "",
+        other_info: data?.other_info ?? "",
+        driver: selectedDriver ?? "",
+        carType: selectedVehicleType ?? "",
+        ...(passportURL && { car_image: passportURL ?? "" }),
       };
 
       mutation.mutate(
