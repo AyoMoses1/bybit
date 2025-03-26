@@ -15,6 +15,8 @@ import { formatDate } from "@/utils/formatDate";
 type WithdrawalType = {
   id: string;
   processDate?: string;
+  processed?: boolean;
+  date?: string;
   name?: string;
   amount?: string;
   vehicleMake?: string;
@@ -93,7 +95,7 @@ const WithdrawalTable = ({ search }: { search?: string }) => {
     {
       accessorKey: "actions",
       header: "Actions",
-      cell: () => {
+      cell: ({ row }) => {
         return (
           <div className="w-[88px]">
             <div
@@ -101,10 +103,10 @@ const WithdrawalTable = ({ search }: { search?: string }) => {
                 borderWidth: "1px",
                 backgroundColor: "#FAFBFD",
               }}
-              className="relative flex w-fit cursor-pointer items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-2"
+              className={`${row?.original?.processed ? "cursor-not-allowed border-[0.6px] border-[#C8C8C8] bg-[#C8C8C8] opacity-50" : "bg-[#FAFBFD]"} relative flex w-fit cursor-pointer items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] px-2`}
             >
               {/* PROCESS */}
-              <div className="px-1 py-[10px]">
+              <div className={`px-1 py-[10px]`}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Image
