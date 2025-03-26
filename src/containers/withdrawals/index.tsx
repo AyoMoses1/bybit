@@ -1,5 +1,5 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import process from "../../assets/svgs/Group.svg";
 import cancel from "../../assets/svgs/Vector.svg";
@@ -14,7 +14,7 @@ import {
   useWithdrawals,
 } from "@/lib/api/hooks/withdrawals";
 import { formatDate } from "@/utils/formatDate";
-// import Papa from "papaparse";
+import Papa from "papaparse";
 
 export type WithdrawalType = {
   id: string;
@@ -30,7 +30,7 @@ export type WithdrawalType = {
 
 const WithdrawalTable = ({
   search,
-  // clickExport,
+  clickExport,
 }: {
   search?: string;
   clickExport?: boolean;
@@ -183,35 +183,35 @@ const WithdrawalTable = ({
     },
   ];
 
-  // const exportToCSV = (data: WithdrawalType[]) => {
-  //   const csvData = data.map((item) => ({
-  //     ID: item.id || "N/A",
-  //     "Request Date": formatDate(Number(item.date)),
-  //     "Driver Name": item.name || "N/A",
-  //     Amount: `CFA ${item.amount}` || "N/A",
-  //     Status: item.processed ? "Processed" : "Pending",
-  //     "Process Date": formatDate(Number(item.processDate)),
-  //     "Bank Name": item.bankName || "N/A",
-  //     "Bank Code": item.bankCode || "N/A",
-  //     "Acc Number": item.bankAccount || "N/A",
-  //   }));
+  const exportToCSV = (data: WithdrawalType[]) => {
+    const csvData = data.map((item) => ({
+      ID: item.id || "N/A",
+      "Request Date": formatDate(Number(item.date)),
+      "Driver Name": item.name || "N/A",
+      Amount: `CFA ${item.amount}` || "N/A",
+      Status: item.processed ? "Processed" : "Pending",
+      "Process Date": formatDate(Number(item.processDate)),
+      "Bank Name": item.bankName || "N/A",
+      "Bank Code": item.bankCode || "N/A",
+      "Acc Number": item.bankAccount || "N/A",
+    }));
 
-  //   const csv = Papa.unparse(csvData);
-  //   const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
-  //   const url = URL.createObjectURL(blob);
-  //   const link = document.createElement("a");
-  //   link.setAttribute("href", url);
-  //   link.setAttribute("download", "withdrawals.csv");
-  //   document.body.appendChild(link);
-  //   link.click();
-  //   document.body.removeChild(link);
-  // };
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "withdrawals.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
 
   console.log(withdrawals);
 
-  // useEffect(() => {
-  //   if (clickExport) exportToCSV(withdrawals);
-  // }, [clickExport, withdrawals]);
+  useEffect(() => {
+    if (clickExport) exportToCSV(withdrawals as WithdrawalType[]);
+  }, [clickExport, withdrawals]);
 
   return (
     <div className="px-1">
