@@ -3,24 +3,22 @@ import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "../../../assets/svgs/20250218.svg";
-import {
-  History,
-  Navigation,
-  LayoutDashboard,
-  Users,
-  MessageSquareWarning,
-  CircleAlert,
-  Bell,
-  BadgePercent,
-  WalletMinimal,
-  CarFront,
-  ChartColumnBig,
-  Car,
-  Settings,
-  UserPen,
-  Power,
-  Banknote,
-} from "lucide-react";
+import { Power } from "lucide-react";
+import dashboard from "../../../assets/icons/dashboard.svg";
+import addBookings from "../../../assets/icons/addBookings.svg";
+import bookingHistory from "../../../assets/icons/bookingHistory.svg";
+import users from "../../../assets/icons/users.svg";
+import vehicleType from "../../../assets/icons/vehicleType.svg";
+import cars from "../../../assets/icons/cars.svg";
+import withdrawals from "../../../assets/icons/withdrawal.svg";
+import addToWallet from "../../../assets/icons/addtoWallet.svg";
+import reports from "../../../assets/icons/reports.svg";
+import promos from "../../../assets/icons/promos.svg";
+import pushNotifications from "../../../assets/icons/pushNotification.svg";
+import sos from "../../../assets/icons/sos.svg";
+import complaint from "../../../assets/icons/complaint.svg";
+import profile from "../../../assets/icons/profile.svg";
+import settings from "../../../assets/icons/settings.svg";
 import {
   Sidebar,
   SidebarContent,
@@ -33,35 +31,33 @@ import {
 import { getAuth, signOut } from "firebase/auth";
 
 const mainMenuItems = [
-  { url: "/dashboard", title: "Dashboard", icon: LayoutDashboard },
-  { url: "/add-bookings", title: "Add Bookings", icon: Navigation },
-  { url: "/booking-history", title: "Booking History", icon: History },
-  { url: "/users", title: "Users", icon: Users },
-  { url: "/vehicle-type", title: "Vehicle Type", icon: Car },
-  { url: "/cars", title: "Cars", icon: CarFront },
-  { url: "/add-to-wallet", title: "Add to Wallet", icon: WalletMinimal },
-  { url: "/reports", title: "Reports", icon: ChartColumnBig },
-  { url: "/withdrawals", title: "Withdrawals", icon: Banknote },
-  { url: "/promos", title: "Promos", icon: BadgePercent },
-  { url: "/push-notification", title: "Push Notifications", icon: Bell },
-  { url: "/sos", title: "SOS", icon: CircleAlert },
-  { url: "/complaints", title: "Complaints", icon: MessageSquareWarning },
-
-  // {
-  //   url: "/beneficiaries",
-  //   title: "Beneficiaries",
-  //   icon: BeneficiariesIconSVG,
-  // },
+  { url: "/dashboard", title: "Dashboard", image: dashboard },
+  { url: "/add-bookings", title: "Add Bookings", image: addBookings },
+  { url: "/booking-history", title: "Booking History", image: bookingHistory },
+  { url: "/users", title: "Users", image: users },
+  { url: "/vehicle-type", title: "Vehicle Type", image: vehicleType },
+  { url: "/cars", title: "Cars", image: cars },
+  { url: "/withdrawals", title: "Withdrawals", image: withdrawals },
+  { url: "/add-to-wallet", title: "Add to Wallet", image: addToWallet },
+  { url: "/reports", title: "Reports", image: reports },
+  { url: "/promos", title: "Promos", image: promos },
+  {
+    url: "/push-notification",
+    title: "Push Notifications",
+    image: pushNotifications,
+  },
+  { url: "/sos", title: "SOS", image: sos },
+  { url: "/complaints", title: "Complaints", image: complaint },
 ];
 
 const otherMenuItems = [
   {
     url: "/payment-settings",
     title: "Payment Settings",
-    icon: History,
+    image: settings,
   },
-  { url: "/settings", title: "Settings", icon: Settings },
-  { url: "/profile", title: "profile", icon: UserPen },
+  { url: "/settings", title: "Settings", image: settings },
+  { url: "/profile", title: "Profile", image: profile },
   { url: "/logout", title: "Logout", icon: Power },
 ];
 
@@ -132,10 +128,17 @@ function AppSidebar() {
 
                   <SidebarMenuItem className="w-[85%]" key={item.title}>
                     <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                      <Link href={item.url}>
-                        <item.icon className="size-6" />
-                        <span>{item.title}</span>
-                      </Link>
+                      {item.image ? (
+                        <Link href={item.url}>
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            width={20}
+                            height={20}
+                          />
+                          <span>{item.title}</span>
+                        </Link>
+                      ) : null}
                     </SidebarMenuButton>
                   </SidebarMenuItem>
                 </div>
@@ -160,18 +163,32 @@ function AppSidebar() {
 
                   <SidebarMenuItem className="w-[85%]" key={item.title}>
                     {item.url === "/logout" ? (
-                      <SidebarMenuButton asChild onClick={() => handleLogout()}>
-                        <button>
-                          <item.icon className="size-5" />
-                          <span>{item.title}</span>
-                        </button>
-                      </SidebarMenuButton>
+                      <>
+                        {item.icon ? (
+                          <SidebarMenuButton
+                            asChild
+                            onClick={() => handleLogout()}
+                          >
+                            <button>
+                              <item.icon className="size-5" />
+                              <span>{item.title}</span>
+                            </button>
+                          </SidebarMenuButton>
+                        ) : null}
+                      </>
                     ) : (
                       <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                        <Link href={item.url}>
-                          <item.icon className="size-5" />
-                          <span>{item.title}</span>
-                        </Link>
+                        {item.image ? (
+                          <Link href={item.url}>
+                            <Image
+                              src={item.image}
+                              alt={item.title}
+                              width={18}
+                              height={18}
+                            />
+                            <span>{item.title}</span>
+                          </Link>
+                        ) : null}
                       </SidebarMenuButton>
                     )}
                   </SidebarMenuItem>

@@ -9,23 +9,43 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@radix-ui/react-tooltip";
-import { useWithdrawals } from "@/lib/api/hooks/withdrawals";
+import {
+  useProcessWithdrawal,
+  useWithdrawals,
+} from "@/lib/api/hooks/withdrawals";
 import { formatDate } from "@/utils/formatDate";
 
-type WithdrawalType = {
+export type WithdrawalType = {
   id: string;
   processDate?: string;
+  processed?: boolean;
+  date?: string;
   name?: string;
   amount?: string;
-  vehicleMake?: string;
-  vehicleModel?: string;
   bankName?: string;
   bankCode?: boolean;
   bankAccount?: boolean;
 };
 
 const WithdrawalTable = ({ search }: { search?: string }) => {
+  const mutation = useProcessWithdrawal();
+  const [loading, setLoading] = React.useState(false);
   const { data: withdrawals, isLoading } = useWithdrawals(search);
+
+  const handleProcessWithdrawal = (row: WithdrawalType) => {
+    console.log(row);
+    setLoading(true);
+    const data = row;
+    mutation.mutate(
+      { data },
+      {
+        onError: () => {
+          setLoading(false);
+        },
+        onSuccess: async () => {},
+      },
+    );
+  };
 
   const columns: ColumnDef<WithdrawalType>[] = [
     {
@@ -93,7 +113,7 @@ const WithdrawalTable = ({ search }: { search?: string }) => {
     {
       accessorKey: "actions",
       header: "Actions",
-      cell: () => {
+      cell: ({ row }) => {
         return (
           <div className="w-[88px]">
             <div
@@ -101,13 +121,18 @@ const WithdrawalTable = ({ search }: { search?: string }) => {
                 borderWidth: "1px",
                 backgroundColor: "#FAFBFD",
               }}
-              className="relative flex w-fit cursor-pointer items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-2"
+              className={`${row.original.processed ? "cursor-not-allowed border-[0.6px] border-[#C8C8C8] bg-[#C8C8C8] opacity-50" : "cursor-pointer bg-[#FAFBFD]"} relative flex w-fit items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] px-2`}
             >
               {/* PROCESS */}
-              <div className="px-1 py-[10px]">
+              <div className={`px-1 py-[10px]`}>
                 <Tooltip>
                   <TooltipTrigger asChild>
                     <Image
+                      onClick={
+                        row.original.processed || loading
+                          ? () => {}
+                          : () => handleProcessWithdrawal(row.original)
+                      }
                       src={process}
                       alt="Process Icon"
                       width={16}
