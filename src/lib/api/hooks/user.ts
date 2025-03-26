@@ -90,9 +90,9 @@ export const useDeleteUser = () => {
   });
 };
 
-export const useUsersRide = (id: string, type: string) => {
+export const useUsersRide = (id: string) => {
   return useQuery({
-    queryKey: ["usersRide", id, type],
+    queryKey: ["usersRide", id],
     queryFn: () => fetchUserRides(id),
     staleTime: Infinity,
     retry: 2,

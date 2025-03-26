@@ -207,7 +207,8 @@ const WithdrawalTable = ({
   //   document.body.removeChild(link);
   // };
 
-  // console.log(withdrawals);
+  console.log(withdrawals);
+
   // useEffect(() => {
   //   if (clickExport) exportToCSV(withdrawals);
   // }, [clickExport, withdrawals]);
