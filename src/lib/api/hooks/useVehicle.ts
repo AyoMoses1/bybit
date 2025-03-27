@@ -23,7 +23,7 @@ export const useEditCarType = () => {
     },
     onError: (error) => {
       console.error("Car type update failed:", error);
-      toast.error("Failed to update car type. Please try again.");
+      // toast.error("Failed to update car type. Please try again.");
     },
   });
 };
