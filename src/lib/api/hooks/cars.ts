@@ -11,13 +11,14 @@ import toast from "react-hot-toast";
 
 const USER_STATE_KEY = "car";
 
-interface Car {
-  id: string;
-  brand: string;
-  model: string;
-  year: number;
-  type: string;
-  price: number;
+export type Car = {
+  id?: string;
+  brand?: string;
+  model?: string;
+  year?: number;
+  type?: string;
+  date?: number;
+  price?: number;
   vehicleNumber?: string;
   vehicleModel?: string;
   vehicleMake?: string;
@@ -27,10 +28,11 @@ interface Car {
   active: boolean;
   driver: string;
   approved: boolean;
-}
+};
 
 export type UpdateCarPayload = {
   id: string;
+  date?: number;
   active?: boolean;
   approved?: boolean;
   vehicleNumber?: string;
