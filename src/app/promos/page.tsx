@@ -116,6 +116,7 @@ const Promos: React.FC = () => {
       header: "Used by Count",
       cell: ({ getValue }) => getValue() || "0",
     },
+
     {
       accessorKey: "actions",
       header: "Actions",

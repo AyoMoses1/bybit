@@ -245,14 +245,14 @@ export const updateCustomerProfileImage = async (
   }
 };
 
-export const fetchUserRides = (userId: string) => {
+export const fetchUserRides = (userId: string, userType: string) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   return new Promise<any[]>((resolve, reject) => {
     try {
       const db = getDatabase();
       const userRef = query(
         ref(db, "bookings"),
-        orderByChild("customer"),
+        orderByChild(userType),
 
         equalTo(userId),
       );

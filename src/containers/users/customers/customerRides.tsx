@@ -15,7 +15,7 @@ type Ride = {
 
 const CustomersRides = ({ id }: { id: string | string[] }) => {
   const userId = Array.isArray(id) ? id[0] : id;
-  const { data: usersRide, isLoading } = useUsersRide(userId ?? "");
+  const { data: usersRide, isLoading } = useUsersRide(userId ?? "", "customer");
   const [searchTerm, setSearchTerm] = useState("");
 
   const filteredRides = useMemo(() => {
