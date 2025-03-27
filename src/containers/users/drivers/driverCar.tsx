@@ -50,11 +50,14 @@ const DriverCar = () => {
                   Tags
                 </h3>
                 <div className="mt-1 flex flex-col gap-2 font-inter">
-                  <span className="rounded-[20px] bg-[#00B69B29] px-3 py-[2px] text-[10px] font-medium text-[#00B69B]">
-                    Approved
+                  <span
+                    className={`rounded-[20px] px-3 py-[2px] text-[10px] font-medium ${driversCars[0]?.approved ? "bg-[#00B69B29] text-[#00B69B]" : "bg-red-500/20 text-red-500"} `}
+                  >
+                    {driversCars[0]?.approved ? "Approved" : "Not Approved"}
                   </span>
-                  <span className="rounded-[20px] bg-[#E0D4FC] px-3 py-[2px] text-[10px] font-medium text-[#6226EF]">
-                    Exclusive
+
+                  <span className="w-fit rounded-[20px] bg-[#E0D4FC] px-3 py-[2px] text-[10px] font-medium text-[#6226EF]">
+                    {driversCars[0]?.carType || "N/A"}
                   </span>
                 </div>
               </div>
@@ -119,7 +122,7 @@ const DriverCar = () => {
                       </h3>
                       <div className="mt-1 flex flex-col gap-2 font-inter">
                         <span
-                          className={`rounded-[20px] bg-[#00B69B29] px-3 py-[2px] text-[10px] font-medium ${car?.approved ? "text-[#00B69B]" : "text-red-500"} `}
+                          className={`rounded-[20px] px-3 py-[2px] text-[10px] font-medium ${car?.approved ? "bg-[#00B69B29] text-[#00B69B]" : "bg-red-500/20 text-red-500"} `}
                         >
                           {car?.approved ? "Approved" : "Not Approved"}
                         </span>
