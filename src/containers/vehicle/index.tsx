@@ -24,6 +24,8 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
   const [profileModal, setProfileModal] = useState<boolean>(false);
   const [userData, setUserData] = useState<CarType | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [vehicleToDelete, setVehicleToDelete] = useState<{
@@ -138,7 +140,11 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
   }, [carTypes, search]);
 
   const handleImageClick = (rowData: CarType): void => {
-    setImageData(typeof rowData.image === "string" ? rowData.image : null);
+    // Make sure we're getting a valid image URL
+    const imageUrl = typeof rowData.image === "string" ? rowData.image : null;
+    console.log("Opening image modal with URL:", imageUrl);
+
+    setImageData(imageUrl);
     setProfileModal(true);
     setUserData(rowData);
   };
@@ -147,11 +153,16 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
     e.preventDefault();
     if (selectedImage && userData && userData.id) {
       setLoading(true);
+      // console.log("Uploading image for vehicle ID:", userData.id);
+
+      const vehicleData = { ...userData };
+
+      delete vehicleData.image;
+      delete vehicleData.cancellation_slabs;
 
       const cartype = {
-        ...userData,
+        ...vehicleData,
         image: selectedImage,
-        cancellation_slabs: undefined,
       };
 
       mutation.mutate(
@@ -161,21 +172,24 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
         },
         {
           onSuccess: () => {
+            console.log("Image update successful");
             setProfileModal(false);
             setSelectedImage(null);
+            setImagePreview(null);
             setLoading(false);
-            // toast.success("Vehicle image updated successfully");
             refetch();
           },
-          onError: () => {
+          onError: (error) => {
+            console.error("Image update failed:", error);
             setLoading(false);
             toast.error("Failed to update vehicle image");
           },
         },
       );
+    } else {
+      toast.error("Please select an image and try again");
     }
   };
-
   const openCancellationSlabs = (vehicleType: CarType) => {
     setCurrentVehicleType(vehicleType);
     setCancellationDialogOpen(true);
@@ -228,24 +242,38 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
       accessorKey: "image",
       header: "Image",
       cell: ({ row }) => {
-        const imageUrl = row.getValue("image");
-        return typeof imageUrl === "string" ? (
+        const imageValue = row.getValue("image");
+        const rowData = row.original;
+
+        // Only proceed with string URLs that are valid
+        const validImageUrl =
+          typeof imageValue === "string" &&
+          imageValue.trim() !== "" &&
+          (imageValue.startsWith("http") || imageValue.startsWith("data:"))
+            ? imageValue
+            : null;
+
+        return validImageUrl ? (
           <button
-            onClick={() => handleImageClick(row.original)}
+            onClick={() => handleImageClick(rowData)}
             className="overflow-hidden rounded-md"
           >
-            <div className="relative h-12 w-12">
+            <div className="relative flex h-12 w-12 items-center justify-center">
               <Image
-                src={imageUrl}
-                alt="Vehicle Type"
-                className="object-cover"
-                fill
-                sizes="48px"
+                src={validImageUrl}
+                alt={`${row.getValue("name") || "Vehicle"} image`}
+                className="object-contain"
+                width={60}
+                height={60}
+                unoptimized={true}
               />
             </div>
           </button>
         ) : (
-          <div className="flex h-12 w-12 items-center justify-center rounded-md bg-gray-200">
+          <button
+            onClick={() => handleImageClick(rowData)}
+            className="flex h-12 w-12 items-center justify-center rounded-md bg-gray-200"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
               width="24"
@@ -261,7 +289,7 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
               <circle cx="8.5" cy="8.5" r="1.5"></circle>
               <polyline points="21 15 16 10 5 21"></polyline>
             </svg>
-          </div>
+          </button>
         );
       },
     },
@@ -323,14 +351,14 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
         return value || "N/A";
       },
     },
-    {
-      accessorKey: "extra_info",
-      header: "Extra Info",
-      cell: ({ row }) => {
-        const value = row.getValue("extra_info");
-        return value || "N/A";
-      },
-    },
+    // {
+    //   accessorKey: "extra_info",
+    //   header: "Extra Info",
+    //   cell: ({ row }) => {
+    //     const value = row.getValue("extra_info");
+    //     return value || "N/A";
+    //   },
+    // },
     {
       accessorKey: "pos",
       header: "List Position",
