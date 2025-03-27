@@ -16,7 +16,7 @@ const DeleteConfirmation = ({
   return (
     <Dialog.Root>
       <Dialog.Trigger asChild>
-        <button className="cursor-pointer border-l border-gray-400 px-2">
+        <button className="">
           <Image
             src={deleteIcon}
             alt="Delete Icon"

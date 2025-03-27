@@ -143,18 +143,21 @@ const CarsTable = ({ search }: { search?: string }) => {
                 borderWidth: "1px",
                 backgroundColor: "#FAFBFD",
               }}
-              className="flex w-fit items-center rounded-md border-[1px] border-[#D5D5D5] bg-[#FAFBFD] p-2"
+              className="relative flex w-fit cursor-pointer items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-2"
             >
               <Link href={`/cars/${row.original.id}`}>
-                <div className="cursor-pointer pr-2">
+                <div className="px-1 py-2">
                   <ArrowRight className="size-4 text-gray-600" />
                 </div>
               </Link>
-
-              <DeleteConfirmation
-                onClick={() => handleDelete(row.original.id)}
-                text={`Are you sure you want to delete this car (${row.original.vehicleMake})? This action can not be undone`}
-              />
+              {/* Divider */}
+              <div className="h-8 w-[1px] translate-y-0 bg-[#979797]" />
+              <div className="px-1 py-2">
+                <DeleteConfirmation
+                  onClick={() => handleDelete(row.original.id)}
+                  text={`Are you sure you want to delete this car (${row.original.vehicleMake})? This action can not be undone`}
+                />
+              </div>
             </div>
           </div>
         );
