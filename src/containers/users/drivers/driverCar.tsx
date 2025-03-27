@@ -26,8 +26,6 @@ const DriverCar = () => {
     }
   }, [id, cars]);
 
-  console.log(driversCars);
-
   return (
     <div className="px-0 py-2 font-source">
       <div className="mx-auto flex justify-between rounded-[14px] bg-white px-7 shadow-md">
