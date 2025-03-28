@@ -97,7 +97,7 @@ const FleetAdmin = ({ search }: { search?: string }) => {
 
     {
       accessorKey: "approved",
-      header: "Active Status",
+      header: "Approval Status",
       cell: ({ row }) => {
         return <ActiveStatusToggle user={row.original} />;
       },

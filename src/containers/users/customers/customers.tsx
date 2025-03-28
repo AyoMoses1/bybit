@@ -96,7 +96,7 @@ const Customers = ({ search }: { search?: string }) => {
 
     {
       accessorKey: "approved",
-      header: "Active Status",
+      header: "Approval Status",
       cell: ({ row }) => {
         return (
           <Switch

@@ -79,7 +79,7 @@ const Admin = ({ search }: { search?: string }) => {
 
     {
       accessorKey: "approved",
-      header: "Active Status",
+      header: "Approval Status",
       cell: ({ row }) => {
         const isChecked = row.original.approved;
 
