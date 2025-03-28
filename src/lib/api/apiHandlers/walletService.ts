@@ -35,11 +35,11 @@ export const requestPushMsg = async (
  * Adds funds to a user's wallet 
  * @param uid User ID
  * @param amount Amount to add
+ * @param reason Optional reason for the credit
  * @returns Promise that resolves when the operation is complete
  */
-export const addToWallet = async (uid: string, amount: number): Promise<void> => {
+export const addToWallet = async (uid: string, amount: number, reason?: string): Promise<void> => {
   try {
-    // Get database references
     const db = getDatabase();
     const settingsRef = ref(db, 'settings');
     const userRef = ref(db, `users/${uid}`);
@@ -58,28 +58,33 @@ export const addToWallet = async (uid: string, amount: number): Promise<void> =>
       throw new Error("User not found");
     }
     
-    // Calculate new balance
     let walletBalance = parseFloat(userData.walletBalance || '0');
     walletBalance = parseFloat((walletBalance + parseFloat(amount.toString())).toFixed(decimalPlaces));
     
-    // Update wallet balance
+ 
     await update(userRef, { walletBalance });
     
-    // Add transaction to history
-    await push(walletHistoryRef, {
+ 
+    const transactionData = {
       type: 'Credit',
       amount: parseFloat(amount.toString()),
       date: Date.now(),
       txRef: 'AdminCredit'
-    });
+    };
     
-    // Send push notification if user has a push token
+    if (reason) {
+      transactionData.txRef = reason;
+      Object.assign(transactionData, { note: reason });
+    }
+    
+    await push(walletHistoryRef, transactionData);
+    
     if (userData.pushToken) {
       await requestPushMsg(
         userData.pushToken,
         {
           title: 'Wallet Update',
-          msg: 'Your wallet balance has been updated',
+          msg: `Your wallet has been credited with ${amount.toFixed(2)}`,
           screen: 'Wallet'
         }
       );
@@ -93,7 +98,7 @@ export const addToWallet = async (uid: string, amount: number): Promise<void> =>
 };
 
 /**
- * Hook for adding to wallet (React Query compatible version)
+ * Hook for adding to wallet 
  */
 export const useAddToWallet = () => {
   const queryClient = useQueryClient();
@@ -105,7 +110,6 @@ export const useAddToWallet = () => {
     onSuccess: (_, variables) => {
       queryClient.invalidateQueries({ queryKey: ['userWallet', variables.uid] });
       queryClient.invalidateQueries({ queryKey: ['walletHistory', variables.uid] });
-      toast.success('Wallet balance updated successfully');
     },
     onError: (error: Error) => {
       toast.error(`Failed to update wallet: ${error.message}`);
