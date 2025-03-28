@@ -2,7 +2,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname, useRouter } from "next/navigation";
-import Logo from "../../../assets/svgs/20250218.svg";
+import Logo from "../../../assets/svgs/logo.svg";
 import { Power } from "lucide-react";
 import dashboard from "../../../assets/icons/dashboard.svg";
 import addBookings from "../../../assets/icons/addBookings.svg";
@@ -101,7 +101,7 @@ function AppSidebar() {
 
   return (
     <Sidebar className="pb-10 pt-0">
-      <div className="flex flex-col pb-2 pl-12 pt-5">
+      <div className="flex flex-col bg-white pb-2 pl-12 pt-6">
         <Image
           src={Logo}
           alt="Koloride Logo"
@@ -109,7 +109,7 @@ function AppSidebar() {
           height={24}
           className="object-contain"
         />
-        <p className="mt-[-5px] text-xs font-[400] tracking-[0.3px] text-[#FAFAFA]">
+        <p className="mt-[1px] pb-2 text-xs font-[400] tracking-[0.3px] text-[#000]">
           Admin
         </p>
       </div>

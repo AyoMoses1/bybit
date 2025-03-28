@@ -96,7 +96,7 @@ const Drivers = ({ search }: { search?: string }) => {
 
     {
       accessorKey: "approved",
-      header: "Active Status",
+      header: "Approval Status",
       cell: ({ row }) => <ApprovalSwitch driver={row.original} />,
     },
 
