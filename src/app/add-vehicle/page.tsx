@@ -59,11 +59,18 @@ const AddVehicleTypePage = () => {
     setFormData((prev) => ({ ...prev, convenience_fee_type: value }));
   };
 
-  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
+      console.log("Selected File:", file);
+
       setSelectedImage(file);
-      setImagePreview(URL.createObjectURL(file));
+
+      // Create and store the temporary URL for preview
+      const imageUrl = URL.createObjectURL(file);
+      console.log("Generated Preview URL:", imageUrl);
+
+      setImagePreview(imageUrl);
     }
   };
 
@@ -184,6 +191,7 @@ const AddVehicleTypePage = () => {
                       width={40}
                       height={40}
                       className="h-full w-full object-cover"
+                      unoptimized={true}
                     />
                   ) : (
                     <div className="flex h-full w-full items-center justify-center">
