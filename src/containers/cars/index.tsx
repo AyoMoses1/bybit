@@ -14,6 +14,7 @@ import {
 import DeleteConfirmation from "@/components/deleteConfirmation";
 import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 import { useAuditLog } from "@/utils/useAuditLog";
+import Papa from "papaparse";
 
 type CarType = {
   id: string;
@@ -32,7 +33,13 @@ type UserInfo = {
   usertype: string;
 };
 
-const CarsTable = ({ search }: { search?: string }) => {
+const CarsTable = ({
+  search,
+  clickExport,
+}: {
+  search?: string;
+  clickExport?: boolean;
+}) => {
   const deleteMutation = useDeleteCar();
   const { handleAudit } = useAuditLog();
 
@@ -184,6 +191,37 @@ const CarsTable = ({ search }: { search?: string }) => {
       },
     },
   ];
+
+  const exportToCSV = (data: CarType[]) => {
+    const csvData = data.map((item) => ({
+      ID: item.id || "N/A",
+      driver: item.driver || "N/A",
+      "Vehicle Type": item.carType || "N/A",
+      VRN: item.vehicleNumber || "N/A",
+      "Vehicle Brand": item.vehicleMake || "N/A",
+      "Vehicle Model No": item.vehicleModel || "N/A",
+      "Vehicle Color": item.other_info || "N/A",
+      "Active Status": item.active ? "Active" : "Inactive",
+      Approved: item.approved ? "Approved" : "Pending Approval",
+    }));
+
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "cars.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    if (clickExport) {
+      exportToCSV(cars as CarType[]);
+      handleAudit("Cars", "", AuditAction.EXPORT, "Exported Cars History");
+    }
+  }, [clickExport, cars, handleAudit]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

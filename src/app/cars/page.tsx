@@ -9,6 +9,7 @@ import React, { useState } from "react";
 
 const Cars = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [clickExport, setClickExport] = useState(false);
 
   return (
     <div className="mt-6">
@@ -21,6 +22,8 @@ const Cars = () => {
           <SearchComponent
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            onClick={() => setClickExport(!clickExport)}
+            importTable={true}
           />
           <Link href="/add-car">
             <Button className="w-[174px] py-2" size={"default"}>
@@ -34,7 +37,7 @@ const Cars = () => {
       </div>
 
       {/* TAB CONTENT */}
-      <CarsTable search={searchTerm} />
+      <CarsTable search={searchTerm} clickExport={clickExport} />
     </div>
   );
 };
