@@ -84,6 +84,24 @@ function AppSidebar() {
     }
 
     if (
+      url === "/vehicle-type" &&
+      ["/vehicle-type", "/vehicle-type/[id]", "/add-vehicle"].some((route) =>
+        pathname.startsWith(route),
+      )
+    ) {
+      return true;
+    }
+
+    if (
+      url === "/booking-history" &&
+      ["/booking-history", "/booking-history/[id]"].some((route) =>
+        pathname.startsWith(route),
+      )
+    ) {
+      return true;
+    }
+
+    if (
       url === "/cars" &&
       ["/cars", "/add-car"].some((route) => pathname.startsWith(route))
     ) {
