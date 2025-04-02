@@ -12,6 +12,8 @@ import {
   useUpdateCar,
 } from "@/lib/api/hooks/cars";
 import DeleteConfirmation from "@/components/deleteConfirmation";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 type CarType = {
   id: string;
@@ -32,6 +34,7 @@ type UserInfo = {
 
 const CarsTable = ({ search }: { search?: string }) => {
   const deleteMutation = useDeleteCar();
+  const { handleAudit } = useAuditLog();
 
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { data: cars, isLoading } = useCars(
@@ -42,6 +45,7 @@ const CarsTable = ({ search }: { search?: string }) => {
 
   const handleDelete = (id: string) => {
     deleteMutation.mutate(id);
+    handleAudit("Cars", id, AuditAction.DELETE, `Delete car with id - ${id}`);
   };
 
   const DriverCell = ({ driverId }: { driverId: string }) => {
@@ -63,6 +67,14 @@ const CarsTable = ({ search }: { search?: string }) => {
         { id: car.id, updatedData: { active: checked } as UpdateCarPayload },
         {
           onError: () => setIsChecked(!checked),
+          onSuccess: () => {
+            handleAudit(
+              "Cars",
+              car.id,
+              AuditAction.UPDATE,
+              `Update active status to ${checked}`,
+            );
+          },
         },
       );
     };
@@ -79,6 +91,14 @@ const CarsTable = ({ search }: { search?: string }) => {
         { id: car.id, updatedData: { approved: checked } as UpdateCarPayload },
         {
           onError: () => setIsChecked(!checked),
+          onSuccess: () => {
+            handleAudit(
+              "Cars",
+              car.id,
+              AuditAction.UPDATE,
+              `Update approval status to ${checked}`,
+            );
+          },
         },
       );
     };

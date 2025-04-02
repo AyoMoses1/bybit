@@ -18,6 +18,8 @@ import {
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 interface User {
   id: string;
   lastName: string;
@@ -26,6 +28,7 @@ interface User {
 const AddCar = () => {
   const router = useRouter();
   const mutation = useAddCar();
+  const { handleAudit } = useAuditLog();
   const { data: users = [], isLoading } = useUser("driver") as {
     data: { id: string; firstName: string; lastName: string }[];
     isLoading: boolean;
@@ -119,6 +122,12 @@ const AddCar = () => {
           onSuccess: () => {
             setLoading(false);
             router.push("/cars");
+            handleAudit(
+              "Cars",
+              selectedDriver ?? "",
+              AuditAction.CREATE,
+              `A new car was created for driver ${selectedDriver ?? ""}`,
+            );
           },
         },
       );
