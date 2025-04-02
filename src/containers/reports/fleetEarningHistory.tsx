@@ -1,7 +1,7 @@
 import { CustomTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
-import { useFleetEarningReports } from "@/lib/api/hooks/reports";
-import { useEffect, useState } from "react";
+// import { useFleetEarningReports } from "@/lib/api/hooks/reports";
+import { useEffect } from "react";
 
 type FleetEarningReport = {
   fleetadmin_id: string;
@@ -13,15 +13,17 @@ type FleetEarningReport = {
 };
 
 const FleetEarningHistory = ({ search }: { search?: string }) => {
-  const [userInfo, setUserInfo] = useState<{
-    usertype?: string;
-    id?: string;
-  }>();
-  const { data: fleetreport, isLoading } = useFleetEarningReports(
-    userInfo?.usertype ?? "",
-    userInfo?.id ?? "",
-    search,
-  );
+  const isLoading = false;
+  // const [userInfo, setUserInfo] = useState<{
+  //   usertype?: string;
+  //   id?: string;
+  // }>();
+  // const { data: fleetreport, isLoading } = useFleetEarningReports(
+  //   userInfo?.usertype ?? "",
+  //   userInfo?.id ?? "",
+  //   search,
+  // );
+  console.log(search);
 
   const columns: ColumnDef<FleetEarningReport>[] = [
     {
@@ -62,7 +64,7 @@ const FleetEarningHistory = ({ search }: { search?: string }) => {
     if (typeof window !== "undefined") {
       const info = localStorage.getItem("userInfo");
       if (info) {
-        setUserInfo(JSON.parse(info));
+        // setUserInfo(JSON.parse(info));
       }
     }
   }, []);
@@ -84,7 +86,7 @@ const FleetEarningHistory = ({ search }: { search?: string }) => {
             <CustomTable
               columns={columns}
               empty="You currently have no report history"
-              data={Array.isArray(fleetreport) ? fleetreport : []}
+              data={[]}
             />
           </>
         )}

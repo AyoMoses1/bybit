@@ -218,8 +218,16 @@ const WithdrawalTable = ({
   };
 
   useEffect(() => {
-    if (clickExport) exportToCSV(withdrawals as WithdrawalType[]);
-  }, [clickExport, withdrawals]);
+    if (clickExport) {
+      exportToCSV(withdrawals as WithdrawalType[]);
+      handleAudit(
+        "Withdrawals",
+        "",
+        AuditAction.EXPORT,
+        "Exported Withdrawal History",
+      );
+    }
+  }, [clickExport, withdrawals, handleAudit]);
 
   return (
     <div className="px-1">
@@ -236,7 +244,7 @@ const WithdrawalTable = ({
             {" "}
             <CustomTable
               columns={columns}
-              empty="You currently have no registered car"
+              empty="You currently have no withdrawal"
               data={Array.isArray(withdrawals) ? withdrawals : []}
             />
           </>

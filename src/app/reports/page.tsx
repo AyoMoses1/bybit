@@ -6,6 +6,7 @@ import FleetEarningHistory from "@/containers/reports/fleetEarningHistory";
 import React, { useState } from "react";
 
 const Reports = () => {
+  const [clickExport, setClickExport] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Driver Earning History");
   const [searchTerm, setSearchTerm] = useState("");
   const tabsData = [
@@ -43,6 +44,7 @@ const Reports = () => {
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             importTable={true}
+            onClick={() => setClickExport(!clickExport)}
           />
         </div>
       </div>
@@ -50,12 +52,24 @@ const Reports = () => {
       <div className="mt-5 px-[2px]">
         {selectedTab === "Driver Earning History" ? (
           <div>
-            <DriverEarningHistory search={searchTerm} />
+            <DriverEarningHistory
+              search={searchTerm}
+              clickExport={
+                selectedTab === "Driver Earning History" ? clickExport : false
+              }
+              setClickExport={setClickExport}
+            />
           </div>
         ) : selectedTab === "Earning Reports" ? (
           <div>
             {" "}
-            <EarningHistory search={searchTerm} />
+            <EarningHistory
+              search={searchTerm}
+              clickExport={
+                selectedTab === "Earning Reports" ? clickExport : false
+              }
+              setClickExport={setClickExport}
+            />
           </div>
         ) : selectedTab === "Fleet Admins Earning Reports" ? (
           <div>

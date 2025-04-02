@@ -1,6 +1,10 @@
 import { CustomTable } from "@/components/ui/data-table";
 import { ColumnDef } from "@tanstack/react-table";
 import { useEarningReports } from "@/lib/api/hooks/reports";
+import { useEffect } from "react";
+import Papa from "papaparse";
+import { useAuditLog } from "@/utils/useAuditLog";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 
 type EarningReport = {
   year: number;
@@ -14,7 +18,15 @@ type EarningReport = {
   myEarning: number;
 };
 
-const EarningHistory = ({ search }: { search?: string }) => {
+const EarningHistory = ({
+  search,
+  clickExport,
+  setClickExport,
+}: {
+  search?: string;
+  clickExport: boolean;
+  setClickExport: (value: boolean) => void;
+}) => {
   const { data: reports, isLoading } = useEarningReports(search);
 
   const columns: ColumnDef<EarningReport>[] = [
@@ -67,8 +79,43 @@ const EarningHistory = ({ search }: { search?: string }) => {
       cell: ({ getValue }) => getValue() || "N/A",
     },
   ];
+  const { handleAudit } = useAuditLog();
+  const exportToCSV = (data: EarningReport[]) => {
+    const csvData = data?.map((item) => ({
+      Year: item.year || "N/A",
+      Month: item.month || "N/A",
+      "Booking Count": item.total_rides || "N/A",
+      "Trip Cost": `CFA ${item.tripCost}` || "N/A",
+      "Cancellation Fee": `CFA ${item.cancellationFee}` || "N/A",
+      "Convenience Fee": `CFA ${item.convenienceFee}` || "N/A",
+      Discount: `CFA ${item.discountAmount}` || "N/A",
+      Profit: `CFA ${item.myEarning}` || "N/A",
+      "Driver Share": `CFA ${item.driverShare}` || "N/A",
+    }));
 
-  console.log(reports);
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "Earning History.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    if (clickExport) {
+      exportToCSV(reports as EarningReport[]);
+      setClickExport(false);
+      handleAudit(
+        "Earning History",
+        "",
+        AuditAction.EXPORT,
+        "Exported Earning History Report",
+      );
+    }
+  }, [clickExport, reports, setClickExport, handleAudit]);
 
   return (
     <div>
