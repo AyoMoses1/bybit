@@ -2,6 +2,9 @@ import { CustomTable } from "@/components/ui/data-table";
 import React, { useEffect, useState } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useDriversReports } from "@/lib/api/hooks/reports";
+import Papa from "papaparse";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 type DriverReport = {
   year: number;
@@ -17,7 +20,15 @@ type UserInfo = {
   usertype: string;
 };
 
-const DriverEarningHistory = ({ search }: { search?: string }) => {
+const DriverEarningHistory = ({
+  search,
+  clickExport,
+  setClickExport,
+}: {
+  search?: string;
+  clickExport: boolean;
+  setClickExport: (value: boolean) => void;
+}) => {
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { data: reports, isLoading } = useDriversReports(
     userInfo?.usertype ?? "",
@@ -59,6 +70,42 @@ const DriverEarningHistory = ({ search }: { search?: string }) => {
       cell: ({ getValue }) => "CFA" + getValue() || "N/A",
     },
   ];
+  const { handleAudit } = useAuditLog();
+
+  const exportToCSV = (data: DriverReport[]) => {
+    const csvData = data?.map((item) => ({
+      Year: item.year || "N/A",
+      Month: item.month || "N/A",
+      "Driver Name": item.driverName || "N/A",
+      "Booking Count": item.total_rides || "N/A",
+      VIN: item.driverVehicleNo || "N/A",
+      "Driver Share": `CFA ${item.driverShare}` || "N/A",
+    }));
+
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "Drivers Earning History.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    if (clickExport) {
+      exportToCSV(reports as DriverReport[]);
+
+      setClickExport(false);
+      handleAudit(
+        "Drivers Earning History",
+        "",
+        AuditAction.EXPORT,
+        "Exported Drivers Earning History Report",
+      );
+    }
+  }, [clickExport, reports, setClickExport, handleAudit]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {

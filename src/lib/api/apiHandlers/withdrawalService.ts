@@ -15,22 +15,20 @@ export const fetchWithdrawal = (search: string) => {
               data[i].id = i;
               return data[i];
             })
-            .filter(
-              (withdrawal) =>
-                !search ||
-                withdrawal.id?.toLowerCase().includes(search.toLowerCase()) ||
-                withdrawal.name?.toLowerCase().includes(search.toLowerCase()) ||
-                withdrawal.amount?.toString().includes(search.toLowerCase()) ||
-                withdrawal.bankName
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                withdrawal.bankCode
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                withdrawal.bankAccount
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()),
-            );
+            .filter((withdrawal) => {
+              if (!search) return true;
+
+              const lowerSearch = search.toLowerCase();
+
+              return (
+                withdrawal.id?.toLowerCase().includes(lowerSearch) ||
+                withdrawal.name?.toLowerCase().includes(lowerSearch) ||
+                withdrawal.amount?.toString().includes(lowerSearch) ||
+                withdrawal.bankName?.toLowerCase().includes(lowerSearch) ||
+                withdrawal.bankCode?.toLowerCase().includes(lowerSearch) ||
+                withdrawal.bankAccount?.toLowerCase().includes(lowerSearch)
+              );
+            });
           resolve(arr.reverse());
         } else {
           resolve("No WITHDRAWS available.");

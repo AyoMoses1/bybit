@@ -6,6 +6,7 @@ export enum AuditAction {
   CREATE = "CREATE",
   UPDATE = "UPDATE",
   DELETE = "DELETE",
+  EXPORT = "EXPORT",
 }
 export type AuditLog = {
   id: string;
