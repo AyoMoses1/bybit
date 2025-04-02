@@ -35,7 +35,7 @@ const DriverInformation = ({ driver }: { driver: BookingType }) => {
         <div className="border-b py-4">
           <div className="flex justify-between">
             <p className="text-gray-500">Name</p>
-            <p>{driver.driver_name || "HRUQOA"}</p>
+            <p>{driver.driver_name || "N/A"}</p>
           </div>
         </div>
         <div className="border-b py-4">
