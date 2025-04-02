@@ -15,6 +15,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@radix-ui/react-popover";
+import { useAuditLog } from "@/utils/useAuditLog";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 
 type Car = {
   vehicleNumber: string;
@@ -33,6 +35,7 @@ type User = {
 };
 
 const UpdateCar = () => {
+  const { handleAudit } = useAuditLog();
   const router = useRouter();
   const { id } = useParams();
   const mutation = useUpdateCar();
@@ -108,6 +111,12 @@ const UpdateCar = () => {
           onSuccess: () => {
             setLoading(false);
             router.push("/cars");
+            handleAudit(
+              "Cars",
+              carId ?? "",
+              AuditAction.UPDATE,
+              `Update car with id - ${carId ?? ""}`,
+            );
           },
         },
       );
