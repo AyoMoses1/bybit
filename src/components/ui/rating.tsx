@@ -1,4 +1,3 @@
-// components/ui/rating.tsx
 import React from "react";
 
 interface RatingProps {
