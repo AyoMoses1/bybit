@@ -2,6 +2,7 @@ import React from "react";
 import { formatDate } from "@/utils/formatDate";
 import StatusBadge from "./statusBadge";
 import { BookingType } from "./bookingTypes";
+import { Rating } from "@/components/ui/rating";
 
 const RideInformation = ({ booking }: { booking: BookingType }) => {
   return (
@@ -24,7 +25,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
           <div className="mr-4 border-b border-gray-200 py-4 pr-4">
             <div className="flex justify-between">
               <p className="text-gray-500">Booking Reference</p>
-              <p>{booking.reference || "HRUQOA"}</p>
+              <p>{booking.reference || "N/A"}</p>
             </div>
           </div>
 
@@ -32,7 +33,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
             <div className="flex justify-between">
               <p className="text-gray-500">Booking Status</p>
               <div>
-                <StatusBadge status={booking.status || "Completed"} />
+                <StatusBadge status={booking.status || ""} />
               </div>
             </div>
           </div>
@@ -43,7 +44,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
               <p>
                 {booking.tripdate
                   ? formatDate(Number(booking.tripdate))
-                  : "HRUQOA"}
+                  : "N/A"}
               </p>
             </div>
           </div>
@@ -51,7 +52,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
           <div className="mr-4 py-4 pr-4">
             <div className="flex justify-between">
               <p className="text-gray-500">Cancelation Reason</p>
-              <p>{booking.reason || "HRUQOA"}</p>
+              <p>{booking.reason || "N/A"}</p>
             </div>
           </div>
         </div>
@@ -61,7 +62,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
           <div className="border-b border-gray-200 py-4">
             <div className="flex justify-between">
               <p className="text-gray-500">OTP</p>
-              <p>FALSE</p>
+              <p>{booking.otp || "False"}</p>
             </div>
           </div>
 
@@ -75,7 +76,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
           <div className="border-b border-gray-200 py-4">
             <div className="flex justify-between">
               <p className="text-gray-500">Driver Rating</p>
-              <p>{booking.rating || "HRUQOA"}</p>
+              <Rating value={booking.rating || 0} readOnly />
             </div>
           </div>
 

@@ -34,7 +34,7 @@ const CustomerInformation = ({ customer }: { customer: BookingType }) => {
         <div className="border-b py-4">
           <div className="flex justify-between">
             <p className="text-gray-500">ID</p>
-            <p>{customer.customer || "HRUQOA"}</p>
+            <p>{customer.customer || "N/A"}</p>
           </div>
         </div>
         <div className="border-b py-4">

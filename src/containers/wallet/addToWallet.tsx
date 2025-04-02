@@ -11,6 +11,7 @@ const AddToWallet: React.FC = () => {
   const [selectedUser, setSelectedUser] = useState<string>("");
   const [selectedUserName, setSelectedUserName] = useState<string>("");
   const [amount, setAmount] = useState<string>("");
+  const [reason, setReason] = useState<string>("");
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [alertMessage, setAlertMessage] = useState<string>("");
   const [alertType, setAlertType] = useState<"success" | "error">("success");
@@ -62,11 +63,12 @@ const AddToWallet: React.FC = () => {
       {
         uid: selectedUser,
         amount: parseFloat(amount),
+        reason: reason.trim() || undefined,
       },
       {
         onSuccess: () => {
-          toast.success("Amount added to wallet successfully");
           setAmount("");
+          setReason("");
           setSelectedUser("");
           setSelectedUserName("");
           setShowAlert(false);
@@ -143,6 +145,21 @@ const AddToWallet: React.FC = () => {
               onChange={(e) => setAmount(e.target.value)}
               min="0"
               step="0.01"
+              className="mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors"
+            />
+          </div>
+
+          {/* Add reason input field */}
+          <div className="space-y-2">
+            <label htmlFor="reason" className="text-base font-medium">
+              Reason (Optional)
+            </label>
+            <input
+              id="reason"
+              type="text"
+              placeholder="Enter reason for credit (promotion, refund, etc.)"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
               className="mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors"
             />
           </div>

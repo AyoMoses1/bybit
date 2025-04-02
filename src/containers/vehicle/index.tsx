@@ -351,14 +351,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
         return value || "N/A";
       },
     },
-    // {
-    //   accessorKey: "extra_info",
-    //   header: "Extra Info",
-    //   cell: ({ row }) => {
-    //     const value = row.getValue("extra_info");
-    //     return value || "N/A";
-    //   },
-    // },
     {
       accessorKey: "pos",
       header: "List Position",

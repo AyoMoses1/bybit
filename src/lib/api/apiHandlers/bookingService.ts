@@ -35,10 +35,9 @@ interface Booking {
   deliver_image?: string;
   reason?: string;
   cancelledBy?: string;
-  [key: string]: unknown; // For other properties not explicitly defined
+  [key: string]: unknown; 
 }
 
-// Raw booking data structure from Firebase
 interface BookingData {
   pickup?: Location;
   drop?: Location;

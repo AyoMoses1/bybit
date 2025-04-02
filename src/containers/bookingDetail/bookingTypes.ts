@@ -7,6 +7,7 @@ export interface DriverOffer {
 
 export interface BookingType {
   id?: string;
+  otp?: string;
   reference?: string;
   status?: string;
   distance?: string;
