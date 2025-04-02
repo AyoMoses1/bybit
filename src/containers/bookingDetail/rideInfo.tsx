@@ -24,7 +24,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
           <div className="mr-4 border-b border-gray-200 py-4 pr-4">
             <div className="flex justify-between">
               <p className="text-gray-500">Booking Reference</p>
-              <p>{booking.reference || "HRUQOA"}</p>
+              <p>{booking.reference || "N/A"}</p>
             </div>
           </div>
 
@@ -43,7 +43,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
               <p>
                 {booking.tripdate
                   ? formatDate(Number(booking.tripdate))
-                  : "HRUQOA"}
+                  : "N/A"}
               </p>
             </div>
           </div>
