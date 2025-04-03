@@ -26,10 +26,8 @@ const useBookingActions = (
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
 
-  // Create cancel booking mutation
   const cancelBookingMutation = useCancelBooking();
 
-  // Handle search change
   const handleSearchChange = (newSearch: string) => {
     setSearch(newSearch);
   };
