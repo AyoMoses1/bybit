@@ -107,6 +107,14 @@ function AppSidebar() {
     ) {
       return true;
     }
+    if (
+      url === "/withdrawals" &&
+      ["/withdrawals", "/withdrawals/[id]"].some((route) =>
+        pathname.startsWith(route),
+      )
+    ) {
+      return true;
+    }
     return pathname === url;
   };
 

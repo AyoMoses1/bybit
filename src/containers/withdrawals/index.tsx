@@ -1,22 +1,24 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
-import process from "../../assets/svgs/Group.svg";
-import cancel from "../../assets/svgs/Vector.svg";
-import Image from "next/image";
+// import process from "../../assets/svgs/Group.svg";
+// import cancel from "../../assets/svgs/Vector.svg";
+// import Image from "next/image";
+// import {
+//   Tooltip,
+//   TooltipContent,
+//   TooltipTrigger,
+// } from "@radix-ui/react-tooltip";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@radix-ui/react-tooltip";
-import {
-  useProcessWithdrawal,
+  // useProcessWithdrawal,
   useWithdrawals,
 } from "@/lib/api/hooks/withdrawals";
 import { formatDate } from "@/utils/formatDate";
 import Papa from "papaparse";
 import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 import { useAuditLog } from "@/utils/useAuditLog";
+import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 
 export type WithdrawalType = {
   id: string;
@@ -37,32 +39,32 @@ const WithdrawalTable = ({
   search?: string;
   clickExport?: boolean;
 }) => {
-  const mutation = useProcessWithdrawal();
-  const [loading, setLoading] = useState(false);
+  // const mutation = useProcessWithdrawal();
+  // const [loading, setLoading] = useState(false);
   const { data: withdrawals, isLoading } = useWithdrawals(search);
 
   const { handleAudit } = useAuditLog();
 
-  const handleProcessWithdrawal = (row: WithdrawalType) => {
-    setLoading(true);
-    const data = row;
-    mutation.mutate(
-      { data },
-      {
-        onError: () => {
-          setLoading(false);
-        },
-        onSuccess: async () => {
-          handleAudit(
-            "Withdrawals",
-            row.id,
-            AuditAction.UPDATE,
-            "Process Withdrawal",
-          );
-        },
-      },
-    );
-  };
+  // const handleProcessWithdrawal = (row: WithdrawalType) => {
+  //   setLoading(true);
+  //   const data = row;
+  //   mutation.mutate(
+  //     { data },
+  //     {
+  //       onError: () => {
+  //         setLoading(false);
+  //       },
+  //       onSuccess: async () => {
+  //         handleAudit(
+  //           "Withdrawals",
+  //           row.id,
+  //           AuditAction.UPDATE,
+  //           "Process Withdrawal",
+  //         );
+  //       },
+  //     },
+  //   );
+  // };
 
   const columns: ColumnDef<WithdrawalType>[] = [
     {
@@ -129,18 +131,23 @@ const WithdrawalTable = ({
 
     {
       accessorKey: "actions",
-      header: "Actions",
+      header: "Action",
       cell: ({ row }) => {
         return (
-          <div className="w-[88px]">
-            <div
+          <div className="flex w-[88px] items-center">
+            <Link href={`/withdrawals/${row.original.id}`}>
+              <div className="px-1 py-2">
+                <ArrowRight className="size-4 text-gray-600" />
+              </div>
+            </Link>{" "}
+            {/* <div
               style={{
                 borderWidth: "1px",
                 backgroundColor: "#FAFBFD",
               }}
               className={`${row.original.processed ? "cursor-not-allowed border-[0.6px] border-[#C8C8C8] bg-[#C8C8C8] opacity-50" : "cursor-pointer bg-[#FAFBFD]"} relative flex w-fit items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] px-2`}
             >
-              {/* PROCESS */}
+              // PROCESS 
               <div className={`px-1 py-[10px]`}>
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -165,9 +172,9 @@ const WithdrawalTable = ({
                 </Tooltip>
               </div>
 
-              {/* Divider */}
+              // Divider
               <div className="h-8 w-[1px] translate-y-0 bg-[#979797]" />
-              {/* CANCEL */}
+              // CANCEL 
               <div className="px-1 py-[10px]">
                 <Tooltip>
                   <TooltipTrigger asChild>
@@ -186,7 +193,7 @@ const WithdrawalTable = ({
                   </TooltipContent>
                 </Tooltip>
               </div>
-            </div>
+            </div> */}
           </div>
         );
       },
