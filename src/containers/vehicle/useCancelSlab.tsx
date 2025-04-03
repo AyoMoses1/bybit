@@ -70,19 +70,31 @@ export const useCancellationSlabsTable = (
     {
       accessorKey: "minsDelayed",
       header: "Minutes Delayed",
-      cell: ({ row }) => <span>{row.getValue("minsDelayed") || "N/A"}</span>,
+      cell: ({ row }) => (
+        <div className="py-3 pl-4">
+          <span className="text-gray-700">
+            {row.getValue("minsDelayed") || "N/A"}
+          </span>
+        </div>
+      ),
     },
     {
       accessorKey: "amount",
       header: "Amount",
-      cell: ({ row }) => <span>{row.getValue("amount") || "N/A"}</span>,
+      cell: ({ row }) => (
+        <div className="py-3">
+          <span className="text-gray-700">
+            {row.getValue("amount") || "N/A"}
+          </span>
+        </div>
+      ),
     },
     {
       id: "actions",
-      header: "Actions",
+      header: () => <div className="pr-8 text-right">Actions</div>,
       cell: ({ row }) => (
-        <div className="flex justify-end">
-          <div className="flex overflow-hidden rounded-lg border border-gray-200">
+        <div className="flex justify-end py-2 pr-4">
+          <div className="flex rounded-lg border border-gray-200">
             <button
               onClick={(e) => {
                 e.stopPropagation();
@@ -90,7 +102,7 @@ export const useCancellationSlabsTable = (
                   onEditSlab(row.original);
                 }
               }}
-              className="flex h-12 w-12 items-center justify-center border-r border-gray-200 hover:bg-gray-50"
+              className="flex h-10 w-10 items-center justify-center border-r border-gray-200 hover:bg-gray-50"
             >
               <ArrowRight />
             </button>
@@ -101,14 +113,13 @@ export const useCancellationSlabsTable = (
                   onDeleteSlab(row.original.id || "");
                 }
               }}
-              className="flex h-12 w-12 items-center justify-center text-red-500 hover:bg-gray-50"
+              className="flex h-10 w-10 items-center justify-center text-red-500 hover:bg-gray-50"
             >
               <Image
                 src={deleteIcon}
                 alt="Delete Icon"
                 width={10}
                 height={10}
-                className="rounded-full"
               />
             </button>
           </div>
