@@ -167,7 +167,7 @@ const FleetAdmin = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "Drivers Earning History.csv");
+    link.setAttribute("download", "Admin.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
