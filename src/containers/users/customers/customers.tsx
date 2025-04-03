@@ -1,5 +1,5 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { ArrowRight, User } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
@@ -8,6 +8,9 @@ import { useDeleteUser, useUpdateUser, useUser } from "@/lib/api/hooks/user";
 import { formatDate } from "@/utils/formatDate";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 import Image from "next/image";
+import { useAuditLog } from "@/utils/useAuditLog";
+import Papa from "papaparse";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 
 type Customer = {
   id: string;
@@ -20,7 +23,15 @@ type Customer = {
   approved: boolean;
 };
 
-const Customers = ({ search }: { search?: string }) => {
+const Customers = ({
+  search,
+  clickExport,
+  setClickExport,
+}: {
+  search?: string;
+  clickExport: boolean;
+  setClickExport: (value: boolean) => void;
+}) => {
   const mutation = useUpdateUser();
 
   const deleteMutation = useDeleteUser();
@@ -143,18 +154,53 @@ const Customers = ({ search }: { search?: string }) => {
 
   const { data: user, isLoading } = useUser("customer", search);
 
-  const customers: Customer[] = Array.isArray(user)
-    ? user.map((user) => ({
-        id: user.id,
-        createdAt: user.createdAt ? Number(user.createdAt) : Date.now(),
-        firstName: user.firstName || "",
-        lastName: user.lastName || "",
-        mobile: user.mobile || "",
-        email: user.email || "",
-        profile_image: user.profile_image || "",
-        approved: Boolean(user?.approved),
-      }))
-    : [];
+  const customers: Customer[] = useMemo(() => {
+    return Array.isArray(user)
+      ? user.map((user) => ({
+          id: user.id,
+          createdAt: user.createdAt ? Number(user.createdAt) : Date.now(),
+          firstName: user.firstName || "",
+          lastName: user.lastName || "",
+          mobile: user.mobile || "",
+          email: user.email || "",
+          profile_image: user.profile_image || "",
+          approved: Boolean(user?.approved),
+        }))
+      : [];
+  }, [user]);
+  const { handleAudit } = useAuditLog();
+
+  const exportToCSV = (data: Customer[]) => {
+    const csvData = data?.map((user) => ({
+      id: user.id,
+      createdAt: user.createdAt ? Number(user.createdAt) : Date.now(),
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      mobile: user.mobile || "",
+      email: user.email || "",
+      profile_image: user.profile_image || "",
+      approved: Boolean(user?.approved),
+    }));
+
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "Customer.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    if (clickExport) {
+      exportToCSV(customers as Customer[]);
+
+      setClickExport(false);
+      handleAudit("User", "", AuditAction.EXPORT, "Export customers data");
+    }
+  }, [clickExport, customers, setClickExport, handleAudit]);
 
   return (
     <div className="px-1">
