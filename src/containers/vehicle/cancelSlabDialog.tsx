@@ -57,7 +57,7 @@ const CancellationSlabsDialog: React.FC<CancellationSlabsDialogProps> = ({
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-        <Dialog.Content className="fixed left-1/2 top-1/2 w-full max-w-[900px] -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white shadow-lg">
+        <Dialog.Content className="fixed left-1/2 top-1/2 w-5/12 max-w-[900px] -translate-x-1/2 -translate-y-1/2 transform rounded-lg bg-white p-0 shadow-lg">
           <Dialog.Title className="sr-only">Cancellation Slabs</Dialog.Title>
           <CancellationSlabsTable
             vehicleType={vehicleType}
