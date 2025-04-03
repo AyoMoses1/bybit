@@ -17,6 +17,7 @@ const Users = () => {
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [selectedTab, setSelectedTab] = useState("Customers");
   const [searchTerm, setSearchTerm] = useState("");
+  const [clickExport, setClickExport] = useState(false);
 
   const tabsData =
     userInfo?.usertype === "fleetadmin"
@@ -68,6 +69,8 @@ const Users = () => {
           <SearchComponent
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            importTable={true}
+            onClick={() => setClickExport(!clickExport)}
           />
 
           <Link
@@ -96,22 +99,38 @@ const Users = () => {
       {/* TAB CONTENT */}
       {selectedTab === "Customers" ? (
         <div>
-          <Customers search={searchTerm} />
+          <Customers
+            search={searchTerm}
+            clickExport={selectedTab === "Customers" ? clickExport : false}
+            setClickExport={setClickExport}
+          />
         </div>
       ) : selectedTab === "Drivers" ? (
         <div>
-          <Drivers search={searchTerm} />
+          <Drivers
+            search={searchTerm}
+            clickExport={selectedTab === "Drivers" ? clickExport : false}
+            setClickExport={setClickExport}
+          />
         </div>
       ) : selectedTab === "Admins" ? (
         <div>
           {" "}
           <div>
-            <FleetAdmin search={searchTerm} />
+            <FleetAdmin
+              search={searchTerm}
+              clickExport={selectedTab === "Admins" ? clickExport : false}
+              setClickExport={setClickExport}
+            />
           </div>
         </div>
       ) : selectedTab === "Super Admins" ? (
         <div>
-          <Admin search={searchTerm} />
+          <Admin
+            search={searchTerm}
+            clickExport={selectedTab === "Super Admins" ? clickExport : false}
+            setClickExport={setClickExport}
+          />
         </div>
       ) : null}
     </div>
