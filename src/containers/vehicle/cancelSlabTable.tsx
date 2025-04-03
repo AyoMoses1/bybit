@@ -112,33 +112,34 @@ const CancellationSlabsTable: React.FC<CancellationSlabsTableProps> = ({
     setSlabFormOpen(true);
   };
 
-  const handleSlabSubmit = (data: CancellationSlab) => {
+  const handleSlabSubmit = async (data: CancellationSlab) => {
     if (!vehicleType) return;
 
-    const updatedVehicleType = { ...vehicleType };
+    try {
+      const updatedVehicleType = { ...vehicleType };
 
-    if (!updatedVehicleType.cancelSlab) {
-      updatedVehicleType.cancelSlab = [];
+      if (!updatedVehicleType.cancelSlab) {
+        updatedVehicleType.cancelSlab = [];
+      }
+
+      if (data.id) {
+        updatedVehicleType.cancelSlab = updatedVehicleType.cancelSlab.map(
+          (slab) => (slab.id === data.id ? { ...data } : slab),
+        );
+      } else {
+        updatedVehicleType.cancelSlab.push({
+          ...data,
+          id: Date.now().toString(),
+        });
+      }
+
+      if (onUpdateVehicleType) {
+        await onUpdateVehicleType(updatedVehicleType);
+      }
+    } catch (error) {
+      throw error;
     }
-
-    if (data.id) {
-      updatedVehicleType.cancelSlab = updatedVehicleType.cancelSlab.map(
-        (slab) => (slab.id === data.id ? { ...data } : slab),
-      );
-    } else {
-      updatedVehicleType.cancelSlab.push({
-        ...data,
-        id: Date.now().toString(),
-      });
-    }
-
-    if (onUpdateVehicleType) {
-      onUpdateVehicleType(updatedVehicleType);
-    }
-
-    setSlabFormOpen(false);
   };
-
   const {
     searchQuery,
     slabs,
