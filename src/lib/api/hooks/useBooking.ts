@@ -17,7 +17,7 @@ const BOOKING_STATE_KEY = "bookings";
 export const useBookings = (userId: string, userType: string, search?: string) => {
   return useQuery({
     queryKey: [BOOKING_STATE_KEY, search],
-    queryFn: () => fetchBookings(userId, userType, search),
+    queryFn: () => fetchBookings(userId, userType),
     staleTime: Infinity,
     retry: 2,
   });
