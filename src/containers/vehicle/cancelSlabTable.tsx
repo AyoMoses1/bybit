@@ -103,7 +103,6 @@ const CancellationSlabsTable: React.FC<CancellationSlabsTableProps> = ({
 
     if (onUpdateVehicleType) {
       onUpdateVehicleType(updatedVehicleType);
-      //   toast.success("Cancellation slab deleted successfully");
     }
   };
 
@@ -140,6 +139,7 @@ const CancellationSlabsTable: React.FC<CancellationSlabsTableProps> = ({
       throw error;
     }
   };
+
   const {
     searchQuery,
     slabs,
@@ -151,11 +151,18 @@ const CancellationSlabsTable: React.FC<CancellationSlabsTableProps> = ({
 
   return (
     <>
-      <div className="flex items-center justify-between border-b p-4">
-        <h2 className="text-xl font-semibold">Cancellation Slabs</h2>
+      <div className="flex items-center justify-between border-b p-6">
+        <h2 className="text-2xl font-semibold text-gray-800">
+          Cancellation Slabs
+        </h2>
         <div className="flex items-center gap-4">
-          <Button variant="ghost" size="icon" onClick={exportToCSV}>
-            <Download className="h-5 w-5" />
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={exportToCSV}
+            className="text-gray-500"
+          >
+            <Download size={20} />
           </Button>
           <div className="relative">
             <SearchComponent
@@ -163,8 +170,13 @@ const CancellationSlabsTable: React.FC<CancellationSlabsTableProps> = ({
               onChange={handleSearchChange}
             />
           </div>
-          <Button onClick={handleAddSlab} variant="default" size="icon">
-            <Plus className="size-3 font-semibold" />
+          <Button
+            onClick={handleAddSlab}
+            variant="default"
+            size="icon"
+            className="h-8 w-8 rounded-full bg-[#913B81]"
+          >
+            <Plus strokeWidth={3} />
           </Button>
         </div>
       </div>
