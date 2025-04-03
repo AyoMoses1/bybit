@@ -227,11 +227,12 @@ export const updateBooking = (id: string, updatedData: Record<string, unknown>) 
   });
 };
 
-export const cancelBooking = (bookingId: string, reason: string, cancelledBy: string) => {
+export const cancelBooking = (bookingId: string, reason: string, cancelledBy: string, userType: string, userId: string) => {
   return new Promise<void>((resolve, reject) => {
     try {
       const db = getDatabase();
-      const bookingRef = ref(db, `bookings/${bookingId}`);
+      // Correct path to the booking
+      const bookingRef = ref(db, `bookings/${userType}/${userId}/${bookingId}`);
       
       // First get the booking to check status and get driver info
       get(bookingRef).then((snapshot) => {
