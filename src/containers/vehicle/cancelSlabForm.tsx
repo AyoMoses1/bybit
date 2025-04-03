@@ -10,7 +10,7 @@ interface CancellationSlabFormProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   editData: CancellationSlab | null;
-  onSubmit: (data: CancellationSlab) => void;
+  onSubmit: (data: CancellationSlab) => Promise<void> | void;
 }
 
 const CancellationSlabForm: React.FC<CancellationSlabFormProps> = ({
@@ -49,7 +49,7 @@ const CancellationSlabForm: React.FC<CancellationSlabFormProps> = ({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.minsDelayed || !formData.amount) {
@@ -58,7 +58,15 @@ const CancellationSlabForm: React.FC<CancellationSlabFormProps> = ({
     }
 
     setLoading(true);
-    onSubmit(formData);
+    try {
+      await onSubmit(formData);
+      onOpenChange(false);
+    } catch (error) {
+      toast.error("Failed to save cancellation slab");
+      console.error("Submission error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -119,6 +127,7 @@ const CancellationSlabForm: React.FC<CancellationSlabFormProps> = ({
                   type="button"
                   variant="outline"
                   className="rounded-lg px-4 py-2"
+                  disabled={loading}
                 >
                   Cancel
                 </Button>
@@ -137,6 +146,7 @@ const CancellationSlabForm: React.FC<CancellationSlabFormProps> = ({
             <button
               className="absolute right-4 top-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-500 focus:outline-none"
               aria-label="Close"
+              disabled={loading}
             >
               <X className="h-4 w-4" />
             </button>
