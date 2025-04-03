@@ -52,6 +52,8 @@ const useBookingActions = (
         bookingId: bookingToCancel.id,
         reason: "Cancelled by admin",
         cancelledBy: userInfo.usertype,
+        userType: userInfo.usertype,
+        userId: userInfo.id,
       });
 
       toast({
