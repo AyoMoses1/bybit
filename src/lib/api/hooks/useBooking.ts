@@ -79,9 +79,9 @@ export const useCancelBooking = () => {
   const queryClient = useQueryClient();
   
   return useMutation({
-    mutationFn: ({ bookingId, reason, cancelledBy }: 
-      { bookingId: string; reason: string; cancelledBy: string }) =>
-      cancelBooking(bookingId, reason, cancelledBy),
+    mutationFn: ({ bookingId, reason, cancelledBy, userType, userId }: 
+      { bookingId: string; reason: string; cancelledBy: string; userType: string; userId: string }) =>
+      cancelBooking(bookingId, reason, cancelledBy, userType, userId),
     onSuccess: (_, variables) => {
       // Invalidate relevant queries
       queryClient.invalidateQueries({ 
@@ -96,7 +96,6 @@ export const useCancelBooking = () => {
     },
   });
 };
-
 /**
  * Hook to update a booking image
  */
