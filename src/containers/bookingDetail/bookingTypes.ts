@@ -60,14 +60,23 @@ export interface BookingHistoryTableProps {
 
 export interface Booking {
   id: string;
+  pickupAddress: string;
+  dropAddress: string;
+  discount: number;
+  cashPaymentAmount: number;
+  cardPaymentAmount: number;
   bookingDate?: string;
+  status?: string;
   driver_name?: string;
   carType?: string;
-  status?: string;
-  trip_cost?: string | number;
+  driver?: string;
+  pickup_image?: string;
+  deliver_image?: string;
+  reason?: string;
+  cancelledBy?: string;
   reference?: string;
+  trip_cost?: string | number;
   [key: string]: string | number | boolean | undefined;
-
 }
 
 export interface SearchBarProps {
