@@ -13,6 +13,7 @@ const ROUTES = {
   dashboard: "/dashboard",
   users: "/users",
   withdrawal: "/withdrawals",
+  withdrawalDetail: "/withdrawals/",
   addAdmin: "/add-super-admin",
   updateAdmin: "/update-admin",
   customer: "/customer",
@@ -46,6 +47,7 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.addCustomer]: "Add Customer",
   [ROUTES.driver]: "Driver",
   [ROUTES.withdrawal]: "Withdrawals",
+  [ROUTES.withdrawalDetail]: "Withdrawal Detail",
   [ROUTES.addDriver]: "Add Driver",
   [ROUTES.bookingHistory]: "Booking History",
   [ROUTES.bookingDetail]: "Booking Detail",
@@ -167,6 +169,16 @@ const Header = () => {
               <p className="mx-1">/</p>
 
               <p className="cursor-default">{getRouteTitle(pathname)}</p>
+            </div>
+          ) : pathname === ROUTES.withdrawal ||
+            pathname.includes(ROUTES.withdrawalDetail) ? (
+            <div className="flex gap-3">
+              <Link href={ROUTES.withdrawalDetail} className="text-[#8B8D97]">
+                Withdrawals
+              </Link>
+              <p className="mx-1">/</p>
+
+              <p className="cursor-default">{"Withdrawal Detail"}</p>
             </div>
           ) : (
             ROUTE_TITLES[pathname] || ROUTE_TITLES[ROUTES.dashboard]
