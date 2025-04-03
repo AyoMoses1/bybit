@@ -10,7 +10,6 @@ import {
 import { uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import firebase from "@/lib/firebase";
 
-// Define interfaces for the booking data
 interface Location {
   add?: string;
   lat?: number;
@@ -19,6 +18,7 @@ interface Location {
 
 interface Booking {
   id: string;
+  reference?: string;
   pickup?: Location;
   drop?: Location;
   pickupAddress: string;
@@ -35,7 +35,8 @@ interface Booking {
   deliver_image?: string;
   reason?: string;
   cancelledBy?: string;
-  [key: string]: unknown; 
+  trip_cost?: string | number;
+  [key: string]: unknown;
 }
 
 interface BookingData {
@@ -49,10 +50,12 @@ interface BookingData {
   driver_name?: string;
   carType?: string;
   driver?: string;
+  reference?: string;
+  trip_cost?: string | number;
   [key: string]: unknown;
 }
 
-export const fetchBookings = (userId: string, userType: string, search?: string) => {
+export const fetchBookings = (userId: string, userType: string) => {
   return new Promise<Booking[]>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -81,19 +84,6 @@ export const fetchBookings = (userId: string, userType: string, search?: string)
                 cardPaymentAmount: bookingData.cardPaymentAmount || 0,
                 ...bookingData,
               };
-            })
-            .filter(booking => {
-              if (!search) return true;
-              
-              const searchLower = search.toLowerCase();
-              return (
-                (booking.id && booking.id.toLowerCase().includes(searchLower)) || 
-                (booking.pickupAddress && booking.pickupAddress.toLowerCase().includes(searchLower)) ||
-                (booking.dropAddress && booking.dropAddress.toLowerCase().includes(searchLower)) ||
-                (booking.status && booking.status.toLowerCase().includes(searchLower)) ||
-                (booking.driver_name && booking.driver_name.toLowerCase().includes(searchLower)) ||
-                (booking.carType && booking.carType.toLowerCase().includes(searchLower))
-              );
             })
             .sort((a, b) => {
               const dateA = a.bookingDate ? new Date(a.bookingDate).getTime() : 0;
@@ -237,11 +227,12 @@ export const updateBooking = (id: string, updatedData: Record<string, unknown>) 
   });
 };
 
-export const cancelBooking = (bookingId: string, reason: string, cancelledBy: string) => {
+export const cancelBooking = (bookingId: string, reason: string, cancelledBy: string, userType: string, userId: string) => {
   return new Promise<void>((resolve, reject) => {
     try {
       const db = getDatabase();
-      const bookingRef = ref(db, `bookings/${bookingId}`);
+      // Correct path to the booking
+      const bookingRef = ref(db, `bookings/${userType}/${userId}/${bookingId}`);
       
       // First get the booking to check status and get driver info
       get(bookingRef).then((snapshot) => {

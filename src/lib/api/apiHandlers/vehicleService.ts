@@ -51,7 +51,7 @@ export const fetchCarTypes = (): Promise<CarType[]> => {
             id: key,
             ...data[key],
           }));
-          resolve(arr.reverse());
+          resolve(arr);
         },
         (error) => {
           console.error("Firebase error:", error);
@@ -83,103 +83,100 @@ export const editCarType = async ({
       })
     );
 
-    if (
-      method === "UpdateImage" &&
-      cartype.id &&
-      cartype.image instanceof File
-    ) {
+    if (method === "UpdateImage" && cartype.id && cartype.image instanceof File) {
       console.log(
         `Uploading image for vehicle ${cartype.id}, size: ${cartype.image.size} bytes`
       );
 
       const imageRef = storageRef(storage, `cartypes/${cartype.id}`);
+      const uploadTask = uploadBytesResumable(imageRef, cartype.image);
 
-      try {
-        const uploadTask = uploadBytesResumable(imageRef, cartype.image);
+      await new Promise<void>((resolve, reject) => {
+        uploadTask.on(
+          "state_changed",
+          // (snapshot) => {
+          //   const progress = Math.round(
+          //     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
+          //   );
+          //   console.log(`Upload progress: ${progress}%`);
+          // },
+          (error) => {
+            console.error("Upload failed:", error);
+            reject(error);
+          },
+          () => {
+            // console.log("Upload completed");
+            resolve();
+          }
+        );
+      });
 
-        await new Promise<void>((resolve, reject) => {
-          uploadTask.on(
-            "state_changed",
-            (snapshot) => {
-              const progress = Math.round(
-                (snapshot.bytesTransferred / snapshot.totalBytes) * 100
-              );
-              console.log(`Upload progress: ${progress}%`);
-            },
-            (error) => {
-              console.error("Upload failed:", error);
-              reject(error);
-            },
-            () => {
-              console.log("Upload completed");
-              resolve();
-            }
-          );
+      const downloadURL = await getDownloadURL(imageRef);
+      const vehicleRef = dbRef(db, `cartypes/${cartype.id}`);
+      const snapshot = await get(vehicleRef);
+
+      if (snapshot.exists()) {
+        const currentData = snapshot.val();
+        await set(vehicleRef, {
+          ...currentData,
+          image: downloadURL,
         });
-
-        const downloadURL = await getDownloadURL(imageRef);
-        // console.log("Image download URL:", downloadURL);
-
-        const vehicleRef = dbRef(db, `cartypes/${cartype.id}`);
-        const snapshot = await get(vehicleRef);
-
-        if (snapshot.exists()) {
-          const currentData = snapshot.val();
-          await set(vehicleRef, {
-            ...currentData,
-            image: downloadURL,
-          });
-          console.log("Database updated with new image URL");
-        } else {
-          console.error("Vehicle record not found for ID:", cartype.id);
-          throw new Error("Vehicle record not found");
-        }
-      } catch (uploadError) {
-        console.error("Image upload failed:", uploadError);
-        throw uploadError;
+        console.log("Database updated with new image URL");
+      } else {
+        console.error("Vehicle record not found for ID:", cartype.id);
+        throw new Error("Vehicle record not found");
       }
-    } else if (method === "Add") {
+    } 
+    else if (method === "Add") {
+      if (cartype.id) {
+        console.warn("Warning: Adding new vehicle with existing ID. This might indicate a bug.");
+      }
+
+      const newVehicleRef = push(dbRef(db, "cartypes"));
+      const newId = newVehicleRef.key;
+
+      if (!newId) {
+        throw new Error("Failed to generate new vehicle ID");
+      }
+
       if (cartype.image instanceof File) {
-        const newVehicleRef = push(dbRef(db, "cartypes"));
-        const newId = newVehicleRef.key;
-
-        if (!newId) {
-          throw new Error("Failed to generate new vehicle ID");
-        }
-
         const imageRef = storageRef(storage, `cartypes/${newId}`);
         await uploadBytesResumable(imageRef, cartype.image);
         const downloadURL = await getDownloadURL(imageRef);
 
-        const cartypeWithoutImage = { ...cartype };
-        delete cartypeWithoutImage.image;
-
-        // Update with new image URL
-        await set(dbRef(db, `cartypes/${cartype.id}`), {
-          ...cartypeWithoutImage,
+        await set(newVehicleRef, {
+          ...cartype,
           image: downloadURL,
+          id: newId,
         });
       } else {
-        await push(dbRef(db, "cartypes"), cartype);
+        await set(newVehicleRef, {
+          ...cartype,
+          id: newId,
+        });
       }
-    } else if (method === "Edit" && cartype.id) {
+      console.log(`Successfully added new vehicle with ID: ${newId}`);
+    } 
+    else if (method === "Edit" && cartype.id) {
       if (cartype.image instanceof File) {
         const imageRef = storageRef(storage, `cartypes/${cartype.id}`);
         await uploadBytesResumable(imageRef, cartype.image);
         const downloadURL = await getDownloadURL(imageRef);
 
-        const cartypeWithoutImage = { ...cartype };
-        delete cartypeWithoutImage.image;
         await set(dbRef(db, `cartypes/${cartype.id}`), {
-          ...cartypeWithoutImage,
+          ...cartype,
           image: downloadURL,
         });
       } else {
         await set(dbRef(db, `cartypes/${cartype.id}`), cartype);
       }
-    } else if (method === "Delete" && cartype.id) {
+      console.log(`Successfully updated vehicle with ID: ${cartype.id}`);
+    } 
+    else if (method === "Delete" && cartype.id) {
       await remove(dbRef(db, `cartypes/${cartype.id}`));
-    } else {
+      console.log(`Successfully deleted vehicle with ID: ${cartype.id}`);
+    } 
+    else {
       throw new Error(`Invalid operation: ${method} or missing required data`);
     }
   } catch (error) {

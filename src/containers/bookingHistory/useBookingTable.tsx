@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useBookings } from "@/lib/api/hooks/useBooking";
 import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
@@ -6,6 +6,7 @@ import { Booking } from "../bookingDetail/bookingTypes";
 import StatusBadge from "../bookingDetail/statusBadge";
 import ActionButtons from "../../components/ui/actionButtons";
 import useUserInfo from "./useUserInfo";
+import { debounce } from "lodash";
 
 export const useBookingTableData = (
   initialSearch: string = "",
@@ -14,63 +15,95 @@ export const useBookingTableData = (
   onViewDetails?: (booking: Booking) => void,
 ) => {
   const [searchQuery, setSearchQuery] = useState(initialSearch);
+  const [inputValue, setInputValue] = useState(initialSearch);
   const { userInfo } = useUserInfo();
 
-  useEffect(() => {
-    setSearchQuery(initialSearch);
-  }, [initialSearch]);
-
-  const { data: fetchedBookings, isLoading: bookingsLoading } = useBookings(
+  const { data: allBookings, isLoading: bookingsLoading } = useBookings(
     userInfo?.id || "",
     userInfo?.usertype || "",
-    searchQuery,
   );
 
-  const bookings: Booking[] =
-    fetchedBookings?.map((booking) => {
-      const cleanedBooking: Booking = {
+  const filteredBookings = useMemo(() => {
+    if (!allBookings) return [];
+    if (!searchQuery) return allBookings;
+
+    const searchLower = searchQuery.toLowerCase();
+    return allBookings.filter((booking) => {
+      const fieldsToSearch = [
+        booking.id,
+        booking.reference,
+        booking.pickupAddress,
+        booking.dropAddress,
+        booking.status,
+        booking.driver_name,
+        booking.carType,
+        booking.trip_cost?.toString(),
+      ];
+
+      return fieldsToSearch.some((field) =>
+        field?.toLowerCase().includes(searchLower),
+      );
+    });
+  }, [allBookings, searchQuery]);
+
+  const transformedBookings = useMemo(() => {
+    return filteredBookings.map((booking) => {
+      return {
         id: booking.id,
+        pickupAddress: booking.pickupAddress || "",
+        dropAddress: booking.dropAddress || "",
+        discount: booking.discount || 0,
+        cashPaymentAmount: booking.cashPaymentAmount || 0,
+        cardPaymentAmount: booking.cardPaymentAmount || 0,
         bookingDate: booking.bookingDate,
+        status: booking.status,
         driver_name: booking.driver_name,
         carType: booking.carType,
-        status: booking.status,
-        trip_cost: booking.trip_cost as string | number | undefined,
-        reference: booking.reference as string | undefined,
+        driver: booking.driver,
+        pickup_image: booking.pickup_image,
+        deliver_image: booking.deliver_image,
+        reason: booking.reason,
+        cancelledBy: booking.cancelledBy,
+        reference: booking.reference,
+        trip_cost: booking.trip_cost,
       };
+    });
+  }, [filteredBookings]);
 
-      // Copy all primitive properties that match our index signature
-      Object.entries(booking).forEach(([key, value]) => {
-        // Only include string, number, boolean, or undefined values
-        if (
-          typeof value === "string" ||
-          typeof value === "number" ||
-          typeof value === "boolean" ||
-          value === undefined
-        ) {
-          cleanedBooking[key] = value;
-        }
-        // For complex objects like pickup and drop, convert to string or omit them
-        else if (key === "pickup" || key === "drop") {
-          // Omit them from the cleaned booking object
-          // They'll still be accessible in the original booking object if needed
-        }
-      });
-
-      return cleanedBooking;
-    }) || [];
+  const debouncedSearch = useMemo(
+    () =>
+      debounce((value: string) => {
+        setSearchQuery(value);
+        onSearchChange?.(value);
+      }, 300),
+    [onSearchChange],
+  );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-    onSearchChange?.(e.target.value);
+    const value = e.target.value;
+    setInputValue(value);
+    debouncedSearch(value);
   };
 
   const handleClearSearch = () => {
+    setInputValue("");
     setSearchQuery("");
     onSearchChange?.("");
   };
 
+  useEffect(() => {
+    return () => {
+      debouncedSearch.cancel();
+    };
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    setInputValue(initialSearch);
+    setSearchQuery(initialSearch);
+  }, [initialSearch]);
+
   const exportToCSV = () => {
-    if (!bookings || bookings.length === 0) return;
+    if (!transformedBookings || transformedBookings.length === 0) return;
 
     const headers = [
       "Reference",
@@ -83,7 +116,7 @@ export const useBookingTableData = (
 
     const csvRows = [
       headers.join(","),
-      ...bookings.map((booking) => {
+      ...transformedBookings.map((booking) => {
         return [
           booking.id || "",
           formatDate(booking.bookingDate ? Number(booking.bookingDate) : 0) ||
@@ -99,7 +132,6 @@ export const useBookingTableData = (
     ];
 
     const csvContent = csvRows.join("\n");
-
     const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -166,9 +198,9 @@ export const useBookingTableData = (
   ];
 
   return {
-    searchQuery,
+    searchQuery: inputValue,
     setSearchQuery,
-    bookings,
+    bookings: transformedBookings,
     bookingsLoading,
     columns,
     handleSearchChange,

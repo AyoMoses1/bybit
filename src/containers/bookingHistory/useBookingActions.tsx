@@ -26,10 +26,8 @@ const useBookingActions = (
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
 
-  // Create cancel booking mutation
   const cancelBookingMutation = useCancelBooking();
 
-  // Handle search change
   const handleSearchChange = (newSearch: string) => {
     setSearch(newSearch);
   };
@@ -41,43 +39,39 @@ const useBookingActions = (
   };
 
   // Handle actual cancellation after confirmation
-  const confirmCancellation = () => {
-    if (!bookingToCancel) return;
+  const confirmCancellation = async () => {
+    if (!bookingToCancel || !userInfo) return;
 
     toast({
       title: "Cancelling booking...",
       description: "Your booking is being cancelled.",
     });
 
-    cancelBookingMutation.mutate(
-      {
+    try {
+      await cancelBookingMutation.mutateAsync({
         bookingId: bookingToCancel.id,
-        reason: "Cancelled by user",
-        cancelledBy: userInfo?.usertype || "customer",
-      },
-      {
-        onSuccess: () => {
-          toast({
-            title: "Booking Cancelled",
-            description: `Booking ${bookingToCancel.id} has been cancelled.`,
-          });
-          // Close the dialog
-          setConfirmDialogOpen(false);
-          setBookingToCancel(null);
-        },
-        onError: (error) => {
-          toast({
-            title: "Error",
-            description: "Failed to cancel booking. Please try again.",
-            variant: "destructive",
-          });
-          console.error("Error cancelling booking:", error);
-          // Close the dialog
-          setConfirmDialogOpen(false);
-          setBookingToCancel(null);
-        },
-      },
-    );
+        reason: "Cancelled by admin",
+        cancelledBy: userInfo.usertype,
+        userType: userInfo.usertype,
+        userId: userInfo.id,
+      });
+
+      toast({
+        title: "Booking Cancelled",
+        description: `Booking ${bookingToCancel.id} has been cancelled.`,
+        variant: "success",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to cancel booking. Please try again.",
+        variant: "destructive",
+      });
+      console.error("Error cancelling booking:", error);
+    } finally {
+      setConfirmDialogOpen(false);
+      setBookingToCancel(null);
+    }
   };
 
   const handleViewDetails = (booking: Booking) => {
