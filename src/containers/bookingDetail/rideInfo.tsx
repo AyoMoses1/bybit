@@ -69,7 +69,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
           <div className="border-b border-gray-200 py-4">
             <div className="flex justify-between">
               <p className="text-gray-500">Distance</p>
-              <p>{booking.distance ? `${booking.distance} km` : "76.3 km"}</p>
+              <p>{booking.distance ? `${booking.distance} km` : ""}</p>
             </div>
           </div>
 
@@ -84,7 +84,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
             <div className="flex justify-between">
               <p className="text-gray-500">Pickup Address</p>
               <p className="w-full pl-1 text-right">
-                {booking.pickupAddress || booking.pickup?.add || "Unilag"}
+                {booking.pickupAddress || booking.pickup?.add || ""}
               </p>
             </div>
           </div>
@@ -94,7 +94,7 @@ const RideInformation = ({ booking }: { booking: BookingType }) => {
             <div className="flex justify-between">
               <p className="text-gray-500">Drop Address</p>
               <p className="w-full pl-1 text-right">
-                {booking.dropAddress || booking.drop?.add || "Akobo, Ibadan"}
+                {booking.dropAddress || booking.drop?.add || ""}
               </p>
             </div>
           </div>
