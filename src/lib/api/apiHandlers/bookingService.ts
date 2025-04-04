@@ -61,8 +61,6 @@ export const fetchBookings = (userId: string, userType: string) => {
       const db = getDatabase();
       const bookingListRef = ref(db, `bookings/${userType}/${userId}`);
 
-      off(bookingListRef);
-
       const unsubscribe = onValue(
         bookingListRef,
         (snapshot) => {
@@ -99,7 +97,11 @@ export const fetchBookings = (userId: string, userType: string) => {
         }
       );
 
-      return () => unsubscribe();
+      // Return cleanup function
+      return () => {
+        off(bookingListRef);
+        unsubscribe();
+      };
     } catch (error) {
       console.error("Fetch Bookings Error:", error);
       reject(error);
@@ -236,56 +238,199 @@ export const cancelBooking = async (
 ) => {
   try {
     const db = getDatabase();
-    console.log(`Attempting to cancel booking: ${bookingId}`); // Debug log
+    console.log(`Attempting to cancel booking: ${bookingId}, userId: ${userId}, userType: ${userType}`);
     
-    // Correct path to the booking
-    const bookingRef = ref(db, `bookings/${userType}/${userId}/${bookingId}`);
-    console.log(`Booking path: bookings/${userType}/${userId}/${bookingId}`); // Debug log
-
-    // Get the current booking data
-    const snapshot = await get(bookingRef);
-    const booking = snapshot.val() as BookingData | null;
+    if (userType === 'admin') {
+      console.log("Admin cancellation flow initiated");
+     
+      const mainBookingRef = ref(db, `bookings/${bookingId}`);
+      const mainSnapshot = await get(mainBookingRef);
+      
+      if (mainSnapshot.exists()) {
+        const bookingData = mainSnapshot.val();
+        console.log(`Found booking in main path: bookings/${bookingId}`, bookingData);
+        
     
-    if (!booking) {
-      console.error("Booking not found at path:", `bookings/${userType}/${userId}/${bookingId}`);
-      throw new Error("Booking not found");
+        const updates: Partial<Booking> = {
+          status: 'CANCELLED',
+          reason,
+          cancelledBy,
+          updatedAt: Date.now()
+        };
+        
+       
+        const updatePromises = [];
+        
+        updatePromises.push(update(mainBookingRef, updates));
+        
+    
+        if (bookingData.customer) {
+          console.log(`Updating customer path for customer ${bookingData.customer}`);
+          updatePromises.push(update(ref(db, `bookings/customer/${bookingData.customer}/${bookingId}`), updates));
+        }
+        
+        if (bookingData.driver) {
+          console.log(`Updating driver path for driver ${bookingData.driver}`);
+          updatePromises.push(update(ref(db, `bookings/driver/${bookingData.driver}/${bookingId}`), updates));
+          
+          if (['NEW', 'ACCEPTED', 'ARRIVED'].includes(bookingData.status || '')) {
+            console.log(`Updating queue status for driver ${bookingData.driver}`);
+            updatePromises.push(update(ref(db, `users/driver/${bookingData.driver}`), { queue: false }));
+          }
+        }
+        
+        if (bookingData.status === 'NEW') {
+          console.log("Cleaning up requested drivers");
+          updatePromises.push(remove(ref(db, `requestedDrivers/${bookingId}`)));
+        }
+        
+        await Promise.all(updatePromises);
+        console.log("Booking cancelled successfully by admin");
+        return;
+      }
+      
+    
+      console.log("Booking not found in main path, searching in customer and driver paths");
+      
+      const customersRef = ref(db, 'bookings/customer');
+      const customersSnapshot = await get(customersRef);
+      
+      if (customersSnapshot.exists()) {
+        const customers = customersSnapshot.val();
+        
+        for (const customerId in customers) {
+          const customerBookingRef = ref(db, `bookings/customer/${customerId}/${bookingId}`);
+          const snapshot = await get(customerBookingRef);
+          
+          if (snapshot.exists()) {
+            const bookingData = snapshot.val();
+            console.log(`Found booking in customer path: bookings/customer/${customerId}/${bookingId}`, bookingData);
+         
+            const updates: Partial<Booking> = {
+              status: 'CANCELLED',
+              reason,
+              cancelledBy,
+              updatedAt: Date.now()
+            };
+            
+           
+            await update(customerBookingRef, updates);
+            
+            
+            await update(ref(db, `bookings/${bookingId}`), {
+              ...bookingData,
+              ...updates
+            });
+            
+            if (bookingData.driver) {
+              await update(ref(db, `bookings/driver/${bookingData.driver}/${bookingId}`), updates);
+              
+              if (['NEW', 'ACCEPTED', 'ARRIVED'].includes(bookingData.status || '')) {
+                await update(ref(db, `users/driver/${bookingData.driver}`), { queue: false });
+              }
+            }
+           
+            if (bookingData.status === 'NEW') {
+              await remove(ref(db, `requestedDrivers/${bookingId}`));
+            }
+            
+            console.log("Booking cancelled successfully by admin");
+            return;
+          }
+        }
+      }
+      
+      const driversRef = ref(db, 'bookings/driver');
+      const driversSnapshot = await get(driversRef);
+      
+      if (driversSnapshot.exists()) {
+        const drivers = driversSnapshot.val();
+        
+        for (const driverId in drivers) {
+          const driverBookingRef = ref(db, `bookings/driver/${driverId}/${bookingId}`);
+          const snapshot = await get(driverBookingRef);
+          
+          if (snapshot.exists()) {
+            const bookingData = snapshot.val();
+            console.log(`Found booking in driver path: bookings/driver/${driverId}/${bookingId}`, bookingData);
+           
+            const updates: Partial<Booking> = {
+              status: 'CANCELLED',
+              reason,
+              cancelledBy,
+              updatedAt: Date.now()
+            };
+       
+            await update(driverBookingRef, updates);
+            
+            await update(ref(db, `bookings/${bookingId}`), {
+              ...bookingData,
+              ...updates
+            });
+           
+            if (bookingData.customer) {
+              await update(ref(db, `bookings/customer/${bookingData.customer}/${bookingId}`), updates);
+            }
+          
+            if (['NEW', 'ACCEPTED', 'ARRIVED'].includes(bookingData.status || '')) {
+              await update(ref(db, `users/driver/${driverId}`), { queue: false });
+            }
+          
+            if (bookingData.status === 'NEW') {
+              await remove(ref(db, `requestedDrivers/${bookingId}`));
+            }
+            
+            console.log("Booking cancelled successfully by admin");
+            return;
+          }
+        }
+      }
+      
+      throw new Error(`Booking ${bookingId} not found in any path`);
+    } else {
+     
+      const bookingRef = ref(db, `bookings/${userType}/${userId}/${bookingId}`);
+      const snapshot = await get(bookingRef);
+      
+      if (!snapshot.exists()) {
+        throw new Error("Booking not found in user's records");
+      }
+      
+      const bookingData = snapshot.val();
+      const updates = {
+        status: 'CANCELLED',
+        reason,
+        cancelledBy,
+        updatedAt: Date.now()
+      };
+      
+    
+      await update(bookingRef, updates);
+      
+     
+      const mainBookingRef = ref(db, `bookings/${bookingId}`);
+      const mainSnapshot = await get(mainBookingRef);
+      if (mainSnapshot.exists()) {
+        await update(mainBookingRef, updates);
+      }
+   
+      if (bookingData.driver && ['NEW', 'ACCEPTED', 'ARRIVED'].includes(bookingData.status || '')) {
+        const driverRef = ref(db, `users/driver/${bookingData.driver}`);
+        await update(driverRef, { queue: false });
+      }
+     
+      if (bookingData.status === 'NEW') {
+        const requestedDriversRef = ref(db, `requestedDrivers/${bookingId}`);
+        await remove(requestedDriversRef);
+      }
     }
-
-    console.log("Current booking status:", booking.status); // Debug log
-
-    // Prepare updates
-    const updates: Record<string, unknown> = {
-      status: 'CANCELLED',
-      reason,
-      cancelledBy,
-      updatedAt: Date.now()
-    };
-
-    // Update the booking
-    console.log("Updating booking with:", updates); // Debug log
-    await update(bookingRef, updates);
-    console.log("Booking status updated successfully"); // Debug log
-
-    // Handle driver-related updates if needed
-    if (booking.driver && ['NEW', 'ACCEPTED', 'ARRIVED'].includes(booking.status || '')) {
-      console.log("Updating driver queue status for driver:", booking.driver); // Debug log
-      const driverRef = ref(db, `users/${booking.driver}`);
-      await update(driverRef, { queue: false });
-    }
-
-    // Clean up requested drivers if needed
-    if (booking.status === 'NEW') {
-      console.log("Cleaning up requested drivers for booking:", bookingId); // Debug log
-      const requestedDriversRef = ref(db, `requestedDrivers/${bookingId}`);
-      await remove(requestedDriversRef);
-    }
-
-    console.log("Booking cancellation completed successfully"); // Debug log
   } catch (error) {
     console.error("Detailed cancellation error:", {
       bookingId,
       error,
-      message: error instanceof Error ? error.message : 'Unknown error'
+      message: error instanceof Error ? error.message : 'Unknown error',
+      userType,
+      userId
     });
     throw error;
   }
