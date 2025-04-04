@@ -2,7 +2,10 @@ import { WithdrawalType } from "@/containers/withdrawals";
 import firebase from "@/lib/firebase";
 import { child, onValue, update } from "firebase/database";
 
-export const fetchWithdrawal = (search: string) => {
+export const fetchWithdrawal = (
+  search: string,
+  selectedMenu: boolean | null,
+) => {
   return new Promise((resolve, reject) => {
     try {
       const { withdrawRef } = firebase;
@@ -16,19 +19,23 @@ export const fetchWithdrawal = (search: string) => {
               return data[i];
             })
             .filter((withdrawal) => {
-              if (!search) return true;
+              const lowerSearch = search?.toLowerCase() || "";
 
-              const lowerSearch = search.toLowerCase();
-
-              return (
+              const matchesSearch =
+                !search ||
                 withdrawal.id?.toLowerCase().includes(lowerSearch) ||
                 withdrawal.name?.toLowerCase().includes(lowerSearch) ||
                 withdrawal.amount?.toString().includes(lowerSearch) ||
                 withdrawal.bankName?.toLowerCase().includes(lowerSearch) ||
                 withdrawal.bankCode?.toLowerCase().includes(lowerSearch) ||
-                withdrawal.bankAccount?.toLowerCase().includes(lowerSearch)
-              );
+                withdrawal.bankAccount?.toLowerCase().includes(lowerSearch);
+
+              const matchesMenu =
+                selectedMenu === null || withdrawal.processed !== selectedMenu;
+
+              return matchesSearch && matchesMenu;
             });
+
           resolve(arr.reverse());
         } else {
           resolve("No WITHDRAWS available.");

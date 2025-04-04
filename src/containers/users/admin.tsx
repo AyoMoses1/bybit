@@ -1,5 +1,5 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { ArrowRight, User } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
@@ -7,6 +7,9 @@ import Link from "next/link";
 import { useDeleteUser, useUpdateUser, useUser } from "@/lib/api/hooks/user";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 import Image from "next/image";
+import { useAuditLog } from "@/utils/useAuditLog";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import Papa from "papaparse";
 
 type UserAdmin = {
   id: string;
@@ -18,7 +21,15 @@ type UserAdmin = {
   approved: boolean;
 };
 
-const Admin = ({ search }: { search?: string }) => {
+const Admin = ({
+  search,
+  clickExport,
+  setClickExport,
+}: {
+  search?: string;
+  clickExport: boolean;
+  setClickExport: (value: boolean) => void;
+}) => {
   // const { data: user, isLoading } = useUser("admin", search);
   const { data: user, isLoading } = useUser("admin", search) as {
     data: UserAdmin[] | undefined;
@@ -128,6 +139,39 @@ const Admin = ({ search }: { search?: string }) => {
       },
     },
   ];
+
+  const { handleAudit } = useAuditLog();
+
+  const exportToCSV = (data: UserAdmin[]) => {
+    const csvData = data?.map((user) => ({
+      id: user.id,
+      firstName: user.firstName || "",
+      lastName: user.lastName || "",
+      mobile: user.mobile || "",
+      email: user.email || "",
+      profile_image: user.profile_image || "",
+      approved: Boolean(user?.approved),
+    }));
+
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "Super Admin.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    if (clickExport) {
+      exportToCSV(user as UserAdmin[]);
+
+      setClickExport(false);
+      handleAudit("User", "", AuditAction.EXPORT, "Export super admin data");
+    }
+  }, [clickExport, user, setClickExport, handleAudit]);
 
   return (
     <div className="px-1">
