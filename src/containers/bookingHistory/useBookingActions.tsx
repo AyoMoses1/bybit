@@ -25,6 +25,7 @@ const useBookingActions = (
   const [search, setSearch] = useState("");
   const [confirmDialogOpen, setConfirmDialogOpen] = useState(false);
   const [bookingToCancel, setBookingToCancel] = useState<Booking | null>(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const cancelBookingMutation = useCancelBooking();
 
@@ -38,9 +39,17 @@ const useBookingActions = (
     setConfirmDialogOpen(true);
   };
 
-  // Handle actual cancellation after confirmation
   const confirmCancellation = async () => {
-    if (!bookingToCancel || !userInfo) return;
+    if (!bookingToCancel || !userInfo) {
+      toast({
+        title: "Error",
+        description: "Missing booking information or user information.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsProcessing(true);
 
     toast({
       title: "Cancelling booking...",
@@ -48,9 +57,18 @@ const useBookingActions = (
     });
 
     try {
+      console.log("Attempting to cancel booking:", {
+        bookingId: bookingToCancel.id,
+        userType: userInfo.usertype,
+        userId: userInfo.id,
+      });
+
       await cancelBookingMutation.mutateAsync({
         bookingId: bookingToCancel.id,
-        reason: "Cancelled by admin",
+        reason:
+          userInfo.usertype === "admin"
+            ? "Cancelled by admin"
+            : "Cancelled by user",
         cancelledBy: userInfo.usertype,
         userType: userInfo.usertype,
         userId: userInfo.id,
@@ -62,18 +80,21 @@ const useBookingActions = (
         variant: "success",
       });
     } catch (error) {
+      console.error("Error cancelling booking:", error);
       toast({
         title: "Error",
-        description: "Failed to cancel booking. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to cancel booking. Please try again.",
         variant: "destructive",
       });
-      console.error("Error cancelling booking:", error);
     } finally {
+      setIsProcessing(false);
       setConfirmDialogOpen(false);
       setBookingToCancel(null);
     }
   };
-
   const handleViewDetails = (booking: Booking) => {
     if (booking && booking.id) {
       console.log("View details for booking ID:", booking.id);
@@ -104,7 +125,7 @@ const useBookingActions = (
 
           <div className="mt-6 flex justify-end space-x-3">
             <Dialog.Close asChild>
-              <Button type="button" variant="outline">
+              <Button type="button" variant="outline" disabled={isProcessing}>
                 No, Keep Booking
               </Button>
             </Dialog.Close>
@@ -113,8 +134,9 @@ const useBookingActions = (
               type="button"
               variant="destructive"
               onClick={confirmCancellation}
+              disabled={isProcessing}
             >
-              Yes, Cancel Booking
+              {isProcessing ? "Processing..." : "Yes, Cancel Booking"}
             </Button>
           </div>
 
@@ -122,6 +144,7 @@ const useBookingActions = (
             <button
               className="absolute right-4 top-4 inline-flex h-6 w-6 items-center justify-center rounded-full focus:outline-none focus-visible:ring focus-visible:ring-opacity-75"
               aria-label="Close"
+              disabled={isProcessing}
             >
               <X className="h-4 w-4" />
             </button>
@@ -137,6 +160,7 @@ const useBookingActions = (
     handleCancelBooking,
     handleViewDetails,
     CancellationConfirmDialog,
+    isProcessing,
   };
 };
 
