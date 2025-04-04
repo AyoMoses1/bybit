@@ -1,6 +1,7 @@
 import React from "react";
 import { BookingType } from "./bookingTypes";
-
+import Image from "next/image";
+import defaultAvatar from "../../assets/avatar.png";
 const DriverInformation = ({ driver }: { driver: BookingType }) => {
   return (
     <div className="mb-6 rounded-xl bg-white p-6 shadow-sm">
@@ -10,24 +11,13 @@ const DriverInformation = ({ driver }: { driver: BookingType }) => {
 
       <div className="mb-6 flex flex-col items-center">
         <div className="mb-3 h-20 w-20 overflow-hidden rounded-full bg-gray-200">
-          {driver.driver_image ? (
-            // Using img tag with eslint-disable to prevent warnings
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={driver.driver_image}
-              alt={driver.driver_name || "Driver"}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="/default-avatar.png"
-                alt="Driver"
-                className="h-full w-full object-cover"
-              />
-            </div>
-          )}
+          <Image
+            src={driver.driver_image || defaultAvatar}
+            alt={driver.driver_name || "Customer Avatar"}
+            width={80}
+            height={80}
+            className="h-full w-full object-cover"
+          />
         </div>
       </div>
 
