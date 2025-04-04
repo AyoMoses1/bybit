@@ -8,10 +8,13 @@ import toast from "react-hot-toast";
 
 const USER_STATE_KEY = "withdrawals";
 
-export const useWithdrawals = (search?: string) => {
+export const useWithdrawals = (
+  search?: string,
+  selectedMenu?: boolean | null,
+) => {
   return useQuery({
-    queryKey: [USER_STATE_KEY, search],
-    queryFn: () => fetchWithdrawal(search ?? ""),
+    queryKey: [USER_STATE_KEY, search, selectedMenu],
+    queryFn: () => fetchWithdrawal(search ?? "", selectedMenu ?? null),
     staleTime: Infinity,
     retry: 2,
   });

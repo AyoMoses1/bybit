@@ -35,13 +35,15 @@ export type WithdrawalType = {
 const WithdrawalTable = ({
   search,
   clickExport,
+  selectedMenu,
 }: {
   search?: string;
   clickExport?: boolean;
+  selectedMenu: boolean | null;
 }) => {
   // const mutation = useProcessWithdrawal();
   // const [loading, setLoading] = useState(false);
-  const { data: withdrawals, isLoading } = useWithdrawals(search);
+  const { data: withdrawals, isLoading } = useWithdrawals(search, selectedMenu);
 
   const { handleAudit } = useAuditLog();
 
@@ -116,16 +118,6 @@ const WithdrawalTable = ({
     {
       accessorKey: "bankName",
       header: "Bank Name",
-      cell: ({ getValue }) => getValue() || "N/A",
-    },
-    {
-      accessorKey: "bankCode",
-      header: "Bank Code",
-      cell: ({ getValue }) => getValue() || "N/A",
-    },
-    {
-      accessorKey: "bankAccount",
-      header: "Acc Number",
       cell: ({ getValue }) => getValue() || "N/A",
     },
 
@@ -235,6 +227,11 @@ const WithdrawalTable = ({
       );
     }
   }, [clickExport, withdrawals, handleAudit]);
+
+  useEffect(() => {
+    if (selectedMenu !== null) {
+    }
+  }, [selectedMenu]);
 
   return (
     <div className="px-1">
