@@ -13,6 +13,8 @@ import { CarType } from "./vehicleTypes";
 import CancellationSlabsDialog from "./cancelSlabDialog";
 
 interface VehiclesTableProps {
+  data?: CarType[];
+  loading?: boolean;
   search?: string;
 }
 
@@ -45,7 +47,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
 
     if (!search) {
       return [...carTypes].sort((a, b) => {
-        // First priority: created_at or createdAt timestamp if available
         if (a.created_at && b.created_at) {
           return (
             (typeof b.created_at === "string" ||
@@ -75,16 +76,12 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
           const bNum = parseInt(b.id.replace(/\D/g, ""));
 
           if (!isNaN(aNum) && !isNaN(bNum)) {
-            return bNum - aNum; // Higher numbers (newer) first
+            return bNum - aNum;
           }
         }
-
-        // Third priority: use position field if available (lower position comes first)
         if (a.pos !== undefined && b.pos !== undefined) {
           return (Number(a.pos) || 0) - (Number(b.pos) || 0);
         }
-
-        // Fallback: alphabetical by name
         return (a.name || "").localeCompare(b.name || "");
       });
     }
@@ -106,7 +103,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
         );
       })
       .sort((a, b) => {
-        // Use the same sorting logic for search results
         if (a.created_at && b.created_at) {
           return (
             (typeof b.created_at === "string" ||
@@ -140,7 +136,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
   }, [carTypes, search]);
 
   const handleImageClick = (rowData: CarType): void => {
-    // Make sure we're getting a valid image URL
     const imageUrl = typeof rowData.image === "string" ? rowData.image : null;
     console.log("Opening image modal with URL:", imageUrl);
 
@@ -222,7 +217,6 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
       },
       {
         onSuccess: () => {
-          // toast.success("Vehicle type deleted successfully");
           refetch();
         },
         onError: () => {
