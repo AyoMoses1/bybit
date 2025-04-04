@@ -227,60 +227,68 @@ export const updateBooking = (id: string, updatedData: Record<string, unknown>) 
   });
 };
 
-export const cancelBooking = (bookingId: string, reason: string, cancelledBy: string, userType: string, userId: string) => {
-  return new Promise<void>((resolve, reject) => {
-    try {
-      const db = getDatabase();
-      // Correct path to the booking
-      const bookingRef = ref(db, `bookings/${userType}/${userId}/${bookingId}`);
-      
-      // First get the booking to check status and get driver info
-      get(bookingRef).then((snapshot) => {
-        const booking = snapshot.val() as BookingData | null;
-        
-        if (!booking) {
-          reject(new Error("Booking not found"));
-          return;
-        }
-        
-        // Update the booking status
-        update(bookingRef, {
-          status: 'CANCELLED',
-          reason: reason,
-          cancelledBy: cancelledBy
-        }).then(() => {
-          // If there's a driver and booking status is NEW or ACCEPTED or ARRIVED
-          if (booking.driver && 
-              (booking.status === 'NEW' || 
-               booking.status === 'ACCEPTED' || 
-               booking.status === 'ARRIVED')) {
-            
-            // Update driver queue status
-            const driverRef = ref(db, `users/${booking.driver}`);
-            update(driverRef, { queue: false })
-              .then(() => resolve())
-              .catch(reject);
-            
-            // If driver has token, send notification (this would be implemented separately)
-            
-          } else {
-            resolve();
-          }
-          
-          // If booking status is NEW, remove requested drivers
-          if (booking.status === 'NEW') {
-            const requestedDriversRef = ref(db, `requestedDrivers/${bookingId}`);
-            remove(requestedDriversRef)
-              .then(() => resolve())
-              .catch(reject);
-          }
-        }).catch(reject);
-      }).catch(reject);
-    } catch (error) {
-      console.error("Cancel Booking Error:", error);
-      reject(error);
+export const cancelBooking = async (
+  bookingId: string,
+  reason: string,
+  cancelledBy: string,
+  userType: string,
+  userId: string
+) => {
+  try {
+    const db = getDatabase();
+    console.log(`Attempting to cancel booking: ${bookingId}`); // Debug log
+    
+    // Correct path to the booking
+    const bookingRef = ref(db, `bookings/${userType}/${userId}/${bookingId}`);
+    console.log(`Booking path: bookings/${userType}/${userId}/${bookingId}`); // Debug log
+
+    // Get the current booking data
+    const snapshot = await get(bookingRef);
+    const booking = snapshot.val() as BookingData | null;
+    
+    if (!booking) {
+      console.error("Booking not found at path:", `bookings/${userType}/${userId}/${bookingId}`);
+      throw new Error("Booking not found");
     }
-  });
+
+    console.log("Current booking status:", booking.status); // Debug log
+
+    // Prepare updates
+    const updates: Record<string, unknown> = {
+      status: 'CANCELLED',
+      reason,
+      cancelledBy,
+      updatedAt: Date.now()
+    };
+
+    // Update the booking
+    console.log("Updating booking with:", updates); // Debug log
+    await update(bookingRef, updates);
+    console.log("Booking status updated successfully"); // Debug log
+
+    // Handle driver-related updates if needed
+    if (booking.driver && ['NEW', 'ACCEPTED', 'ARRIVED'].includes(booking.status || '')) {
+      console.log("Updating driver queue status for driver:", booking.driver); // Debug log
+      const driverRef = ref(db, `users/${booking.driver}`);
+      await update(driverRef, { queue: false });
+    }
+
+    // Clean up requested drivers if needed
+    if (booking.status === 'NEW') {
+      console.log("Cleaning up requested drivers for booking:", bookingId); // Debug log
+      const requestedDriversRef = ref(db, `requestedDrivers/${bookingId}`);
+      await remove(requestedDriversRef);
+    }
+
+    console.log("Booking cancellation completed successfully"); // Debug log
+  } catch (error) {
+    console.error("Detailed cancellation error:", {
+      bookingId,
+      error,
+      message: error instanceof Error ? error.message : 'Unknown error'
+    });
+    throw error;
+  }
 };
 
 export const updateBookingImage = async (
