@@ -53,10 +53,6 @@ const BookingDetailPage = () => {
     return <LoadingState />;
   }
 
-  // if (error || !data) {
-  //   return <ErrorState onGoBack={handleGoBack} />;
-  // }
-
   return (
     <div className="min-h-screen bg-gray-50 p-4">
       <h1 className="mb-8 text-2xl font-bold text-gray-800">Booking Detail</h1>

@@ -1,5 +1,7 @@
 import React from "react";
 import { BookingType } from "./bookingTypes";
+import Image from "next/image";
+import defaultAvatar from "../../assets/avatar.png";
 
 const CustomerInformation = ({ customer }: { customer: BookingType }) => {
   return (
@@ -10,23 +12,13 @@ const CustomerInformation = ({ customer }: { customer: BookingType }) => {
 
       <div className="mb-6 flex flex-col items-center">
         <div className="mb-3 h-20 w-20 overflow-hidden rounded-full bg-gray-200">
-          {customer.customer_image ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={customer.customer_image}
-              alt={customer.customer_name || "Customer"}
-              className="h-full w-full object-cover"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src="https://placehold.co/80x80"
-                alt="Customer"
-                className="h-full w-full object-cover"
-              />
-            </div>
-          )}
+          <Image
+            src={customer.customer_image || defaultAvatar}
+            alt={customer.customer_name || "Customer Avatar"}
+            width={80}
+            height={80}
+            className="h-full w-full object-cover"
+          />
         </div>
       </div>
 

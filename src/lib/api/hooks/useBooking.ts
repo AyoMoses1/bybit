@@ -19,6 +19,7 @@ export const useBookings = (userId: string, userType: string, search?: string) =
     queryKey: [BOOKING_STATE_KEY, search],
     queryFn: () => fetchBookings(userId, userType),
     staleTime: Infinity,
+    refetchInterval: 1000 * 60,
     retry: 2,
   });
 };
@@ -80,9 +81,12 @@ export const useCancelBooking = () => {
   
   return useMutation({
     mutationFn: ({ bookingId, reason, cancelledBy, userType, userId }: 
-      { bookingId: string; reason: string; cancelledBy: string; userType: string; userId: string }) =>
-      cancelBooking(bookingId, reason, cancelledBy, userType, userId),
+      { bookingId: string; reason: string; cancelledBy: string; userType: string; userId: string }) => {
+      console.log("Cancel booking mutation called with:", { bookingId, reason, cancelledBy, userType, userId });
+      return cancelBooking(bookingId, reason, cancelledBy, userType, userId);
+    },
     onSuccess: (_, variables) => {
+      console.log("Booking cancelled successfully, invalidating queries");
       // Invalidate relevant queries
       queryClient.invalidateQueries({ 
         queryKey: [BOOKING_STATE_KEY, 'detail', variables.bookingId] 
@@ -93,6 +97,7 @@ export const useCancelBooking = () => {
     },
     onError: (error) => {
       console.error("Booking cancellation failed:", error);
+      throw error;
     },
   });
 };

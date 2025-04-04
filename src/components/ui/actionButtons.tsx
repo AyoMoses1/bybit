@@ -10,13 +10,6 @@ interface ActionButtonsProps {
   onDelete?: () => void;
 }
 
-// export interface ActionButtonsProps {
-//   item: any; // Replace 'any' with the appropriate type if available
-//   onView: () => void;
-//   onEdit: () => void;
-//   onDelete: () => void;
-// }
-
 const ActionButtons: React.FC<ActionButtonsProps> = ({
   booking,
   onCancelBooking,
@@ -31,11 +24,12 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
             e.stopPropagation();
             if (booking) {
               console.log("Cancel clicked for booking:", booking.id);
-            }
-            if (onCancelBooking && booking) {
-              onCancelBooking(booking);
+              if (onCancelBooking) {
+                onCancelBooking(booking);
+              }
             }
           }}
+          aria-label="Cancel booking"
         >
           <X size={20} className="text-red-500" />
         </button>
@@ -50,6 +44,7 @@ const ActionButtons: React.FC<ActionButtonsProps> = ({
               }
             }
           }}
+          aria-label="View booking details"
         >
           <ArrowRight size={20} className="text-gray-500" />
         </button>
