@@ -10,9 +10,9 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 
-interface UserInfo {
+export type UserInfo = {
   usertype: "fleetadmin" | "admin" | "customer" | "driver";
-}
+};
 const Users = () => {
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [selectedTab, setSelectedTab] = useState("Customers");
