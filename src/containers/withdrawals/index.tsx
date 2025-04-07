@@ -116,12 +116,6 @@ const WithdrawalTable = ({
       cell: ({ getValue }) => formatDate(Number(getValue())),
     },
     {
-      accessorKey: "bankName",
-      header: "Bank Name",
-      cell: ({ getValue }) => getValue() || "N/A",
-    },
-
-    {
       accessorKey: "actions",
       header: "Action",
       cell: ({ row }) => {
