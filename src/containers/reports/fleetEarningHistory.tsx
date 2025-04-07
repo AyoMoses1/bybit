@@ -14,6 +14,20 @@ type FleetEarningReport = {
 
 const FleetEarningHistory = ({ search }: { search?: string }) => {
   const isLoading = false;
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   // const [userInfo, setUserInfo] = useState<{
   //   usertype?: string;
   //   id?: string;
@@ -41,11 +55,14 @@ const FleetEarningHistory = ({ search }: { search?: string }) => {
       header: "Year",
       cell: ({ getValue }) => getValue() || "N/A",
     },
-
     {
       accessorKey: "month",
       header: "Month",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const value = getValue() as string;
+        const month = parseInt(value, 10);
+        return month >= 1 && month <= 12 ? monthNames[month - 1] : "N/A";
+      },
     },
 
     {

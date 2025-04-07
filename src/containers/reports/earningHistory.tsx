@@ -28,6 +28,20 @@ const EarningHistory = ({
   setClickExport: (value: boolean) => void;
 }) => {
   const { data: reports, isLoading } = useEarningReports(search);
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
 
   const columns: ColumnDef<EarningReport>[] = [
     {
@@ -39,7 +53,11 @@ const EarningHistory = ({
     {
       accessorKey: "month",
       header: "Month",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const value = getValue() as string;
+        const month = parseInt(value, 10);
+        return month >= 1 && month <= 12 ? monthNames[month - 1] : "N/A";
+      },
     },
 
     {
