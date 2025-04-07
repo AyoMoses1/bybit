@@ -2,6 +2,27 @@
 import toast from "react-hot-toast";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { editCarType, fetchCarTypeById, fetchCarTypes } from "../apiHandlers/vehicleService";
+import { AuditAction } from "../apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
+
+export const useVehicleAudit = () => {
+  const { handleAudit } = useAuditLog();
+
+  const logVehicleAction = (
+    action: AuditAction,
+    entityId: string,
+    description: string,
+    vehicleName?: string
+  ) => {
+    const fullDescription = vehicleName 
+      ? `${vehicleName}: ${description}`
+      : description;
+
+    handleAudit("Vehicle", entityId, action, fullDescription);
+  };
+
+  return { logVehicleAction };
+};
 
 export const useCarTypes = () => {
   return useQuery({

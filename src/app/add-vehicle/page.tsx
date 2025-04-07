@@ -10,7 +10,8 @@ import TextInput from "@/components/TextInput";
 import { ChevronDown } from "lucide-react";
 import Image from "next/image";
 import camera from "../../assets/svgs/Group 1.svg";
-
+import { useVehicleAudit } from "@/lib/api/hooks/useVehicle";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 interface FormData {
   id?: string;
   name: string;
@@ -32,6 +33,8 @@ const AddVehicleTypePage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const { logVehicleAction } = useVehicleAudit();
 
   const [formData, setFormData] = useState<FormData>({
     name: "",
@@ -94,6 +97,11 @@ const AddVehicleTypePage = () => {
       },
       {
         onSuccess: () => {
+          logVehicleAction(
+            AuditAction.CREATE,
+            `Created new vehicle type: ${formData.name}`,
+            formData.name,
+          );
           setLoading(false);
           router.push("/vehicle-type");
         },
