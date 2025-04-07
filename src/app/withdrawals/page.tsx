@@ -80,6 +80,7 @@ const Withdrawals = () => {
         selectedMenu={selectedMenu}
         search={searchTerm}
         clickExport={clickExport}
+        setClickExport={setClickExport}
       />
     </div>
   );
