@@ -11,6 +11,8 @@ import Image from "next/image";
 import { toast } from "react-hot-toast";
 import { CarType } from "./vehicleTypes";
 import CancellationSlabsDialog from "./cancelSlabDialog";
+import { useVehicleAudit } from "@/lib/api/hooks/useVehicle";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 
 interface VehiclesTableProps {
   data?: CarType[];
@@ -28,6 +30,8 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
   const [loading, setLoading] = useState<boolean>(false);
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [imagePreview, setImagePreview] = useState<string | null>(null);
+
+  const { logVehicleAction } = useVehicleAudit();
 
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [vehicleToDelete, setVehicleToDelete] = useState<{
@@ -167,6 +171,12 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
         },
         {
           onSuccess: () => {
+            logVehicleAction(
+              AuditAction.UPDATE,
+              `Updated vehicle image`,
+              userData.name,
+            );
+
             console.log("Image update successful");
             setProfileModal(false);
             setSelectedImage(null);
@@ -217,6 +227,12 @@ const VehiclesTable: React.FC<VehiclesTableProps> = ({ search }) => {
       },
       {
         onSuccess: () => {
+          logVehicleAction(
+            AuditAction.DELETE,
+            vehicleToDelete.id,
+            `Deleted vehicle type: ${vehicleToDelete.name}`,
+            vehicleToDelete.name,
+          );
           refetch();
         },
         onError: () => {
