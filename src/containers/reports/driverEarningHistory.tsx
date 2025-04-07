@@ -29,6 +29,20 @@ const DriverEarningHistory = ({
   clickExport: boolean;
   setClickExport: (value: boolean) => void;
 }) => {
+  const monthNames = [
+    "Jan",
+    "Feb",
+    "Mar",
+    "Apr",
+    "May",
+    "Jun",
+    "Jul",
+    "Aug",
+    "Sep",
+    "Oct",
+    "Nov",
+    "Dec",
+  ];
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
   const { data: reports, isLoading } = useDriversReports(
     userInfo?.usertype ?? "",
@@ -46,7 +60,11 @@ const DriverEarningHistory = ({
     {
       accessorKey: "month",
       header: "Month",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => {
+        const value = getValue() as string;
+        const month = parseInt(value, 10);
+        return month >= 1 && month <= 12 ? monthNames[month - 1] : "N/A";
+      },
     },
     {
       accessorKey: "driverName",
@@ -70,6 +88,7 @@ const DriverEarningHistory = ({
       cell: ({ getValue }) => "CFA" + getValue() || "N/A",
     },
   ];
+
   const { handleAudit } = useAuditLog();
 
   const exportToCSV = (data: DriverReport[]) => {
