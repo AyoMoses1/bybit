@@ -1,5 +1,5 @@
 import firebase from "@/lib/firebase";
-import { child, set } from "firebase/database";
+import { child, getDatabase, onValue, ref, set } from "firebase/database";
 
 // new Date().toISOString(), // ISO timestamp
 export enum AuditAction {
@@ -40,6 +40,60 @@ export const audit = (data: AuditLog) => {
       resolve("Processed Successfully");
     } catch (error) {
       console.error("Audit Log Error:", error);
+      reject(error);
+    }
+  });
+};
+
+export const fetchAudits = (search?: string) => {
+  return new Promise<AuditLog[]>((resolve, reject) => {
+    try {
+      const db = getDatabase();
+      const auditRef = ref(db, "audit");
+
+      onValue(
+        auditRef,
+        (snapshot) => {
+          if (!snapshot.exists()) {
+            resolve([]);
+            return;
+          }
+          const data = snapshot.val();
+          const arr = Object.keys(data || {})
+            .map((key) => ({
+              id: key,
+              ...data[key],
+            }))
+            .filter(
+              (user) =>
+                !search ||
+                user.description
+                  ?.toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                user?.id?.toLowerCase().includes(search.toLowerCase()) ||
+                user?.action?.toLowerCase().includes(search.toLowerCase()) ||
+                user?.entity?.toLowerCase().includes(search.toLowerCase()) ||
+                user?.entityId?.toLowerCase().includes(search.toLowerCase()) ||
+                user?.userId?.toLowerCase().includes(search.toLowerCase()) ||
+                user?.userRole?.toLowerCase().includes(search.toLowerCase()) ||
+                user?.timestamp?.toLowerCase().includes(search.toLowerCase()),
+            );
+          resolve(
+            arr.sort(
+              (a, b) =>
+                new Date(b.timestamp).getTime() -
+                new Date(a.timestamp).getTime(),
+            ),
+          );
+        },
+        (error) => {
+          console.error("Firebase error:", error);
+          reject(error);
+        },
+        { onlyOnce: true },
+      );
+    } catch (error) {
+      console.error("Fetch Cars Error:", error);
       reject(error);
     }
   });

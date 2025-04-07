@@ -19,6 +19,7 @@ import sos from "../../../assets/icons/sos.svg";
 import complaint from "../../../assets/icons/complaint.svg";
 import profile from "../../../assets/icons/profile.svg";
 import settings from "../../../assets/icons/settings.svg";
+import audit from "../../../assets/icons/audit.png";
 import {
   Sidebar,
   SidebarContent,
@@ -48,6 +49,7 @@ const mainMenuItems = [
   },
   { url: "/sos", title: "SOS", image: sos },
   { url: "/complaints", title: "Complaints", image: complaint },
+  { url: "/audit", title: "Audit", image: audit },
 ];
 
 const otherMenuItems = [
