@@ -87,7 +87,7 @@ const AuditTable = ({ search }: { search?: string; clickExport?: boolean }) => {
             {" "}
             <CustomTable
               columns={columns}
-              empty="You currently have no registered car"
+              empty="You currently have no audit"
               data={Array.isArray(audit) ? audit : []}
             />
           </>

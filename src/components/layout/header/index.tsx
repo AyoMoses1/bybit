@@ -35,6 +35,7 @@ const ROUTES = {
   helpCenter: "/help-center",
   reports: "/reports",
   audit: "/audit",
+  sos: "/sos",
 } as const;
 
 const ROUTE_TITLES: Record<string, string> = {
@@ -63,6 +64,7 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.helpCenter]: "Help Center",
   [ROUTES.reports]: "Reports",
   [ROUTES.audit]: "Audit",
+  [ROUTES.sos]: "SOS",
 };
 interface UserInfo {
   firstName?: string;
