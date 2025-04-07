@@ -36,10 +36,12 @@ const WithdrawalTable = ({
   search,
   clickExport,
   selectedMenu,
+  setClickExport,
 }: {
   search?: string;
   clickExport?: boolean;
   selectedMenu: boolean | null;
+  setClickExport: (value: boolean) => void;
 }) => {
   // const mutation = useProcessWithdrawal();
   // const [loading, setLoading] = useState(false);
@@ -219,8 +221,9 @@ const WithdrawalTable = ({
         AuditAction.EXPORT,
         "Exported Withdrawal History",
       );
+      setClickExport(false);
     }
-  }, [clickExport, withdrawals, handleAudit]);
+  }, [clickExport, withdrawals, handleAudit, setClickExport]);
 
   useEffect(() => {
     if (selectedMenu !== null) {
