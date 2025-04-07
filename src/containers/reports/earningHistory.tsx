@@ -68,7 +68,7 @@ const EarningHistory = ({
     {
       accessorKey: "tripCost",
       header: "Gross Trip Cost",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => "CFA" + getValue() || "N/A",
     },
 
     {
@@ -79,22 +79,22 @@ const EarningHistory = ({
     {
       accessorKey: "cancellationFee",
       header: "Cancellation Fee",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => "CFA" + getValue() || "N/A",
     },
     {
       accessorKey: "convenienceFee",
       header: "Convenience Fee",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => "CFA" + getValue() || "N/A",
     },
     {
       accessorKey: "discountAmount",
       header: "Discount",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => "CFA" + getValue() || "N/A",
     },
     {
       accessorKey: "myEarning",
       header: "Profit",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => "CFA" + getValue() || "N/A",
     },
   ];
   const { handleAudit } = useAuditLog();
