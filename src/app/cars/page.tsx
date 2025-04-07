@@ -37,7 +37,11 @@ const Cars = () => {
       </div>
 
       {/* TAB CONTENT */}
-      <CarsTable search={searchTerm} clickExport={clickExport} />
+      <CarsTable
+        search={searchTerm}
+        clickExport={clickExport}
+        setClickExport={setClickExport}
+      />
     </div>
   );
 };

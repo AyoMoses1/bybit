@@ -36,9 +36,11 @@ type UserInfo = {
 const CarsTable = ({
   search,
   clickExport,
+  setClickExport,
 }: {
   search?: string;
   clickExport?: boolean;
+  setClickExport: (value: boolean) => void;
 }) => {
   const deleteMutation = useDeleteCar();
   const { handleAudit } = useAuditLog();
@@ -220,8 +222,9 @@ const CarsTable = ({
     if (clickExport) {
       exportToCSV(cars as CarType[]);
       handleAudit("Cars", "", AuditAction.EXPORT, "Exported Cars History");
+      setClickExport(false);
     }
-  }, [clickExport, cars, handleAudit]);
+  }, [clickExport, cars, handleAudit, setClickExport]);
 
   useEffect(() => {
     if (typeof window !== "undefined") {
