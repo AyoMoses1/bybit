@@ -55,10 +55,10 @@ export default function PushNotificationForm() {
     const notification = {
       title: data.title,
       body: data.body,
-      msg: data.body, // Include both body and msg for compatibility
+      msg: data.body,
       usertype: data.userType.toLowerCase(),
       devicetype:
-        data.deviceType === "all" ? "All" : data.deviceType.toUpperCase(), // Uppercase to match old code
+        data.deviceType === "all" ? "All" : data.deviceType.toUpperCase(),
       ...(data.userId && { userId: data.userId }),
     };
 
