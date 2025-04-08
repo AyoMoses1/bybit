@@ -29,12 +29,10 @@ export default function NotificationsTable({
   } = useAllNotifications();
   const { mutate: editNotification } = useEditNotification();
 
-  // Force a refetch when the component mounts
   useEffect(() => {
     refetch();
   }, [refetch]);
 
-  // Log notifications data for debugging
   useEffect(() => {
     console.log("Current notifications:", notifications);
   }, [notifications]);
@@ -43,11 +41,20 @@ export default function NotificationsTable({
     (a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0),
   );
 
-  const filteredNotifications = sortedNotifications.filter(
-    (notification) =>
-      notification.title?.toLowerCase().includes(search.toLowerCase()) ||
-      notification.body?.toLowerCase().includes(search.toLowerCase()),
-  );
+  const filteredNotifications = sortedNotifications.filter((notification) => {
+    const searchLower = search.toLowerCase();
+
+    return (
+      notification.title?.toLowerCase().includes(searchLower) ||
+      notification.body?.toLowerCase().includes(searchLower) ||
+      notification.devicetype?.toLowerCase().includes(searchLower) ||
+      notification.usertype?.toLowerCase().includes(searchLower) ||
+      (notification.createdAt &&
+        format(new Date(notification.createdAt), "PPPpp")
+          .toLowerCase()
+          .includes(searchLower))
+    );
+  });
 
   const handleDelete = (notification: AppNotification) => {
     editNotification(
