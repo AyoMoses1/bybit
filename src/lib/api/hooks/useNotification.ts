@@ -53,7 +53,6 @@ export const useEditNotification = () => {
       method: "Add" | "Delete" | "Edit";
     }) => editNotification(notification, method),
     onSuccess: (_, variables) => {
-      // Invalidate both general and specific query keys
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       queryClient.invalidateQueries({ queryKey: ["notifications", "all"] });
       toast.success(`Notification ${variables.method.toLowerCase()} successfully`);
@@ -71,15 +70,13 @@ export const useSendPushNotification = () => {
   return useMutation({
     mutationFn: (payload: {
       notification: Omit<AppNotification, "id">;
-      hostUrl?: string;
-    }) => sendPushNotification(payload.notification),
+    }) => {
+      return sendPushNotification(payload.notification);
+    },
     onSuccess: () => {
       toast.success("Push notification sent successfully");
-      // Invalidate both general and specific query keys
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       queryClient.invalidateQueries({ queryKey: ["notifications", "all"] });
-      
-      // Force refetch to ensure data is up-to-date
       queryClient.refetchQueries({ queryKey: ["notifications", "all"] });
     },
     onError: (error: Error) => {
