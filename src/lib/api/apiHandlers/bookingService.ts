@@ -61,9 +61,8 @@ export const fetchBookings = (userId: string, userType: string) => {
       const db = getDatabase();
       const bookingListRef = ref(db, `bookings/${userType}/${userId}`);
 
-      const unsubscribe = onValue(
-        bookingListRef,
-        (snapshot) => {
+      get(bookingListRef)
+        .then((snapshot) => {
           if (!snapshot.exists()) {
             resolve([]);
             return;
@@ -90,20 +89,9 @@ export const fetchBookings = (userId: string, userType: string) => {
             });
 
           resolve(bookings);
-        },
-        (error) => {
-          console.error("Firebase error:", error);
-          reject(error);
-        }
-      );
-
-      // Return cleanup function
-      return () => {
-        off(bookingListRef);
-        unsubscribe();
-      };
+        })
+        .catch(reject);
     } catch (error) {
-      console.error("Fetch Bookings Error:", error);
       reject(error);
     }
   });
