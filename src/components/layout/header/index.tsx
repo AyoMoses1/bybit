@@ -34,6 +34,8 @@ const ROUTES = {
   settings: "/settings",
   helpCenter: "/help-center",
   reports: "/reports",
+  notifications: "/push-notification",
+  addNotification: "/add-notification",
   audit: "/audit",
 } as const;
 
@@ -62,6 +64,8 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.settings]: "Settings",
   [ROUTES.helpCenter]: "Help Center",
   [ROUTES.reports]: "Reports",
+  [ROUTES.notifications]: "Notifications",
+  [ROUTES.addNotification]: "Add Notification",
   [ROUTES.audit]: "Audit",
 };
 interface UserInfo {
@@ -167,6 +171,16 @@ const Header = () => {
             <div className="flex gap-3">
               <Link href={ROUTES.cars} className="text-[#8B8D97]">
                 Cars
+              </Link>
+              <p className="mx-1">/</p>
+
+              <p className="cursor-default">{getRouteTitle(pathname)}</p>
+            </div>
+          ) : pathname === ROUTES.notifications ||
+            pathname.includes(ROUTES.addNotification) ? (
+            <div className="flex gap-3">
+              <Link href={ROUTES.notifications} className="text-[#8B8D97]">
+                Notification
               </Link>
               <p className="mx-1">/</p>
 

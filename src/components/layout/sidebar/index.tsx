@@ -109,6 +109,16 @@ function AppSidebar() {
     ) {
       return true;
     }
+
+    if (
+      url === "/push-notification" &&
+      ["/push-notification", "/add-notification"].some((route) =>
+        pathname.startsWith(route),
+      )
+    ) {
+      return true;
+    }
+
     if (
       url === "/withdrawals" &&
       ["/withdrawals", "/withdrawals/[id]"].some((route) =>
