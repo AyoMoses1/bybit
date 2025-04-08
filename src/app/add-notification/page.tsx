@@ -1,7 +1,7 @@
 "use client";
 import { useForm } from "react-hook-form";
 import { useSendPushNotification } from "@/lib/api/hooks/useNotification";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import { useRouter } from "next/navigation";
@@ -23,18 +23,30 @@ export default function PushNotificationForm() {
     reset,
     watch,
     formState: { errors, isSubmitting },
-  } = useForm<NotificationFormInputs>();
+  } = useForm<NotificationFormInputs>({
+    mode: "onChange",
+  });
 
   const router = useRouter();
   const queryClient = useQueryClient();
+
+  const title = watch("title");
+  const body = watch("body");
+  const selectedUserType = watch("userType");
+  const selectedDeviceType = watch("deviceType");
+
+  const [isFormComplete, setIsFormComplete] = useState(false);
+
+  useEffect(() => {
+    const allFieldsFilled =
+      !!title && !!body && !!selectedUserType && !!selectedDeviceType;
+    setIsFormComplete(allFieldsFilled);
+  }, [title, body, selectedUserType, selectedDeviceType]);
 
   const { mutate: sendNotification } = useSendPushNotification();
   const [hostUrl] = useState<string | undefined>(
     typeof window !== "undefined" ? window.location.origin : undefined,
   );
-
-  const selectedUserType = watch("userType");
-  const selectedDeviceType = watch("deviceType");
 
   const onSubmit = (data: NotificationFormInputs) => {
     console.log("Submitting notification form with data:", data);
@@ -48,8 +60,6 @@ export default function PushNotificationForm() {
         data.deviceType === "all" ? "All" : data.deviceType.toLowerCase(),
       ...(data.userId && { userId: data.userId }),
     };
-
-    console.log("Prepared notification object:", notification);
 
     sendNotification(
       { notification, hostUrl },
@@ -96,7 +106,7 @@ export default function PushNotificationForm() {
           <div className="relative">
             <select
               {...register("userType", { required: true })}
-              className={`mt-1 h-12 w-full appearance-none rounded-none border-0 border-b border-gray-300 bg-gray-50 p-3 pr-10 focus:outline-none focus:ring-0 ${
+              className={`mt-1 h-12 w-full appearance-none rounded-none border-0 border-b border-gray-300 bg-[#F8F8F8] p-3 pr-10 focus:outline-none focus:ring-0 ${
                 selectedUserType ? "text-gray-800" : "text-gray-500"
               }`}
             >
@@ -131,7 +141,7 @@ export default function PushNotificationForm() {
           <div className="relative">
             <select
               {...register("deviceType", { required: true })}
-              className={`bg-gray-50p-3 h-12 w-full appearance-none rounded-none border-0 border-b border-gray-300 bg-gray-50 p-3 pr-10 focus:outline-none focus:ring-0 ${
+              className={`bg-gray-50p-3 h-12 w-full appearance-none rounded-none border-0 border-b border-gray-300 bg-[#F8F8F8] p-3 pr-10 focus:outline-none focus:ring-0 ${
                 selectedDeviceType ? "text-gray-800" : "text-gray-500"
               }`}
             >
@@ -152,8 +162,8 @@ export default function PushNotificationForm() {
         <div className="col-span-1 mt-6 flex justify-center md:col-span-2">
           <Button
             type="submit"
-            disabled={isSubmitting}
-            className="h-12 w-80 rounded-full font-medium text-white focus:outline-none focus:ring-0 disabled:bg-purple-400"
+            disabled={isSubmitting || !isFormComplete}
+            className="disabled h-12 w-80 rounded-full font-medium text-white focus:outline-none focus:ring-0"
           >
             {isSubmitting ? "Sending..." : "Send Push Notification"}
           </Button>
