@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { useBookings } from "@/lib/api/hooks/useBooking";
+import { useBookings, useRealtimeBookings } from "@/lib/api/hooks/useBooking";
 import { formatDate } from "@/utils/formatDate";
 import { ColumnDef } from "@tanstack/react-table";
 import { Booking } from "../bookingDetail/bookingTypes";
@@ -17,6 +17,8 @@ export const useBookingTableData = (
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [inputValue, setInputValue] = useState(initialSearch);
   const { userInfo } = useUserInfo();
+
+  useRealtimeBookings(userInfo?.id || "", userInfo?.usertype || "");
 
   const { data: allBookings, isLoading: bookingsLoading } = useBookings(
     userInfo?.id || "",

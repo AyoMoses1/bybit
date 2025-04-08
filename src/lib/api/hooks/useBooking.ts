@@ -8,6 +8,35 @@ import {
   updateBookingImage
 } from "../apiHandlers/bookingService";
 import { BookingType } from "@/containers/bookingDetail/bookingTypes";
+import {
+  onValue,
+  ref,
+  getDatabase,
+  off,
+} from "firebase/database";
+import { useEffect } from "react";
+
+interface Location {
+  add?: string;
+  lat?: number;
+  lng?: number;
+}
+
+interface BookingData {
+  pickup?: Location;
+  drop?: Location;
+  discount?: number;
+  cashPaymentAmount?: number;
+  cardPaymentAmount?: number;
+  bookingDate?: string;
+  status?: string;
+  driver_name?: string;
+  carType?: string;
+  driver?: string;
+  reference?: string;
+  trip_cost?: string | number;
+  [key: string]: unknown;
+}
 
 const BOOKING_STATE_KEY = "bookings";
 
@@ -19,9 +48,55 @@ export const useBookings = (userId: string, userType: string, search?: string) =
     queryKey: [BOOKING_STATE_KEY, search],
     queryFn: () => fetchBookings(userId, userType),
     staleTime: Infinity,
-    refetchInterval: 1000 * 60,
+    // refetchInterval: 1000 * 60,
     retry: 2,
   });
+};
+
+/**
+ *  Realtime subscription hook
+ */
+export const useRealtimeBookings = (userId: string, userType: string) => {
+  const queryClient = useQueryClient();
+  
+  useEffect(() => {
+    const db = getDatabase();
+    const bookingListRef = ref(db, `bookings/${userType}/${userId}`);
+    
+    const unsubscribe = onValue(bookingListRef, (snapshot) => {
+      if (!snapshot.exists()) {
+        queryClient.setQueryData([BOOKING_STATE_KEY], []);
+        return;
+      }
+
+      const data = snapshot.val();
+      const bookings = Object.entries(data)
+        .map(([id, value]) => {
+          const bookingData = value as BookingData;
+          return {
+            id,
+            pickupAddress: bookingData.pickup?.add || "",
+            dropAddress: bookingData.drop?.add || "",
+            discount: bookingData.discount || 0,
+            cashPaymentAmount: bookingData.cashPaymentAmount || 0,
+            cardPaymentAmount: bookingData.cardPaymentAmount || 0,
+            ...bookingData,
+          };
+        })
+        .sort((a, b) => {
+          const dateA = a.bookingDate ? new Date(a.bookingDate).getTime() : 0;
+          const dateB = b.bookingDate ? new Date(b.bookingDate).getTime() : 0;
+          return dateB - dateA;
+        });
+
+      queryClient.setQueryData([BOOKING_STATE_KEY], bookings);
+    });
+
+    return () => {
+      off(bookingListRef);
+      unsubscribe();
+    };
+  }, [userId, userType, queryClient]);
 };
 
 /**
