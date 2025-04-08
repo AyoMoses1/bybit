@@ -7,6 +7,7 @@ import TextInput from "@/components/TextInput";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
 import { ChevronDown } from "lucide-react";
+import toast from "react-hot-toast";
 
 type NotificationFormInputs = {
   title: string;
@@ -44,9 +45,9 @@ export default function PushNotificationForm() {
   }, [title, body, selectedUserType, selectedDeviceType]);
 
   const { mutate: sendNotification } = useSendPushNotification();
-  const [hostUrl] = useState<string | undefined>(
-    typeof window !== "undefined" ? window.location.origin : undefined,
-  );
+  //   const [hostUrl] = useState<string | undefined>(
+  //     typeof window !== "undefined" ? window.location.origin : undefined,
+  //   );
 
   const onSubmit = (data: NotificationFormInputs) => {
     console.log("Submitting notification form with data:", data);
@@ -54,26 +55,26 @@ export default function PushNotificationForm() {
     const notification = {
       title: data.title,
       body: data.body,
-      msg: data.body,
+      msg: data.body, // Include both body and msg for compatibility
       usertype: data.userType.toLowerCase(),
       devicetype:
-        data.deviceType === "all" ? "All" : data.deviceType.toLowerCase(),
+        data.deviceType === "all" ? "All" : data.deviceType.toUpperCase(), // Uppercase to match old code
       ...(data.userId && { userId: data.userId }),
     };
 
     sendNotification(
-      { notification, hostUrl },
+      { notification },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["notifications"] });
           queryClient.invalidateQueries({ queryKey: ["notifications", "all"] });
           queryClient.refetchQueries({ queryKey: ["notifications", "all"] });
-
           router.push("/push-notification");
           reset();
         },
         onError: (error) => {
           console.error("Error sending notification:", error);
+          toast.error(error.message || "Failed to send push notification");
         },
       },
     );
