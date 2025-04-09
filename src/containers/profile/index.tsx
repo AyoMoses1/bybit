@@ -1,22 +1,14 @@
-// components/MyProfile.tsx
 "use client";
-
 import { useForm } from "react-hook-form";
 import { useProfile } from "@/lib/api/hooks/useProfile";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Camera } from "lucide-react";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { Loader2, Camera, ChevronDown } from "lucide-react";
+import { Label } from "@/components/ui/label";
+import Image from "next/image";
+import TextInput from "@/components/TextInput";
 
-// Define complete type for profile form data
 type ProfileFormData = {
   firstName: string;
   lastName: string;
@@ -25,7 +17,6 @@ type ProfileFormData = {
   usertype: string;
 };
 
-// Define type for language options
 interface LanguageOption {
   value: string;
   label: string;
@@ -36,14 +27,12 @@ export default function MyProfile() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
   const [selectedLanguage, setSelectedLanguage] = useState<string>("");
-  const [formKey, setFormKey] = useState(0); // Force form re-render when needed
+  const [formKey, setFormKey] = useState(0);
 
-  // Language options - replace with your actual data
+  // Language options - replace with actual data
   const languageOptions: LanguageOption[] = [
     { value: "en", label: "English" },
-    { value: "es", label: "Spanish" },
     { value: "fr", label: "Français" },
-    // Add more languages as needed
   ];
 
   const {
@@ -71,12 +60,9 @@ export default function MyProfile() {
     },
   });
 
-  // Initialize form with profile data whenever profile changes
   useEffect(() => {
     if (profile) {
       console.log("Profile data loaded:", profile);
-
-      // Set form values
       reset({
         firstName: profile.firstName || "",
         lastName: profile.lastName || "",
@@ -107,7 +93,6 @@ export default function MyProfile() {
         throw new Error("Profile data not available");
       }
 
-      // Check if email has changed and validate
       if (data.email !== profile.email) {
         const re =
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -120,7 +105,6 @@ export default function MyProfile() {
           return;
         }
 
-        // Check if email already exists
         const emailExists = await checkUserExists({ email: data.email });
         if (emailExists.users && emailExists.users.length > 0) {
           toast({
@@ -132,9 +116,7 @@ export default function MyProfile() {
         }
       }
 
-      // Check if mobile has changed and validate
       if (data.mobile !== profile.mobile && data.mobile) {
-        // Simple mobile validation
         if (data.mobile.length < 6) {
           toast({
             title: "Error",
@@ -144,7 +126,6 @@ export default function MyProfile() {
           return;
         }
 
-        // Check if mobile already exists
         const mobileExists = await checkUserExists({ mobile: data.mobile });
         if (mobileExists.users && mobileExists.users.length > 0) {
           toast({
@@ -156,7 +137,6 @@ export default function MyProfile() {
         }
       }
 
-      // Prepare update data
       const updateData: Partial<ProfileFormData> = {
         firstName: data.firstName,
         lastName: data.lastName,
@@ -164,10 +144,8 @@ export default function MyProfile() {
         mobile: data.mobile,
       };
 
-      // Update profile data
       await updateProfile(updateData);
 
-      // Update profile image if changed
       if (selectedImage) {
         await updateProfileImage(selectedImage);
         setSelectedImage(null);
@@ -185,7 +163,7 @@ export default function MyProfile() {
           await updateProfile({
             lang: {
               langLocale: selectedLang.value,
-              dateLocale: selectedLang.value, // Adjust if your date locale differs
+              dateLocale: selectedLang.value,
             },
           });
         }
@@ -214,31 +192,29 @@ export default function MyProfile() {
   }
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <h1 className="mb-8 text-3xl font-bold text-gray-900">My Profile</h1>
-
-      <div className="mx-auto max-w-3xl rounded-2xl bg-white p-6 shadow-sm">
+    <div className="mt-20 max-w-[1000px] pl-4">
+      <div className="rounded-2xl bg-white p-6">
         {/* Profile Image */}
-        <div className="mb-6 flex flex-col items-center">
+        <div className="mb-8 flex flex-col items-center">
           <div
-            className="relative h-32 w-32 cursor-pointer overflow-hidden rounded-full border border-gray-200 bg-gray-100"
+            className="relative h-24 w-24 cursor-pointer overflow-hidden rounded-full bg-gray-100"
             onClick={() => fileInputRef.current?.click()}
           >
             {selectedImage ? (
-              <img
+              <Image
                 src={URL.createObjectURL(selectedImage)}
                 alt="Profile"
                 className="h-full w-full object-cover"
               />
             ) : profile?.profile_image ? (
-              <img
+              <Image
                 src={profile.profile_image}
                 alt="Profile"
                 className="h-full w-full object-cover"
               />
             ) : (
               <div className="flex h-full w-full items-center justify-center">
-                <Camera className="h-8 w-8 text-gray-400" />
+                <Camera className="h-8 w-8 text-gray-500" />
               </div>
             )}
             {isUpdatingImage && (
@@ -254,25 +230,25 @@ export default function MyProfile() {
             accept="image/*"
             className="hidden"
           />
+          <p className="mt-2 text-center text-base font-medium text-purple-500">
+            Upload Logo
+          </p>
         </div>
 
-        {/* Profile Form */}
         <form
           key={formKey}
           onSubmit={handleSubmit(onSubmit)}
           className="space-y-6"
         >
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                First Name
-              </label>
-              <Input
+              <TextInput
+                label="First Name"
                 {...register("firstName", {
                   required: "First name is required",
                 })}
-                defaultValue={profile?.firstName || ""}
-                disabled={profile?.usertype === "driver"}
+                value={profile?.firstName || ""}
+                placeholder="Alex"
               />
               {errors.firstName && (
                 <p className="mt-1 text-sm text-red-600">
@@ -282,13 +258,12 @@ export default function MyProfile() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Last Name
-              </label>
-              <Input
+              <TextInput
+                label="Last Name"
                 {...register("lastName", { required: "Last name is required" })}
-                defaultValue={profile?.lastName || ""}
+                value={profile?.lastName || ""}
                 disabled={profile?.usertype === "driver"}
+                placeholder="Rider"
               />
               {errors.lastName && (
                 <p className="mt-1 text-sm text-red-600">
@@ -298,33 +273,8 @@ export default function MyProfile() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Email
-              </label>
-              <Input
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Please enter a valid email address",
-                  },
-                })}
-                defaultValue={profile?.email || ""}
-                type="email"
-                disabled={profile?.usertype === "driver"}
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Mobile
-              </label>
-              <Input
+              <TextInput
+                label="Phone Number"
                 {...register("mobile", {
                   required: "Mobile is required",
                   minLength: {
@@ -332,9 +282,10 @@ export default function MyProfile() {
                     message: "Mobile must be at least 6 characters",
                   },
                 })}
-                defaultValue={profile?.mobile || ""}
+                value={profile?.mobile || ""}
                 type="tel"
                 disabled={profile?.usertype === "driver"}
+                placeholder="+237 434352 232323"
               />
               {errors.mobile && (
                 <p className="mt-1 text-sm text-red-600">
@@ -344,43 +295,79 @@ export default function MyProfile() {
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                User Type
-              </label>
-              <Input
+              <TextInput
+                label="Email"
+                {...register("email", {
+                  required: "Email is required",
+                  pattern: {
+                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                    message: "Please enter a valid email address",
+                  },
+                })}
+                value={profile?.email || ""}
+                type="email"
+                disabled={profile?.usertype === "driver"}
+                placeholder="wedea3223@sdjs.com"
+              />
+              {errors.email && (
+                <p className="mt-1 text-sm text-red-600">
+                  {errors.email.message}
+                </p>
+              )}
+            </div>
+
+            <div>
+              <TextInput
+                label="User Type"
                 {...register("usertype")}
-                defaultValue={profile?.usertype || ""}
+                value={profile?.usertype || ""}
                 disabled
+                placeholder="Admin"
               />
             </div>
 
             <div>
-              <label className="mb-1 block text-sm font-medium text-gray-700">
-                Preferred Language
-              </label>
-              <Select
-                value={selectedLanguage}
-                onValueChange={setSelectedLanguage}
-                defaultValue={profile?.lang?.langLocale}
+              <Label
+                htmlFor="preferred_language"
+                className="block font-[Roboto] text-base font-normal text-[#21272A]"
               >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select language" />
-                </SelectTrigger>
-                <SelectContent>
+                Preferred Language
+              </Label>
+              <div className="relative">
+                <select
+                  value={selectedLanguage}
+                  onChange={(e) => setSelectedLanguage(e.target.value)}
+                  className={`mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors ${
+                    selectedLanguage === ""
+                      ? "text-[#697077]"
+                      : "text-[#21272A]"
+                  }`}
+                  defaultValue={profile?.lang?.langLocale}
+                >
+                  <option value="" disabled className="text-[#697077]">
+                    Select a language
+                  </option>
                   {languageOptions.map((option) => (
-                    <SelectItem key={option.value} value={option.value}>
+                    <option
+                      key={option.value}
+                      value={option.value}
+                      className="text-[#21272A]"
+                    >
                       {option.label}
-                    </SelectItem>
+                    </option>
                   ))}
-                </SelectContent>
-              </Select>
+                </select>
+                <div className="pointer-events-none absolute inset-y-0 right-3 top-1 flex items-center text-gray-500">
+                  <ChevronDown className="size-5" />
+                </div>
+              </div>
             </div>
           </div>
 
-          <div className="pt-4">
+          <div className="mt-8 flex justify-center">
             <Button
               type="submit"
-              className="w-full md:w-1/2"
+              className="w-full max-w-sm rounded-full px-6 py-3 text-base font-medium text-white focus:outline-none"
               disabled={isUpdating || (!isDirty && !selectedImage)}
             >
               {isUpdating ? (
@@ -389,7 +376,7 @@ export default function MyProfile() {
                   Saving...
                 </>
               ) : (
-                "Save Changes"
+                "Save"
               )}
             </Button>
           </div>
