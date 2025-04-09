@@ -1,4 +1,4 @@
-import { onValue, ref, getDatabase } from "firebase/database";
+import { onValue, ref, getDatabase, update } from "firebase/database";
 import { Complaint } from "../hooks/complaints";
 
 export const fetchComplaints = (search?: string) => {
@@ -43,31 +43,26 @@ export const fetchComplaints = (search?: string) => {
   });
 };
 
-export const fetchCarById = (id: string) => {
-  return new Promise<Complaint>((resolve, reject) => {
+export const updateComplaint = (
+  id: string,
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  updatedData: Record<string, any>,
+) => {
+  return new Promise<void>((resolve, reject) => {
     try {
       const db = getDatabase();
-      const userRef = ref(db, `cars/${id}`);
+      const userRef = ref(db, `complain/${id}`);
 
-      const unsubscribe = onValue(
-        userRef,
-        (snapshot) => {
-          const data = snapshot.val();
-          if (data) {
-            resolve({ id: id, ...data });
-          } else {
-            // resolve("Can not get car details");
-          }
-        },
-        (error) => {
-          console.error("Firebase error:", error);
+      update(userRef, updatedData)
+        .then(() => {
+          resolve();
+        })
+        .catch((error) => {
+          console.error("Error updating user:", error);
           reject(error);
-        },
-      );
-
-      return () => unsubscribe();
+        });
     } catch (error) {
-      console.error("Fetch User Error:", error);
+      console.error("Update User Error:", error);
       reject(error);
     }
   });
