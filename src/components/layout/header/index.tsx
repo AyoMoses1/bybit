@@ -194,6 +194,10 @@ const Header = () => {
     router.push(`/${locale}${pathname.substring(3)}`);
   };
 
+  const navigateToProfile = () => {
+    router.push("/profile");
+  };
+
   return (
     <header className="sticky top-0 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
       <div className="flex items-center gap-4">
@@ -235,7 +239,10 @@ const Header = () => {
 
         {/* User Info */}
         <div className="flex items-center gap-2">
-          <div className="h-7 w-7 overflow-hidden rounded-full border bg-gray-200">
+          <div
+            onClick={navigateToProfile}
+            className="h-7 w-7 cursor-pointer overflow-hidden rounded-full border bg-gray-200"
+          >
             {userInfo?.profile_image ? (
               <Image
                 src={userInfo.profile_image}
