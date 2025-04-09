@@ -102,7 +102,7 @@ const SosTable = ({
             {" "}
             <CustomTable
               columns={columns}
-              empty="You currently have no audit"
+              empty="You currently have no sos"
               data={Array.isArray(sos) ? sos : []}
             />
           </>
