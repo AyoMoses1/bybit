@@ -3,23 +3,12 @@ import React from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAudit } from "@/lib/api/hooks/audit";
 import moment from "moment";
-
-type CarType = {
-  id: string;
-  driver?: string;
-  carType?: string;
-  vehicleNumber?: string;
-  vehicleMake?: string;
-  vehicleModel?: string;
-  other_info?: string;
-  active?: boolean;
-  approved?: boolean;
-};
+import { AuditLog } from "@/lib/api/apiHandlers/auditService";
 
 const AuditTable = ({ search }: { search?: string; clickExport?: boolean }) => {
   const { data: audit, isLoading } = useAudit(search);
 
-  const columns: ColumnDef<CarType>[] = [
+  const columns: ColumnDef<AuditLog>[] = [
     {
       accessorKey: "id",
       header: "Id",
