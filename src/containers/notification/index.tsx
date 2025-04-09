@@ -13,14 +13,16 @@ import { toast } from "react-hot-toast";
 import deleteIcon from "../../assets/svgs/Vector (1).svg";
 import Image from "next/image";
 import { useEffect } from "react";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 interface NotificationsTableProps {
   search: string;
+  clickExport?: boolean;
+  setClickExport?: (value: boolean) => void;
 }
 
-export default function NotificationsTable({
-  search,
-}: NotificationsTableProps) {
+const NotificationsTable = ({ search }: NotificationsTableProps) => {
   const queryClient = useQueryClient();
   const {
     data: notifications = [],
@@ -28,29 +30,27 @@ export default function NotificationsTable({
     refetch,
   } = useAllNotifications();
   const { mutate: editNotification } = useEditNotification();
+  const { handleAudit } = useAuditLog();
 
   useEffect(() => {
     refetch();
   }, [refetch]);
-
-  useEffect(() => {
-    console.log("Current notifications:", notifications);
-  }, [notifications]);
 
   const sortedNotifications = [...notifications].sort(
     (a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0),
   );
 
   const filteredNotifications = sortedNotifications.filter((notification) => {
-    const searchLower = search.toLowerCase();
+    if (!search) return true;
 
+    const searchLower = search.toLowerCase();
     return (
       notification.title?.toLowerCase().includes(searchLower) ||
       notification.body?.toLowerCase().includes(searchLower) ||
       notification.devicetype?.toLowerCase().includes(searchLower) ||
       notification.usertype?.toLowerCase().includes(searchLower) ||
       (notification.createdAt &&
-        format(new Date(notification.createdAt), "PPPpp")
+        format(new Date(notification.createdAt), "PPP")
           .toLowerCase()
           .includes(searchLower))
     );
@@ -61,26 +61,61 @@ export default function NotificationsTable({
       { notification, method: "Delete" },
       {
         onSuccess: () => {
-          // Invalidate both query keys
+          toast.success("Notification deleted successfully");
           queryClient.invalidateQueries({ queryKey: ["notifications"] });
           queryClient.invalidateQueries({ queryKey: ["notifications", "all"] });
-          // Force a refetch
           refetch();
+          if (handleAudit) {
+            handleAudit(
+              "Notification",
+              notification.id || "",
+              AuditAction.DELETE,
+              "Deleted notification",
+            );
+          }
         },
         onError: (error) => {
-          toast.error(error.message || "Delete Failed");
+          toast.error(error.message || "Failed to delete notification");
         },
       },
     );
   };
 
+  const formatDeviceType = (type?: string): string => {
+    if (!type) return "N/A";
+
+    const lookup: Record<string, string> = {
+      All: "All",
+      all: "All",
+      ANDROID: "Android",
+      android: "Android",
+      IOS: "iOS",
+      ios: "iOS",
+    };
+
+    return lookup[type] || type;
+  };
+
+  // Format user type for display
+  const formatUserType = (type?: string): string => {
+    if (!type) return "N/A";
+
+    const lookup: Record<string, string> = {
+      customer: "Customer",
+      driver: "Driver",
+      all: "All",
+    };
+
+    return lookup[type] || type;
+  };
+
   const columns: ColumnDef<AppNotification>[] = [
     {
       accessorKey: "createdAt",
-      header: "Created Date",
+      header: "Date",
       cell: ({ getValue }) => {
         const date = getValue() as number | undefined;
-        return date ? format(new Date(date), "PPPpp") : "N/A";
+        return date ? format(new Date(date), "PPP") : "N/A";
       },
     },
     {
@@ -88,19 +123,7 @@ export default function NotificationsTable({
       header: "Device Type",
       cell: ({ getValue }) => {
         const value = getValue() as string;
-        const lookup: Record<string, string> = {
-          All: "All",
-          all: "All",
-          ANDROID: "Android",
-          android: "Android",
-          IOS: "iOS",
-          ios: "iOS",
-        };
-        return (
-          <div className="pr-12 text-center text-sm text-gray-600">
-            {value ? lookup[value] || value : "--"}
-          </div>
-        );
+        return formatDeviceType(value);
       },
     },
     {
@@ -108,28 +131,18 @@ export default function NotificationsTable({
       header: "User Type",
       cell: ({ getValue }) => {
         const value = getValue() as string;
-        const lookup: Record<string, string> = {
-          customer: "Customer",
-          driver: "Driver",
-        };
-        return (
-          <div className="pr-16 text-center text-sm text-gray-600">
-            {value ? lookup[value] || value : "--"}
-          </div>
-        );
+        return formatUserType(value);
       },
     },
     {
       accessorKey: "title",
-      header: () => (
-        <div className="pr-20 text-center text-sm font-semibold">Title</div>
-      ),
+      header: "Title",
+      cell: ({ getValue }) => getValue() || "N/A",
     },
     {
       accessorKey: "body",
-      header: () => (
-        <div className="pr-20 text-center text-sm font-semibold">Body</div>
-      ),
+      header: "Body",
+      cell: ({ getValue }) => getValue() || "N/A",
     },
     {
       id: "actions",
@@ -143,7 +156,7 @@ export default function NotificationsTable({
           >
             <Image
               src={deleteIcon}
-              alt="Delete Icon"
+              alt="Delete"
               width={10}
               height={10}
               className="object-contain"
@@ -155,14 +168,23 @@ export default function NotificationsTable({
   ];
 
   return (
-    <div className="px-5">
+    <div className="px-1">
       {isLoading ? (
-        <div className="flex justify-center p-8">Loading notifications...</div>
-      ) : filteredNotifications.length === 0 ? (
-        <div className="flex justify-center p-8">No notifications found</div>
+        <div
+          style={{ height: "200px", margin: "0px 90px" }}
+          className="flex items-center justify-center"
+        >
+          <p className="text-sm font-semibold">Loading...</p>
+        </div>
       ) : (
-        <CustomTable columns={columns} data={filteredNotifications} />
+        <CustomTable
+          columns={columns}
+          empty="You currently have no notifications"
+          data={filteredNotifications}
+        />
       )}
     </div>
   );
-}
+};
+
+export default NotificationsTable;

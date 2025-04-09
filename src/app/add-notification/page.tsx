@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
 import { useRouter } from "next/navigation";
 import { useQueryClient } from "@tanstack/react-query";
-import { ChevronDown } from "lucide-react";
+import { ChevronDown, Loader2 } from "lucide-react";
 import toast from "react-hot-toast";
 
 type NotificationFormInputs = {
@@ -30,6 +30,7 @@ export default function PushNotificationForm() {
 
   const router = useRouter();
   const queryClient = useQueryClient();
+  const [isSubmittingForm, setIsSubmittingForm] = useState(false);
 
   const title = watch("title");
   const body = watch("body");
@@ -45,12 +46,13 @@ export default function PushNotificationForm() {
   }, [title, body, selectedUserType, selectedDeviceType]);
 
   const { mutate: sendNotification } = useSendPushNotification();
-  //   const [hostUrl] = useState<string | undefined>(
-  //     typeof window !== "undefined" ? window.location.origin : undefined,
-  //   );
 
-  const onSubmit = (data: NotificationFormInputs) => {
-    console.log("Submitting notification form with data:", data);
+  const onSubmit = async (data: NotificationFormInputs) => {
+    // Prevent multiple submissions
+    if (isSubmittingForm) return;
+
+    setIsSubmittingForm(true);
+    // console.log("Submitting notification form with data:", data);
 
     const notification = {
       title: data.title,
@@ -62,22 +64,37 @@ export default function PushNotificationForm() {
       ...(data.userId && { userId: data.userId }),
     };
 
-    sendNotification(
-      { notification },
-      {
-        onSuccess: () => {
-          queryClient.invalidateQueries({ queryKey: ["notifications"] });
-          queryClient.invalidateQueries({ queryKey: ["notifications", "all"] });
-          queryClient.refetchQueries({ queryKey: ["notifications", "all"] });
-          router.push("/push-notification");
-          reset();
+    try {
+      sendNotification(
+        { notification },
+        {
+          onSuccess: () => {
+            toast.success("Notification sent successfully");
+            queryClient.invalidateQueries({ queryKey: ["notifications"] });
+            queryClient.invalidateQueries({
+              queryKey: ["notifications", "all"],
+            });
+            queryClient.refetchQueries({ queryKey: ["notifications", "all"] });
+            reset();
+            router.push("/push-notification");
+          },
+          onError: (error) => {
+            console.error("Error sending notification:", error);
+            toast.error(error.message || "Failed to send push notification");
+            setIsSubmittingForm(false);
+          },
+          onSettled: () => {
+            setTimeout(() => {
+              setIsSubmittingForm(false);
+            }, 3000);
+          },
         },
-        onError: (error) => {
-          console.error("Error sending notification:", error);
-          toast.error(error.message || "Failed to send push notification");
-        },
-      },
-    );
+      );
+    } catch (error) {
+      console.error("Unexpected error:", error);
+      toast.error("An unexpected error occurred");
+      setIsSubmittingForm(false);
+    }
   };
 
   return (
@@ -94,6 +111,7 @@ export default function PushNotificationForm() {
             {...register("title", { required: true })}
             placeholder="Enter title"
             label="Title"
+            disabled={isSubmittingForm}
           />
           {errors.title && (
             <span className="text-red-500">Title is required</span>
@@ -110,6 +128,7 @@ export default function PushNotificationForm() {
               className={`mt-1 h-12 w-full appearance-none rounded-none border-0 border-b border-gray-300 bg-[#F8F8F8] p-3 pr-10 focus:outline-none focus:ring-0 ${
                 selectedUserType ? "text-gray-800" : "text-gray-500"
               }`}
+              disabled={isSubmittingForm}
             >
               <option value="">Select User Type</option>
               <option value="driver">Driver</option>
@@ -129,6 +148,7 @@ export default function PushNotificationForm() {
             label="Body"
             {...register("body", { required: true })}
             placeholder="Enter message body"
+            disabled={isSubmittingForm}
           />
           {errors.body && (
             <span className="text-red-500">Body is required</span>
@@ -145,6 +165,7 @@ export default function PushNotificationForm() {
               className={`bg-gray-50p-3 h-12 w-full appearance-none rounded-none border-0 border-b border-gray-300 bg-[#F8F8F8] p-3 pr-10 focus:outline-none focus:ring-0 ${
                 selectedDeviceType ? "text-gray-800" : "text-gray-500"
               }`}
+              disabled={isSubmittingForm}
             >
               <option value="">Select Device Type</option>
               <option value="ios">iOS</option>
@@ -163,10 +184,17 @@ export default function PushNotificationForm() {
         <div className="col-span-1 mt-6 flex justify-center md:col-span-2">
           <Button
             type="submit"
-            disabled={isSubmitting || !isFormComplete}
-            className="disabled h-12 w-80 rounded-full font-medium text-white focus:outline-none focus:ring-0"
+            disabled={isSubmittingForm || isSubmitting || !isFormComplete}
+            className="h-12 w-80 rounded-full font-medium text-white focus:outline-none focus:ring-0 disabled:opacity-50"
           >
-            {isSubmitting ? "Sending..." : "Send Push Notification"}
+            {isSubmittingForm ? (
+              <>
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                Sending...
+              </>
+            ) : (
+              "Send Push Notification"
+            )}
           </Button>
         </div>
       </form>
