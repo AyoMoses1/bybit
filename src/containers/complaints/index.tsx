@@ -109,7 +109,7 @@ const ComplaintsTable = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "cars.csv");
+    link.setAttribute("download", "complaints.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -128,7 +128,6 @@ const ComplaintsTable = ({
     }
   }, [clickExport, complaints, handleAudit, setClickExport]);
 
-  console.log(complaints);
   return (
     <div className="px-1">
       <div>
@@ -144,7 +143,7 @@ const ComplaintsTable = ({
             {" "}
             <CustomTable
               columns={columns}
-              empty="You currently have no registered car"
+              empty="You currently have no complaint"
               data={Array.isArray(complaints) ? complaints : []}
             />
           </>
