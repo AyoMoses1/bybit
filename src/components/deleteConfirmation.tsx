@@ -9,9 +9,13 @@ import Image from "next/image";
 const DeleteConfirmation = ({
   text,
   onClick,
+  iconStylesWidth,
+  iconStylesHeight,
 }: {
   text: string;
   onClick: () => void;
+  iconStylesWidth?: number;
+  iconStylesHeight?: number;
 }) => {
   return (
     <Dialog.Root>
@@ -20,8 +24,8 @@ const DeleteConfirmation = ({
           <Image
             src={deleteIcon}
             alt="Delete Icon"
-            width={10}
-            height={10}
+            width={`${iconStylesWidth ? iconStylesWidth : 10}`}
+            height={`${iconStylesHeight ? iconStylesHeight : 10}`}
             className="rounded-full"
           />
         </button>
@@ -36,7 +40,7 @@ const DeleteConfirmation = ({
             </Dialog.Title>
             <Dialog.Close asChild>
               <button className="text-gray-500 hover:text-gray-700">
-                <X className="h-5 w-5" />
+                <X className={`h-5 w-5`} />
               </button>
             </Dialog.Close>
           </div>

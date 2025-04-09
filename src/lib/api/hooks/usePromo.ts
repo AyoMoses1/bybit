@@ -11,10 +11,10 @@ import toast from "react-hot-toast";
 
 const PROMO_STATE_KEY = "promo";
 
-export const usePromos = () => {
+export const usePromos = (search?: string) => {
   return useQuery<PromoData[]>({
-    queryKey: [PROMO_STATE_KEY],
-    queryFn: () => fetchPromos(),
+    queryKey: [PROMO_STATE_KEY, search],
+    queryFn: () => fetchPromos(search ?? ""),
     staleTime: Infinity,
     retry: 2,
   });

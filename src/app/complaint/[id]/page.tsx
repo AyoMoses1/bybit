@@ -11,6 +11,8 @@ import {
 } from "@/lib/api/hooks/complaints";
 import { formatDate } from "@/utils/formatDate";
 import { Switch } from "@/components/ui/switch";
+import { useAuditLog } from "@/utils/useAuditLog";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 
 const ComplaintInfo = () => {
   const { id } = useParams();
@@ -51,7 +53,7 @@ const ComplaintInfo = () => {
   const mutation = useUpdateComplaint();
 
   const [selectedVehicleType, setSelectedVehicleType] = useState("");
-
+  const { handleAudit } = useAuditLog();
   const handleToggle = (id: string, checked: boolean) => {
     setToggleStates((prev) => ({ ...prev, [id]: checked }));
 
@@ -59,6 +61,14 @@ const ComplaintInfo = () => {
       { id, updatedData: { check: checked } },
       {
         onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
+        onSuccess: () => {
+          handleAudit(
+            "Promos",
+            id,
+            AuditAction.UPDATE,
+            `Updated check status to ${checked}`,
+          );
+        },
       },
     );
   };

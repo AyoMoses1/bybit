@@ -27,7 +27,7 @@ export interface PromoData {
   };
 }
 
-export const fetchPromos = (): Promise<PromoData[]> => {
+export const fetchPromos = (search: string): Promise<PromoData[]> => {
   return new Promise((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -47,6 +47,25 @@ export const fetchPromos = (): Promise<PromoData[]> => {
                 (a, b) =>
                   new Date(b.createdAt || 0).getTime() -
                   new Date(a.createdAt || 0).getTime(),
+              )
+              .filter(
+                (user) =>
+                  !search ||
+                  user.promo_name
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  user.promo_code
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  user.promo_description
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  user.promo_discount_type
+                    ?.toLowerCase()
+                    .includes(search.toLowerCase()) ||
+                  user.promo_discount_value
+                    .toString()
+                    .includes(search.toLowerCase()),
               );
 
             resolve(promosArray as PromoData[]);
