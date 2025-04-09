@@ -8,7 +8,11 @@ import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 import { useAuditLog } from "@/utils/useAuditLog";
 import Papa from "papaparse";
 import { formatDate } from "@/utils/formatDate";
-import { Complaint, useComplaints } from "@/lib/api/hooks/complaints";
+import {
+  Complaint,
+  useComplaints,
+  useUpdateComplaint,
+} from "@/lib/api/hooks/complaints";
 
 const ComplaintsTable = ({
   search,
@@ -25,16 +29,17 @@ const ComplaintsTable = ({
   >({});
 
   const { data: complaints, isLoading } = useComplaints(search);
+  const mutation = useUpdateComplaint();
 
   const handleToggle = (id: string, checked: boolean) => {
     setToggleStates((prev) => ({ ...prev, [id]: checked }));
 
-    // mutation.mutate(
-    //   { id, updatedData: { approved: checked } },
-    //   {
-    //     onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
-    //   },
-    // );
+    mutation.mutate(
+      { id, updatedData: { check: checked } },
+      {
+        onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
+      },
+    );
   };
 
   const columns: ColumnDef<Complaint>[] = [

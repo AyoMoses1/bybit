@@ -1,7 +1,8 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { addCar } from "../apiHandlers/carsService";
-import toast from "react-hot-toast";
-import { fetchComplaints } from "../apiHandlers/complaintsService";
+import {
+  fetchComplaints,
+  updateComplaint,
+} from "../apiHandlers/complaintsService";
 
 const USER_STATE_KEY = "complaints";
 
@@ -29,18 +30,17 @@ export const useComplaints = (search?: string) => {
   });
 };
 
-export const useAddCar = () => {
+export const useUpdateComplaint = () => {
   const queryClient = useQueryClient();
   return useMutation({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFn: (car: any) => addCar(car),
+    mutationFn: ({ id, updatedData }: { id: string; updatedData: any }) =>
+      updateComplaint(id, updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
-      toast.success("Car created successfully!");
     },
     onError: (error) => {
-      console.error("Car update failed:", error);
-      toast.error("Failed to create car. Please try again.");
+      console.error("Complaint update failed:", error);
     },
   });
 };
