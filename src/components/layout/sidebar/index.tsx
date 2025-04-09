@@ -1,6 +1,7 @@
 "use client";
+
 import Link from "next/link";
-import Image from "next/image";
+import Image, { StaticImageData } from "next/image";
 import { usePathname, useRouter } from "next/navigation";
 import Logo from "../../../assets/svgs/logo.svg";
 import { Power } from "lucide-react";
@@ -20,6 +21,7 @@ import complaint from "../../../assets/icons/complaint.svg";
 import profile from "../../../assets/icons/profile.svg";
 import settings from "../../../assets/icons/settings.svg";
 import audit from "../../../assets/icons/audit.png";
+
 import {
   Sidebar,
   SidebarContent,
@@ -29,18 +31,33 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
+
 import { getAuth, signOut } from "firebase/auth";
-// import { useEffect, useState } from "react";
-// import { UserInfo } from "@/app/users/page";
+
+const routeGroups: Record<string, string[]> = {
+  "/users": [
+    "/users",
+    "/add-super-admin",
+    "/add-customers",
+    "/add-drivers",
+    "/update-admin",
+    "/add-fleet-admin",
+    "/update-fleet-admin",
+    "/customer",
+    "/driver",
+  ],
+  "/vehicle-type": ["/vehicle-type", "/vehicle-type/[id]", "/add-vehicle"],
+  "/booking-history": ["/booking-history", "/booking-history/[id]"],
+  "/cars": ["/cars", "/add-car"],
+  "/push-notification": ["/push-notification", "/add-notification"],
+  "/withdrawals": ["/withdrawals", "/withdrawals/[id]"],
+  "/complaints": ["/complaint"],
+};
 
 const mainMenuItems = [
   { url: "/dashboard", title: "Dashboard", image: dashboard },
   { url: "/add-bookings", title: "Add Bookings", image: addBookings },
-  {
-    url: "/booking-history",
-    title: "Booking History",
-    image: bookingHistory,
-  },
+  { url: "/booking-history", title: "Booking History", image: bookingHistory },
   { url: "/users", title: "Users", image: users },
   { url: "/vehicle-type", title: "Vehicle Type", image: vehicleType },
   { url: "/cars", title: "Cars", image: cars },
@@ -53,93 +70,26 @@ const mainMenuItems = [
     title: "Push Notifications",
     image: pushNotifications,
   },
-  // userInfo?.usertype === "admin" &&
-  {
-    url: "/sos",
-    title: "SOS",
-    image: sos,
-  },
+  { url: "/sos", title: "SOS", image: sos },
   { url: "/complaints", title: "Complaints", image: complaint },
   { url: "/audit", title: "Audit", image: audit },
 ];
 
 const otherMenuItems = [
-  {
-    url: "/payment-settings",
-    title: "Payment Settings",
-    image: settings,
-  },
+  { url: "/payment-settings", title: "Payment Settings", image: settings },
   { url: "/settings", title: "Settings", image: settings },
   { url: "/profile", title: "Profile", image: profile },
   { url: "/logout", title: "Logout", icon: Power },
 ];
 
-function AppSidebar() {
+const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
-  // const [userInfo, setUserInfo] = useState<UserInfo>();
 
-  const isActive = (url: string): boolean => {
-    if (
-      url === "/users" &&
-      [
-        "/users",
-        "/add-super-admin",
-        "/add-customers",
-        "/add-drivers",
-        "/update-admin",
-        "/add-fleet-admin",
-        "/update-fleet-admin",
-        "/customer",
-        "/driver",
-      ].some((route) => pathname.startsWith(route))
-    ) {
-      return true;
-    }
-
-    if (
-      url === "/vehicle-type" &&
-      ["/vehicle-type", "/vehicle-type/[id]", "/add-vehicle"].some((route) =>
-        pathname.startsWith(route),
-      )
-    ) {
-      return true;
-    }
-
-    if (
-      url === "/booking-history" &&
-      ["/booking-history", "/booking-history/[id]"].some((route) =>
-        pathname.startsWith(route),
-      )
-    ) {
-      return true;
-    }
-
-    if (
-      url === "/cars" &&
-      ["/cars", "/add-car"].some((route) => pathname.startsWith(route))
-    ) {
-      return true;
-    }
-
-    if (
-      url === "/push-notification" &&
-      ["/push-notification", "/add-notification"].some((route) =>
-        pathname.startsWith(route),
-      )
-    ) {
-      return true;
-    }
-
-    if (
-      url === "/withdrawals" &&
-      ["/withdrawals", "/withdrawals/[id]"].some((route) =>
-        pathname.startsWith(route),
-      )
-    ) {
-      return true;
-    }
-    return pathname === url;
+  const isActive = (url: string) => {
+    return routeGroups[url]
+      ? routeGroups[url].some((prefix) => pathname.startsWith(prefix))
+      : pathname === url;
   };
 
   const handleLogout = async () => {
@@ -149,14 +99,46 @@ function AppSidebar() {
     router.push("/");
   };
 
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     const info = localStorage.getItem("userInfo");
-  //     if (info) {
-  //       setUserInfo(JSON.parse(info));
-  //     }
-  //   }
-  // }, []);
+  const MenuItem = ({
+    url,
+    title,
+    image,
+    icon: Icon,
+    onClick,
+  }: {
+    url: string;
+    title: string;
+    image?: StaticImageData;
+    icon?: React.ElementType;
+    onClick?: () => void;
+  }) => {
+    const active = isActive(url);
+
+    return (
+      <div className="flex gap-5">
+        <div
+          className={`h-[50px] w-[4px] rounded-r-[4px] ${
+            active ? "bg-[#DA4CBF]" : "bg-[#1E1E1E]"
+          }`}
+        />
+        <SidebarMenuItem className="w-[85%]">
+          <SidebarMenuButton asChild isActive={active} onClick={onClick}>
+            {url === "/logout" && Icon ? (
+              <button className="flex items-center gap-2">
+                <Icon className="size-5" />
+                <span>{title}</span>
+              </button>
+            ) : image ? (
+              <Link href={url} className="flex items-center gap-2">
+                <Image src={image} alt={title} width={20} height={20} />
+                <span>{title}</span>
+              </Link>
+            ) : null}
+          </SidebarMenuButton>
+        </SidebarMenuItem>
+      </div>
+    );
+  };
 
   return (
     <Sidebar className="pb-10 pt-0">
@@ -173,34 +155,12 @@ function AppSidebar() {
         </p>
       </div>
 
-      <SidebarContent className="">
+      <SidebarContent>
         <SidebarGroup className="space-y-2.5 pt-4">
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainMenuItems?.map((item, index) => (
-                <div key={index} className="flex gap-5">
-                  {isActive(item.url) ? (
-                    <div className="h-[50px] w-[4px] rounded-r-[4px] bg-[#DA4CBF] text-white" />
-                  ) : (
-                    <div className="h-[50px] w-[4px] rounded-r-[4px] bg-[#1E1E1E] text-white" />
-                  )}
-
-                  <SidebarMenuItem className="w-[85%]" key={item.title}>
-                    <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                      {item.image ? (
-                        <Link href={item.url}>
-                          <Image
-                            src={item.image}
-                            alt={item.title}
-                            width={20}
-                            height={20}
-                          />
-                          <span>{item.title}</span>
-                        </Link>
-                      ) : null}
-                    </SidebarMenuButton>
-                  </SidebarMenuItem>
-                </div>
+              {mainMenuItems.map((item) => (
+                <MenuItem key={item.url} {...item} />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -209,49 +169,16 @@ function AppSidebar() {
         <div className="my-2">
           <hr />
         </div>
+
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {otherMenuItems.map((item, index) => (
-                <div key={index} className="flex gap-5">
-                  {isActive(item.url) ? (
-                    <div className="h-[50px] w-[4px] rounded-r-[4px] bg-[#DA4CBF] text-white" />
-                  ) : (
-                    <div className="h-[50px] w-[4px] rounded-r-[4px] bg-[#1E1E1E] text-white" />
-                  )}
-
-                  <SidebarMenuItem className="w-[85%]" key={item.title}>
-                    {item.url === "/logout" ? (
-                      <>
-                        {item.icon ? (
-                          <SidebarMenuButton
-                            asChild
-                            onClick={() => handleLogout()}
-                          >
-                            <button>
-                              <item.icon className="size-5" />
-                              <span>{item.title}</span>
-                            </button>
-                          </SidebarMenuButton>
-                        ) : null}
-                      </>
-                    ) : (
-                      <SidebarMenuButton asChild isActive={isActive(item.url)}>
-                        {item.image ? (
-                          <Link href={item.url}>
-                            <Image
-                              src={item.image}
-                              alt={item.title}
-                              width={18}
-                              height={18}
-                            />
-                            <span>{item.title}</span>
-                          </Link>
-                        ) : null}
-                      </SidebarMenuButton>
-                    )}
-                  </SidebarMenuItem>
-                </div>
+              {otherMenuItems.map((item) => (
+                <MenuItem
+                  key={item.url}
+                  {...item}
+                  onClick={item.url === "/logout" ? handleLogout : undefined}
+                />
               ))}
             </SidebarMenu>
           </SidebarGroupContent>
@@ -259,6 +186,6 @@ function AppSidebar() {
       </SidebarContent>
     </Sidebar>
   );
-}
+};
 
 export default AppSidebar;

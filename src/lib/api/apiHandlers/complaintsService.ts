@@ -23,17 +23,10 @@ export const fetchComplaints = (search?: string) => {
             .filter(
               (user) =>
                 !search ||
-                user.carType?.toLowerCase().includes(search.toLowerCase()) ||
-                user.vehicleNumber
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                user.vehicleMake
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                user.vehicleModel
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                user.other_info?.toLowerCase().includes(search.toLowerCase()),
+                user.firstName?.toLowerCase().includes(search.toLowerCase()) ||
+                user.lastName?.toLowerCase().includes(search.toLowerCase()) ||
+                user.role?.toLowerCase().includes(search.toLowerCase()) ||
+                user.subject?.toLowerCase().includes(search.toLowerCase()),
             );
           resolve(arr.reverse());
         },

@@ -13,7 +13,7 @@ const ROUTES = {
   dashboard: "/dashboard",
   users: "/users",
   complaints: "/complaints",
-  complaintsDetail: "/complaints/",
+  complaintsDetail: "/complaint/",
   withdrawal: "/withdrawals",
   withdrawalDetail: "/withdrawals/",
   addAdmin: "/add-super-admin",
