@@ -1,17 +1,19 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { ChevronDown, User } from "lucide-react";
-import home from "../../../assets/svgs/icon.svg";
-import Link from "next/link";
-import language from "../../../assets/svgs/system-uicons_translate.svg";
 import { Locale } from "next-intl";
 
-// Constants
+import home from "../../../assets/svgs/icon.svg";
+import languageIcon from "../../../assets/svgs/system-uicons_translate.svg";
+
 const ROUTES = {
   dashboard: "/dashboard",
   users: "/users",
+  complaints: "/complaints",
+  complaintsDetail: "/complaints/",
   withdrawal: "/withdrawals",
   withdrawalDetail: "/withdrawals/",
   addAdmin: "/add-super-admin",
@@ -20,9 +22,9 @@ const ROUTES = {
   addCustomer: "/add-customers",
   addFleetAdmin: "/add-fleet-admin",
   bookingHistory: "/booking-history",
-  bookingDetail: "/booking-history/[id]",
+  bookingDetail: "/booking-history/",
   vehicleType: "/vehicle-type",
-  vehicleDetail: "/vehicle-type/[id]",
+  vehicleDetail: "/vehicle-type/",
   addVehicle: "/add-vehicle",
   updateFleetAdmin: "/update-fleet-admin",
   driver: "/driver",
@@ -37,11 +39,14 @@ const ROUTES = {
   notifications: "/push-notification",
   addNotification: "/add-notification",
   audit: "/audit",
+  sos: "/sos",
 } as const;
 
 const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.dashboard]: "Dashboard",
   [ROUTES.users]: "Users",
+  [ROUTES.complaints]: "Complaints",
+  [ROUTES.complaintsDetail]: "Complaints Detail",
   [ROUTES.addAdmin]: "Add Super admin",
   [ROUTES.updateAdmin]: "Update Super admin",
   [ROUTES.addFleetAdmin]: "Add admin",
@@ -55,7 +60,7 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.bookingHistory]: "Booking History",
   [ROUTES.bookingDetail]: "Booking Detail",
   [ROUTES.vehicleType]: "Vehicle Type",
-  [ROUTES.vehicleDetail]: "User",
+  [ROUTES.vehicleDetail]: "Vehicle Detail",
   [ROUTES.addVehicle]: "Add Vehicle",
   [ROUTES.cars]: "Cars",
   [ROUTES.addCar]: "Add a car",
@@ -67,188 +72,178 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.notifications]: "Notifications",
   [ROUTES.addNotification]: "Add Notification",
   [ROUTES.audit]: "Audit",
+  [ROUTES.sos]: "SOS",
 };
+
 interface UserInfo {
   firstName?: string;
   lastName?: string;
   profile_image?: string;
 }
 
+const BREADCRUMB_ROUTES: { [key: string]: { parent: string; label: string } } =
+  {
+    [ROUTES.addAdmin]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.addAdmin],
+    },
+    [ROUTES.updateAdmin]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.updateAdmin],
+    },
+    [ROUTES.addFleetAdmin]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.addFleetAdmin],
+    },
+    [ROUTES.updateFleetAdmin]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.updateFleetAdmin],
+    },
+    [ROUTES.customer]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.customer],
+    },
+    [ROUTES.addCustomer]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.addCustomer],
+    },
+    [ROUTES.addDriver]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.addDriver],
+    },
+    [ROUTES.driver]: {
+      parent: ROUTES.users,
+      label: ROUTE_TITLES[ROUTES.driver],
+    },
+    [ROUTES.bookingDetail]: {
+      parent: ROUTES.bookingHistory,
+      label: ROUTE_TITLES[ROUTES.bookingDetail],
+    },
+    [ROUTES.vehicleDetail]: {
+      parent: ROUTES.vehicleType,
+      label: ROUTE_TITLES[ROUTES.vehicleDetail],
+    },
+    [ROUTES.addVehicle]: {
+      parent: ROUTES.vehicleType,
+      label: ROUTE_TITLES[ROUTES.addVehicle],
+    },
+    [ROUTES.updateCar]: {
+      parent: ROUTES.cars,
+      label: ROUTE_TITLES[ROUTES.updateCar],
+    },
+    [ROUTES.addCar]: {
+      parent: ROUTES.cars,
+      label: ROUTE_TITLES[ROUTES.addCar],
+    },
+    [ROUTES.withdrawalDetail]: {
+      parent: ROUTES.withdrawal,
+      label: ROUTE_TITLES[ROUTES.withdrawalDetail],
+    },
+    [ROUTES.complaintsDetail]: {
+      parent: ROUTES.complaints,
+      label: ROUTE_TITLES[ROUTES.complaintsDetail],
+    },
+    [ROUTES.addNotification]: {
+      parent: ROUTES.notifications,
+      label: ROUTE_TITLES[ROUTES.addNotification],
+    },
+  };
+
 const Header = () => {
   const router = useRouter();
   const pathname = usePathname();
   const [userInfo, setUserInfo] = useState<UserInfo>();
   const [toggleLang, setToggleLang] = useState(false);
-  const locale = ["en", "fr"];
 
   const currentLocale = pathname.split("/")[1] as Locale;
+  const localeOptions: Locale[] = ["en", "fr"];
+
   const displayLanguage = currentLocale === "fr" ? "Français" : "English";
 
-  const getRouteTitle = (path: string) => {
-    if (path.startsWith("/booking-history/") && path !== "/booking-history") {
-      return "Booking Detail";
+  const breadcrumb = useMemo(() => {
+    const routeEntry = Object.entries(BREADCRUMB_ROUTES).find(([key]) =>
+      pathname.startsWith(key),
+    );
+
+    if (routeEntry) {
+      const { parent, label } = routeEntry[1];
+      return (
+        <div className="flex gap-3">
+          <Link href={parent} className="text-[#8B8D97]">
+            {ROUTE_TITLES[parent]}
+          </Link>
+          <p className="mx-1">/</p>
+          <p className="cursor-default">{label}</p>
+        </div>
+      );
     }
 
-    const baseRoute = Object.keys(ROUTE_TITLES).find((route) =>
-      path.startsWith(route),
-    );
-    return baseRoute ? ROUTE_TITLES[baseRoute] : "Unknown Page";
-  };
+    const defaultTitle = ROUTE_TITLES[pathname] || "Dashboard";
+    return <p className="cursor-default">{defaultTitle}</p>;
+  }, [pathname]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const info = localStorage.getItem("userInfo");
-      if (info) {
-        setUserInfo(JSON.parse(info));
-      }
-    }
+    const info = localStorage.getItem("userInfo");
+    if (info) setUserInfo(JSON.parse(info));
   }, []);
 
   const changeLanguage = (locale: Locale) => {
     if (locale === currentLocale) return;
-
-    const newPath = `/${locale}${pathname.substring(3)}`;
-    router.push(newPath);
+    router.push(`/${locale}${pathname.substring(3)}`);
   };
 
   return (
     <header className="sticky top-0 flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6">
       <div className="flex items-center gap-4">
-        <Link href="/dashboard">
-          <Image
-            src={home}
-            alt="Home icon"
-            width={16}
-            height={16}
-            className="cursor-pointer object-contain"
-          />
+        <Link href={ROUTES.dashboard}>
+          <Image src={home} alt="Home icon" width={16} height={16} />
         </Link>
-        <p className="font-[inter] text-xs text-[#8B8D97]">/</p>
-
-        <h1 className="font-[Roboto] text-xs font-normal text-[#8B8D97]">
-          {pathname === ROUTES.addAdmin ||
-          pathname.includes(ROUTES.updateAdmin) ||
-          pathname.includes(ROUTES.updateFleetAdmin) ||
-          pathname.includes(ROUTES.customer) ||
-          pathname.includes(ROUTES.addCustomer) ||
-          pathname.includes(ROUTES.addDriver) ||
-          pathname.includes(ROUTES.driver) ||
-          pathname === ROUTES.addFleetAdmin ? (
-            <div className="flex gap-3">
-              <Link href={ROUTES.users} className="text-[#8B8D97]">
-                Users
-              </Link>
-              <p className="mx-1">/</p>
-              <p className="cursor-default">{getRouteTitle(pathname)}</p>
-            </div>
-          ) : pathname.startsWith("/booking-history/") ? (
-            <div className="flex gap-3">
-              <Link href={ROUTES.bookingHistory} className="text-[#8B8D97]">
-                Booking History
-              </Link>
-              <p className="mx-1">/</p>
-              <p className="cursor-default">Booking Detail</p>
-            </div>
-          ) : pathname.startsWith("/vehicle-type/") ? (
-            <div className="flex gap-3">
-              <Link href={ROUTES.vehicleType} className="text-[#8B8D97]">
-                Vehicle Type
-              </Link>
-              <p className="mx-1">/</p>
-              <p className="cursor-default">Vehicle Detail</p>
-            </div>
-          ) : pathname === ROUTES.addVehicle ? (
-            <div className="flex gap-3">
-              <Link href={ROUTES.vehicleType} className="text-[#8B8D97]">
-                Vehicle Type
-              </Link>
-              <p className="mx-1">/</p>
-              <p className="cursor-default">Add Vehicle</p>
-            </div>
-          ) : pathname === ROUTES.cars ||
-            pathname.includes(ROUTES.updateCar) ||
-            pathname.includes(ROUTES.addCar) ? (
-            <div className="flex gap-3">
-              <Link href={ROUTES.cars} className="text-[#8B8D97]">
-                Cars
-              </Link>
-              <p className="mx-1">/</p>
-
-              <p className="cursor-default">{getRouteTitle(pathname)}</p>
-            </div>
-          ) : pathname === ROUTES.notifications ||
-            pathname.includes(ROUTES.addNotification) ? (
-            <div className="flex gap-3">
-              <Link href={ROUTES.notifications} className="text-[#8B8D97]">
-                Notification
-              </Link>
-              <p className="mx-1">/</p>
-
-              <p className="cursor-default">{getRouteTitle(pathname)}</p>
-            </div>
-          ) : pathname === ROUTES.withdrawal ||
-            pathname.includes(ROUTES.withdrawalDetail) ? (
-            <div className="flex gap-3">
-              <Link href={ROUTES.withdrawalDetail} className="text-[#8B8D97]">
-                Withdrawals
-              </Link>
-              <p className="mx-1">/</p>
-
-              <p className="cursor-default">{"Withdrawal Detail"}</p>
-            </div>
-          ) : (
-            ROUTE_TITLES[pathname] || ROUTE_TITLES[ROUTES.dashboard]
-          )}
-        </h1>
+        <p className="text-xs text-[#8B8D97]">/</p>
+        <h1 className="text-xs font-normal text-[#8B8D97]">{breadcrumb}</h1>
       </div>
 
       <div className="flex items-center gap-8">
-        {/* Language Switcher */}
-        <div className="group relative">
+        {/* Language Selector */}
+        <div className="relative">
           <div
-            onClick={(prev) => setToggleLang(!prev)}
+            onClick={() => setToggleLang((prev) => !prev)}
             className="flex cursor-pointer items-center gap-2"
           >
-            <Image
-              src={language}
-              alt="Language icon"
-              width={24}
-              height={24}
-              className="object-contain"
-            />
-            <p className="text-sm font-normal capitalize text-[#646464]">
+            <Image src={languageIcon} alt="Language" width={24} height={24} />
+            <p className="text-sm capitalize text-[#646464]">
               {displayLanguage}
             </p>
             <ChevronDown className="size-4" />
           </div>
 
-          {/* Dropdown */}
           {toggleLang && (
-            <div className="mt-2 rounded-md bg-white p-2 shadow-md">
-              {locale.map((locale) => (
+            <div className="absolute right-0 mt-2 rounded-md bg-white p-2 shadow-md">
+              {localeOptions.map((loc) => (
                 <button
-                  key={locale}
-                  onClick={() => changeLanguage(locale)}
+                  key={loc}
+                  onClick={() => changeLanguage(loc)}
                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
-                  {locale === "fr" ? "Français" : "English"}
+                  {loc === "fr" ? "Français" : "English"}
                 </button>
               ))}
             </div>
           )}
         </div>
-        <div className="flex cursor-pointer items-center gap-2">
-          <div className="h-7 w-7 rounded-full border bg-gray-200">
+
+        {/* User Info */}
+        <div className="flex items-center gap-2">
+          <div className="h-7 w-7 overflow-hidden rounded-full border bg-gray-200">
             {userInfo?.profile_image ? (
               <Image
-                src={userInfo?.profile_image}
-                alt="Home icon"
+                src={userInfo.profile_image}
+                alt="Profile"
                 width={28}
                 height={28}
-                className="cursor-pointer rounded-full object-contain"
+                className="object-cover"
               />
             ) : (
-              <div className="flex h-7 w-7 items-center justify-center rounded-full">
+              <div className="flex h-full w-full items-center justify-center">
                 <User className="size-3" />
               </div>
             )}

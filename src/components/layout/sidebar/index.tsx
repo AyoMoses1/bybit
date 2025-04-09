@@ -30,11 +30,17 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { getAuth, signOut } from "firebase/auth";
+// import { useEffect, useState } from "react";
+// import { UserInfo } from "@/app/users/page";
 
 const mainMenuItems = [
   { url: "/dashboard", title: "Dashboard", image: dashboard },
   { url: "/add-bookings", title: "Add Bookings", image: addBookings },
-  { url: "/booking-history", title: "Booking History", image: bookingHistory },
+  {
+    url: "/booking-history",
+    title: "Booking History",
+    image: bookingHistory,
+  },
   { url: "/users", title: "Users", image: users },
   { url: "/vehicle-type", title: "Vehicle Type", image: vehicleType },
   { url: "/cars", title: "Cars", image: cars },
@@ -47,7 +53,12 @@ const mainMenuItems = [
     title: "Push Notifications",
     image: pushNotifications,
   },
-  { url: "/sos", title: "SOS", image: sos },
+  // userInfo?.usertype === "admin" &&
+  {
+    url: "/sos",
+    title: "SOS",
+    image: sos,
+  },
   { url: "/complaints", title: "Complaints", image: complaint },
   { url: "/audit", title: "Audit", image: audit },
 ];
@@ -66,6 +77,7 @@ const otherMenuItems = [
 function AppSidebar() {
   const router = useRouter();
   const pathname = usePathname();
+  // const [userInfo, setUserInfo] = useState<UserInfo>();
 
   const isActive = (url: string): boolean => {
     if (
@@ -137,6 +149,15 @@ function AppSidebar() {
     router.push("/");
   };
 
+  // useEffect(() => {
+  //   if (typeof window !== "undefined") {
+  //     const info = localStorage.getItem("userInfo");
+  //     if (info) {
+  //       setUserInfo(JSON.parse(info));
+  //     }
+  //   }
+  // }, []);
+
   return (
     <Sidebar className="pb-10 pt-0">
       <div className="flex flex-col bg-white pb-2 pl-12 pt-6">
@@ -156,7 +177,7 @@ function AppSidebar() {
         <SidebarGroup className="space-y-2.5 pt-4">
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainMenuItems.map((item, index) => (
+              {mainMenuItems?.map((item, index) => (
                 <div key={index} className="flex gap-5">
                   {isActive(item.url) ? (
                     <div className="h-[50px] w-[4px] rounded-r-[4px] bg-[#DA4CBF] text-white" />
