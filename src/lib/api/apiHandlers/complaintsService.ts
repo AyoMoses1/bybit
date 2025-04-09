@@ -1,5 +1,6 @@
 import { onValue, ref, getDatabase, update } from "firebase/database";
 import { Complaint } from "../hooks/complaints";
+import toast from "react-hot-toast";
 
 export const fetchComplaints = (search?: string) => {
   return new Promise<Complaint[]>((resolve, reject) => {
@@ -55,6 +56,7 @@ export const updateComplaint = (
 
       update(userRef, updatedData)
         .then(() => {
+          toast.success("Complaint details updated successfully!");
           resolve();
         })
         .catch((error) => {
@@ -64,6 +66,34 @@ export const updateComplaint = (
     } catch (error) {
       console.error("Update User Error:", error);
       reject(error);
+    }
+  });
+};
+
+export const fetchComplaintById = (id: string) => {
+  return new Promise((resolve) => {
+    try {
+      const db = getDatabase();
+      const userRef = ref(db, `complain/${id}`);
+
+      const unsubscribe = onValue(
+        userRef,
+        (snapshot) => {
+          const data = snapshot.val();
+          if (data) {
+            resolve({ id: id, ...data });
+          } else {
+            resolve(null);
+          }
+        },
+        (error) => {
+          console.error("Firebase error:", error);
+        },
+      );
+
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Fetch Complaint Error:", error);
     }
   });
 };
