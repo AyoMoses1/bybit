@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
+  fetchComplaintById,
   fetchComplaints,
   updateComplaint,
 } from "../apiHandlers/complaintsService";
@@ -15,6 +16,9 @@ export type Complaint = {
   role?: string;
   subject?: string;
   processDate?: string;
+  mobile?: string;
+  email?: string;
+  body?: string;
 };
 
 export type UpdateCarPayload = {
@@ -42,5 +46,15 @@ export const useUpdateComplaint = () => {
     onError: (error) => {
       console.error("Complaint update failed:", error);
     },
+  });
+};
+
+export const useGetComplaintById = (id: string) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  return useQuery<any>({
+    queryKey: [USER_STATE_KEY, id],
+    queryFn: () => fetchComplaintById(id),
+    staleTime: Infinity,
+    retry: 2,
   });
 };
