@@ -4,10 +4,10 @@ import { useProfile } from "@/lib/api/hooks/useProfile";
 import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Camera, ChevronDown } from "lucide-react";
+import { Loader2, Camera, ChevronDown, Check } from "lucide-react";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
-import TextInput from "@/components/TextInput";
+import toast from "react-hot-toast";
 
 type ProfileFormData = {
   firstName: string;
@@ -22,17 +22,17 @@ interface LanguageOption {
   label: string;
 }
 
-export default function MyProfile() {
-  const { toast } = useToast();
+const MyProfile = () => {
+  useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [selectedImage, setSelectedImage] = useState<File | null>(null);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>("");
-  const [formKey, setFormKey] = useState(0);
+  const [selectedLanguage, setSelectedLanguage] = useState<string>("es");
+  const [submitSuccess, setSubmitSuccess] = useState(false);
 
-  // Language options - replace with actual data
   const languageOptions: LanguageOption[] = [
     { value: "en", label: "English" },
     { value: "fr", label: "Français" },
+    { value: "es", label: "Ingles" },
   ];
 
   const {
@@ -72,12 +72,7 @@ export default function MyProfile() {
       });
 
       // Set language if available in profile
-      if (profile.lang && profile.lang.langLocale) {
-        setSelectedLanguage(profile.lang.langLocale);
-      }
-
-      // Force re-render of form to ensure values are displayed
-      setFormKey((prev) => prev + 1);
+      setSelectedLanguage(profile.lang?.langLocale || "es");
     }
   }, [profile, reset]);
 
@@ -97,42 +92,26 @@ export default function MyProfile() {
         const re =
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if (!re.test(data.email)) {
-          toast({
-            title: "Error",
-            description: "Please enter a valid email address",
-            variant: "destructive",
-          });
+          toast.error("Please enter a valid email address");
           return;
         }
 
         const emailExists = await checkUserExists({ email: data.email });
         if (emailExists.users && emailExists.users.length > 0) {
-          toast({
-            title: "Error",
-            description: "This email is already in use",
-            variant: "destructive",
-          });
+          toast.error("This email is already in use");
           return;
         }
       }
 
       if (data.mobile !== profile.mobile && data.mobile) {
         if (data.mobile.length < 6) {
-          toast({
-            title: "Error",
-            description: "Mobile number must be at least 6 digits",
-            variant: "destructive",
-          });
+          toast.error("Mobile number must be at least 6 digits");
           return;
         }
 
         const mobileExists = await checkUserExists({ mobile: data.mobile });
         if (mobileExists.users && mobileExists.users.length > 0) {
-          toast({
-            title: "Error",
-            description: "This mobile number is already in use",
-            variant: "destructive",
-          });
+          toast.error("This mobile number is already in use");
           return;
         }
       }
@@ -151,7 +130,6 @@ export default function MyProfile() {
         setSelectedImage(null);
       }
 
-      // Update language if changed
       if (
         selectedLanguage &&
         (!profile.lang || profile.lang.langLocale !== selectedLanguage)
@@ -169,17 +147,33 @@ export default function MyProfile() {
         }
       }
 
-      toast({
-        title: "Success",
-        description: "Profile updated successfully",
-      });
+      // Show success state in UI
+      setSubmitSuccess(true);
+
+      // Use react-hot-toast for success message
+      toast.success("Profile updated successfully");
+
+      // Reset the form with new values to reset isDirty state
+      reset(
+        {
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email,
+          mobile: data.mobile,
+          usertype: data.usertype,
+        },
+        { keepValues: true },
+      );
+
+      // Reset the success state after 2 seconds
+      setTimeout(() => {
+        setSubmitSuccess(false);
+      }, 2000);
     } catch (error) {
-      toast({
-        title: "Error",
-        description:
-          error instanceof Error ? error.message : "Failed to update profile",
-        variant: "destructive",
-      });
+      console.error("Profile update error:", error);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update profile",
+      );
     }
   };
 
@@ -191,197 +185,238 @@ export default function MyProfile() {
     );
   }
 
+  const isDriver = profile?.usertype === "driver";
+
   return (
-    <div className="mt-20 max-w-[1000px] pl-4">
-      <div className="rounded-2xl bg-white p-6">
-        {/* Profile Image */}
-        <div className="mb-8 flex flex-col items-center">
-          <div
-            className="relative h-24 w-24 cursor-pointer overflow-hidden rounded-full bg-gray-100"
-            onClick={() => fileInputRef.current?.click()}
-          >
-            {selectedImage ? (
-              <Image
-                src={URL.createObjectURL(selectedImage)}
-                alt="Profile"
-                className="h-full w-full object-cover"
-              />
-            ) : profile?.profile_image ? (
-              <Image
-                src={profile.profile_image}
-                alt="Profile"
-                className="h-full w-full object-cover"
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center">
-                <Camera className="h-8 w-8 text-gray-500" />
-              </div>
-            )}
-            {isUpdatingImage && (
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                <Loader2 className="h-6 w-6 animate-spin text-white" />
-              </div>
-            )}
+    <div className="flex min-h-screen justify-center bg-[#F5F7FA] pr-72 pt-20">
+      <div className="w-full max-w-[1000px] px-8">
+        <div className="rounded-2xl bg-white p-6 shadow-sm">
+          <div className="mb-8 flex flex-col items-center">
+            <div
+              className="relative h-24 w-24 cursor-pointer overflow-hidden rounded-full bg-gray-100"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              {selectedImage ? (
+                <Image
+                  src={URL.createObjectURL(selectedImage)}
+                  alt="Profile"
+                  className="h-full w-full object-cover"
+                  width={96}
+                  height={96}
+                />
+              ) : profile?.profile_image ? (
+                <Image
+                  src={profile.profile_image}
+                  alt="Profile"
+                  className="h-full w-full object-cover"
+                  width={96}
+                  height={96}
+                />
+              ) : (
+                <div className="flex h-full w-full items-center justify-center">
+                  <Camera className="h-8 w-8 text-gray-500" />
+                </div>
+              )}
+              {isUpdatingImage && (
+                <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                  <Loader2 className="h-6 w-6 animate-spin text-white" />
+                </div>
+              )}
+            </div>
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleImageChange}
+              accept="image/*"
+              className="hidden"
+            />
+            {/* <p className="mt-2 text-center text-base font-medium text-[#C74CC4]">
+              Upload Logo
+            </p> */}
           </div>
-          <input
-            type="file"
-            ref={fileInputRef}
-            onChange={handleImageChange}
-            accept="image/*"
-            className="hidden"
-          />
-          <p className="mt-2 text-center text-base font-medium text-purple-500">
-            Upload Logo
-          </p>
-        </div>
 
-        <form
-          key={formKey}
-          onSubmit={handleSubmit(onSubmit)}
-          className="space-y-6"
-        >
-          <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-cols-2">
-            <div>
-              <TextInput
-                label="First Name"
-                {...register("firstName", {
-                  required: "First name is required",
-                })}
-                value={profile?.firstName || ""}
-                placeholder="Alex"
-              />
-              {errors.firstName && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.firstName.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <TextInput
-                label="Last Name"
-                {...register("lastName", { required: "Last name is required" })}
-                value={profile?.lastName || ""}
-                disabled={profile?.usertype === "driver"}
-                placeholder="Rider"
-              />
-              {errors.lastName && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.lastName.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <TextInput
-                label="Phone Number"
-                {...register("mobile", {
-                  required: "Mobile is required",
-                  minLength: {
-                    value: 6,
-                    message: "Mobile must be at least 6 characters",
-                  },
-                })}
-                value={profile?.mobile || ""}
-                type="tel"
-                disabled={profile?.usertype === "driver"}
-                placeholder="+237 434352 232323"
-              />
-              {errors.mobile && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.mobile.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <TextInput
-                label="Email"
-                {...register("email", {
-                  required: "Email is required",
-                  pattern: {
-                    value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-                    message: "Please enter a valid email address",
-                  },
-                })}
-                value={profile?.email || ""}
-                type="email"
-                disabled={profile?.usertype === "driver"}
-                placeholder="wedea3223@sdjs.com"
-              />
-              {errors.email && (
-                <p className="mt-1 text-sm text-red-600">
-                  {errors.email.message}
-                </p>
-              )}
-            </div>
-
-            <div>
-              <TextInput
-                label="User Type"
-                {...register("usertype")}
-                value={profile?.usertype || ""}
-                disabled
-                placeholder="Admin"
-              />
-            </div>
-
-            <div>
-              <Label
-                htmlFor="preferred_language"
-                className="block font-[Roboto] text-base font-normal text-[#21272A]"
-              >
-                Preferred Language
-              </Label>
-              <div className="relative">
-                <select
-                  value={selectedLanguage}
-                  onChange={(e) => setSelectedLanguage(e.target.value)}
-                  className={`mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors ${
-                    selectedLanguage === ""
-                      ? "text-[#697077]"
-                      : "text-[#21272A]"
-                  }`}
-                  defaultValue={profile?.lang?.langLocale}
+          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <div className="grid grid-cols-1 gap-x-12 gap-y-6 md:grid-cols-2">
+              <div>
+                <Label
+                  htmlFor="firstName"
+                  className="mb-1 block text-base font-normal text-[#21272A]"
                 >
-                  <option value="" disabled className="text-[#697077]">
-                    Select a language
-                  </option>
-                  {languageOptions.map((option) => (
-                    <option
-                      key={option.value}
-                      value={option.value}
-                      className="text-[#21272A]"
-                    >
-                      {option.label}
+                  First Name
+                </Label>
+                <input
+                  id="firstName"
+                  placeholder="Alex"
+                  className="h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none"
+                  {...register("firstName", {
+                    required: "First name is required",
+                  })}
+                />
+                {errors.firstName && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.firstName.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="lastName"
+                  className="mb-1 block text-base font-normal text-[#21272A]"
+                >
+                  Last Name
+                </Label>
+                <input
+                  id="lastName"
+                  placeholder="Rider"
+                  className={`h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none ${
+                    isDriver ? "cursor-not-allowed opacity-70" : ""
+                  }`}
+                  disabled={isDriver}
+                  {...register("lastName", {
+                    required: "Last name is required",
+                  })}
+                />
+                {errors.lastName && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.lastName.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="mobile"
+                  className="mb-1 block text-base font-normal text-[#21272A]"
+                >
+                  Phone Number
+                </Label>
+                <input
+                  id="mobile"
+                  type="tel"
+                  placeholder="+237 434352 232323"
+                  className={`h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none ${
+                    isDriver ? "cursor-not-allowed opacity-70" : ""
+                  }`}
+                  disabled={isDriver}
+                  {...register("mobile", {
+                    required: "Mobile is required",
+                    minLength: {
+                      value: 6,
+                      message: "Mobile must be at least 6 characters",
+                    },
+                  })}
+                />
+                {errors.mobile && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.mobile.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="email"
+                  className="mb-1 block text-base font-normal text-[#21272A]"
+                >
+                  Email
+                </Label>
+                <input
+                  id="email"
+                  type="email"
+                  placeholder="wedea3223@sdjs.com"
+                  className={`h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none ${
+                    isDriver ? "cursor-not-allowed opacity-70" : ""
+                  }`}
+                  disabled={isDriver}
+                  {...register("email", {
+                    required: "Email is required",
+                    pattern: {
+                      value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+                      message: "Please enter a valid email address",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <p className="mt-1 text-sm text-red-600">
+                    {errors.email.message}
+                  </p>
+                )}
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="usertype"
+                  className="mb-1 block text-base font-normal text-[#21272A]"
+                >
+                  User Type
+                </Label>
+                <input
+                  id="usertype"
+                  placeholder="Admin"
+                  className="h-[48px] w-full cursor-not-allowed border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 opacity-70 outline-none"
+                  disabled
+                  {...register("usertype")}
+                />
+              </div>
+
+              <div>
+                <Label
+                  htmlFor="preferred_language"
+                  className="mb-1 block text-base font-normal text-[#21272A]"
+                >
+                  Preferred Language
+                </Label>
+                <div className="relative">
+                  <select
+                    id="preferred_language"
+                    value={selectedLanguage}
+                    onChange={(e) => setSelectedLanguage(e.target.value)}
+                    className="h-[48px] w-full appearance-none border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 pr-10 outline-none"
+                  >
+                    <option value="" disabled>
+                      Select a language
                     </option>
-                  ))}
-                </select>
-                <div className="pointer-events-none absolute inset-y-0 right-3 top-1 flex items-center text-gray-500">
-                  <ChevronDown className="size-5" />
+                    {languageOptions.map((option) => (
+                      <option key={option.value} value={option.value}>
+                        {option.label}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="pointer-events-none absolute inset-y-0 right-3 flex items-center text-gray-500">
+                    <ChevronDown className="h-5 w-5" />
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
-          <div className="mt-8 flex justify-center">
-            <Button
-              type="submit"
-              className="w-full max-w-sm rounded-full px-6 py-3 text-base font-medium text-white focus:outline-none"
-              disabled={isUpdating || (!isDirty && !selectedImage)}
-            >
-              {isUpdating ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
-                </>
-              ) : (
-                "Save"
-              )}
-            </Button>
-          </div>
-        </form>
+            <div className="mt-8 flex justify-center">
+              <Button
+                type="submit"
+                className="w-full max-w-sm rounded-full bg-[#9C4A9A] px-6 py-3 text-base font-medium text-white hover:bg-[#833F81] focus:outline-none disabled:bg-[#D0AFD0]"
+                disabled={
+                  isUpdating || (!isDirty && !selectedImage) || submitSuccess
+                }
+              >
+                {isUpdating ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Saving...
+                  </>
+                ) : submitSuccess ? (
+                  <>
+                    <Check className="mr-2 h-4 w-4" />
+                    Saved!
+                  </>
+                ) : (
+                  "Save"
+                )}
+              </Button>
+            </div>
+          </form>
+        </div>
       </div>
     </div>
   );
-}
+};
+export default MyProfile;
