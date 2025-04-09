@@ -38,6 +38,7 @@ const ROUTES = {
   reports: "/reports",
   notifications: "/push-notification",
   addNotification: "/add-notification",
+  profile: "/profile",
   audit: "/audit",
   sos: "/sos",
 } as const;
@@ -71,6 +72,7 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.reports]: "Reports",
   [ROUTES.notifications]: "Notifications",
   [ROUTES.addNotification]: "Add Notification",
+  [ROUTES.profile]: "Update Profile",
   [ROUTES.audit]: "Audit",
   [ROUTES.sos]: "SOS",
 };
