@@ -4,12 +4,15 @@ import { ArrowRight } from "lucide-react";
 import { ColumnDef } from "@tanstack/react-table";
 import { Switch } from "@/components/ui/switch";
 import Link from "next/link";
-import { useDeleteCar, useUpdateCar } from "@/lib/api/hooks/cars";
 import DeleteConfirmation from "@/components/deleteConfirmation";
 import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 import { useAuditLog } from "@/utils/useAuditLog";
 import Papa from "papaparse";
-import { usePromos } from "@/lib/api/hooks/usePromo";
+import {
+  useDeletePromo,
+  usePromos,
+  useUpdatePromo,
+} from "@/lib/api/hooks/usePromo";
 import { formatDate } from "@/utils/formatDate";
 import { PromoData } from "@/lib/api/apiHandlers/promoService";
 
@@ -22,7 +25,7 @@ const PromosTable = ({
   clickExport?: boolean;
   setClickExport: (value: boolean) => void;
 }) => {
-  const deleteMutation = useDeleteCar();
+  const deleteMutation = useDeletePromo();
   const { handleAudit } = useAuditLog();
 
   const { data: promos, isLoading } = usePromos(search);
@@ -38,7 +41,7 @@ const PromosTable = ({
   };
 
   const ActiveStatusCell = ({ promos }: { promos: PromoData }) => {
-    const mutation = useUpdateCar();
+    const mutation = useUpdatePromo();
     const [isChecked, setIsChecked] = React.useState(promos.promo_show);
 
     const handleToggle = (checked: boolean) => {
@@ -118,7 +121,7 @@ const PromosTable = ({
               }}
               className="relative flex w-fit cursor-pointer items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-2"
             >
-              <Link href={`/cars/${row.original.id}`}>
+              <Link href={`/update-promo/${row.original.id}`}>
                 <div className="px-1 py-2">
                   <ArrowRight className="size-4 text-gray-600" />
                 </div>
@@ -174,8 +177,6 @@ const PromosTable = ({
       setClickExport(false);
     }
   }, [clickExport, promos, handleAudit, setClickExport]);
-
-  console.log(promos);
 
   return (
     <div className="px-1">
