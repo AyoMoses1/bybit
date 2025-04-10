@@ -41,6 +41,9 @@ const ROUTES = {
   profile: "/profile",
   audit: "/audit",
   sos: "/sos",
+  promos: "/promos",
+  addPromo: "/add-promo",
+  updatePromo: "/update-promo",
 } as const;
 
 const ROUTE_TITLES: Record<string, string> = {
@@ -75,6 +78,9 @@ const ROUTE_TITLES: Record<string, string> = {
   [ROUTES.profile]: "Update Profile",
   [ROUTES.audit]: "Audit",
   [ROUTES.sos]: "SOS",
+  [ROUTES.promos]: "Promos",
+  [ROUTES.addPromo]: "Add Promo",
+  [ROUTES.updatePromo]: "Update Promo",
 };
 
 interface UserInfo {
@@ -148,6 +154,14 @@ const BREADCRUMB_ROUTES: { [key: string]: { parent: string; label: string } } =
     [ROUTES.addNotification]: {
       parent: ROUTES.notifications,
       label: ROUTE_TITLES[ROUTES.addNotification],
+    },
+    [ROUTES.updatePromo]: {
+      parent: ROUTES.promos,
+      label: ROUTE_TITLES[ROUTES.updatePromo],
+    },
+    [ROUTES.addPromo]: {
+      parent: ROUTES.promos,
+      label: ROUTE_TITLES[ROUTES.addPromo],
     },
   };
 

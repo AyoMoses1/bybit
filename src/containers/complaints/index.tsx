@@ -38,6 +38,14 @@ const ComplaintsTable = ({
       { id, updatedData: { check: checked } },
       {
         onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
+        onSuccess: () => {
+          handleAudit(
+            "Promos",
+            id,
+            AuditAction.UPDATE,
+            `Updated check status to ${checked}`,
+          );
+        },
       },
     );
   };

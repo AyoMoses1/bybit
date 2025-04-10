@@ -11,6 +11,8 @@ import {
 } from "@/lib/api/hooks/complaints";
 import { formatDate } from "@/utils/formatDate";
 import { Switch } from "@/components/ui/switch";
+import { useAuditLog } from "@/utils/useAuditLog";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 
 const ComplaintInfo = () => {
   const { id } = useParams();
@@ -47,11 +49,10 @@ const ComplaintInfo = () => {
     email: "",
     check: false,
   });
-  const userType = ["driver", "admin", "fleetadmin", "customer"];
   const mutation = useUpdateComplaint();
 
   const [selectedVehicleType, setSelectedVehicleType] = useState("");
-
+  const { handleAudit } = useAuditLog();
   const handleToggle = (id: string, checked: boolean) => {
     setToggleStates((prev) => ({ ...prev, [id]: checked }));
 
@@ -59,6 +60,14 @@ const ComplaintInfo = () => {
       { id, updatedData: { check: checked } },
       {
         onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
+        onSuccess: () => {
+          handleAudit(
+            "Promos",
+            id,
+            AuditAction.UPDATE,
+            `Updated check status to ${checked}`,
+          );
+        },
       },
     );
   };
@@ -97,6 +106,7 @@ const ComplaintInfo = () => {
                   <TextInput
                     className="w-full"
                     type="text"
+                    disabled
                     label="Created Date"
                     placeholder="John"
                     value={formatDate(Number(data?.complainDate))}
@@ -108,6 +118,7 @@ const ComplaintInfo = () => {
                     type="text"
                     className="w-full"
                     label="Process Date"
+                    disabled
                     placeholder="Last"
                     value={formatDate(Number(data?.processDate))}
                     onChange={() => {}}
@@ -123,6 +134,7 @@ const ComplaintInfo = () => {
                     type="text"
                     label="First Name"
                     placeholder="John"
+                    disabled
                     value={data.firstName}
                     onChange={() => {}}
                   />
@@ -134,6 +146,7 @@ const ComplaintInfo = () => {
                     placeholder="Last"
                     value={data.lastName}
                     onChange={() => {}}
+                    disabled
                   />
                 </div>
               </div>
@@ -148,6 +161,7 @@ const ComplaintInfo = () => {
                     placeholder="tel"
                     value={data.mobile}
                     onChange={() => {}}
+                    disabled
                   />
                 </div>
                 <div className="w-1/2">
@@ -157,6 +171,7 @@ const ComplaintInfo = () => {
                     placeholder="Last"
                     value={data.email}
                     onChange={() => {}}
+                    disabled
                   />
                 </div>
               </div>
@@ -164,39 +179,14 @@ const ComplaintInfo = () => {
               {/* 4 */}
               <div className="flex w-full gap-16">
                 <div className="w-1/2">
-                  {" "}
-                  <div className="w-full">
-                    <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
-                      User Type
-                    </label>
-                    <div className="relative w-full">
-                      <select
-                        value={selectedVehicleType}
-                        onChange={(e) => setSelectedVehicleType(e.target.value)}
-                        className={`mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors ${selectedVehicleType === "" ? "text-[#697077]" : "text-[#21272A]"}`}
-                      >
-                        <option value="" disabled className="text-[#697077]">
-                          Select an option
-                        </option>
-                        {userType?.map((type, index) => {
-                          return (
-                            <option
-                              key={index}
-                              value={type}
-                              className="text-[#21272A]"
-                            >
-                              {type}
-                            </option>
-                          );
-                        })}
-                      </select>
-
-                      {/* Custom Dropdown Icon */}
-                      {/* <div className="pointer-events-none absolute inset-y-0 right-3 top-1 flex items-center text-gray-500">
-                      <ChevronDown className="size-5" />
-                    </div> */}
-                    </div>
-                  </div>
+                  <TextInput
+                    type="text"
+                    label="User Type"
+                    placeholder="userType"
+                    value={selectedVehicleType}
+                    onChange={() => {}}
+                    disabled
+                  />
                 </div>
                 <div className="w-1/2">
                   <TextArea
@@ -204,6 +194,7 @@ const ComplaintInfo = () => {
                     placeholder="Subject"
                     value={data.subject}
                     onChange={() => {}}
+                    disabled
                   />
                 </div>
               </div>
@@ -216,6 +207,7 @@ const ComplaintInfo = () => {
                     placeholder="Message"
                     value={data.message}
                     onChange={() => {}}
+                    disabled
                   />
                 </div>
                 <div className="w-1/2"></div>
