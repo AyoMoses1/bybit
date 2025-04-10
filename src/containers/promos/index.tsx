@@ -103,12 +103,6 @@ const PromosTable = ({
       cell: ({ row }) => <ActiveStatusCell promos={row.original} />,
     },
     {
-      accessorKey: "user_avail",
-      header: "Used by Count",
-      cell: ({ getValue }) => getValue() || "0",
-    },
-
-    {
       accessorKey: "actions",
       header: "Actions",
       cell: ({ row }) => {

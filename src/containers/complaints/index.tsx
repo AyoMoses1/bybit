@@ -79,7 +79,11 @@ const ComplaintsTable = ({
     {
       accessorKey: "processDate",
       header: "Process Date",
-      cell: ({ getValue }) => formatDate(Number(getValue())),
+      cell: ({ getValue }) => {
+        const value = getValue();
+
+        return value ? formatDate(Number(value)) : "N/A";
+      },
     },
     {
       accessorKey: "actions",
