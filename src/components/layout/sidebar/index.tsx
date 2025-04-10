@@ -52,6 +52,8 @@ const routeGroups: Record<string, string[]> = {
   "/push-notification": ["/push-notification", "/add-notification"],
   "/withdrawals": ["/withdrawals", "/withdrawals/[id]"],
   "/complaints": ["/complaint"],
+  "/promos": ["/promos", "/add-promo", "/update-promo/"],
+  "/audit": ["/audit"],
 };
 
 const mainMenuItems = [
