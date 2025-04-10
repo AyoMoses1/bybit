@@ -120,7 +120,11 @@ const ComplaintInfo = () => {
                     label="Process Date"
                     disabled
                     placeholder="Last"
-                    value={formatDate(Number(data?.processDate))}
+                    value={
+                      data?.processDate
+                        ? formatDate(Number(data?.processDate))
+                        : "N/A"
+                    }
                     onChange={() => {}}
                   />
                 </div>
