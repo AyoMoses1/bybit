@@ -35,7 +35,7 @@ const ComplaintsTable = ({
     setToggleStates((prev) => ({ ...prev, [id]: checked }));
 
     mutation.mutate(
-      { id, updatedData: { check: checked } },
+      { id, updatedData: { check: checked, processDate: Date.now() } },
       {
         onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
         onSuccess: () => {
@@ -140,6 +140,8 @@ const ComplaintsTable = ({
       setClickExport(false);
     }
   }, [clickExport, complaints, handleAudit, setClickExport]);
+
+  console.log(complaints);
 
   return (
     <div className="px-1">

@@ -57,7 +57,7 @@ const ComplaintInfo = () => {
     setToggleStates((prev) => ({ ...prev, [id]: checked }));
 
     mutation.mutate(
-      { id, updatedData: { check: checked } },
+      { id, updatedData: { check: checked, processDate: Date.now() } },
       {
         onError: () => setToggleStates((prev) => ({ ...prev, [id]: !checked })),
         onSuccess: () => {
