@@ -1,4 +1,5 @@
 import { getDatabase, onValue, ref } from "firebase/database";
+import moment from "moment";
 
 export enum AuditAction {
   CREATE = "CREATE",
@@ -33,8 +34,12 @@ export const fetchSos = (search?: string) => {
               id: key,
               ...data[key],
             }))
-            .filter(
-              (user) =>
+            .filter((user) => {
+              const formattedDate = user.complainDate
+                ? moment(user.complainDate).format("DD MMM YYYY - hh:mm a")
+                : "";
+
+              return (
                 !search ||
                 user.description
                   ?.toLowerCase()
@@ -42,8 +47,10 @@ export const fetchSos = (search?: string) => {
                 user?.id?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.user_name?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.contact?.toLowerCase().includes(search.toLowerCase()) ||
-                user?.user_type?.toLowerCase().includes(search.toLowerCase()),
-            );
+                user?.user_type?.toLowerCase().includes(search.toLowerCase()) ||
+                formattedDate.toLowerCase().includes(search.toLowerCase())
+              );
+            });
           resolve(arr.reverse());
         },
         (error) => {

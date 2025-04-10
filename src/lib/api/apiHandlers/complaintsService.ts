@@ -1,6 +1,7 @@
 import { onValue, ref, getDatabase, update } from "firebase/database";
 import { Complaint } from "../hooks/complaints";
 import toast from "react-hot-toast";
+import moment from "moment";
 
 export const fetchComplaints = (search?: string) => {
   return new Promise<Complaint[]>((resolve, reject) => {
@@ -21,14 +22,25 @@ export const fetchComplaints = (search?: string) => {
               id: key,
               ...data[key],
             }))
-            .filter(
-              (user) =>
+            .filter((user) => {
+              const dateFormatted = user.complainDate
+                ? moment(user.complainDate).format("DD MMM YYYY - hh:mm a")
+                : "";
+
+              const processdateFormatted = user.processDate
+                ? moment(user.processDate).format("DD MMM YYYY - hh:mm a")
+                : "";
+
+              return (
                 !search ||
                 user.firstName?.toLowerCase().includes(search.toLowerCase()) ||
                 user.lastName?.toLowerCase().includes(search.toLowerCase()) ||
                 user.role?.toLowerCase().includes(search.toLowerCase()) ||
-                user.subject?.toLowerCase().includes(search.toLowerCase()),
-            );
+                user.subject?.toLowerCase().includes(search.toLowerCase()) ||
+                dateFormatted.includes(search) ||
+                processdateFormatted.includes(search)
+              );
+            });
           resolve(arr.reverse());
         },
         (error) => {
