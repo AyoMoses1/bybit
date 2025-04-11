@@ -32,7 +32,6 @@ const MyProfile = () => {
   const languageOptions: LanguageOption[] = [
     { value: "en", label: "English" },
     { value: "fr", label: "Français" },
-    { value: "es", label: "Ingles" },
   ];
 
   const {
@@ -88,6 +87,40 @@ const MyProfile = () => {
         throw new Error("Profile data not available");
       }
 
+      // For fleet admin, only update language and profile image
+      if (profile.usertype === "fleetadmin") {
+        if (selectedImage) {
+          await updateProfileImage(selectedImage);
+          setSelectedImage(null);
+        }
+
+        if (
+          selectedLanguage &&
+          (!profile.lang || profile.lang.langLocale !== selectedLanguage)
+        ) {
+          const selectedLang = languageOptions.find(
+            (lang) => lang.value === selectedLanguage,
+          );
+          if (selectedLang) {
+            await updateProfile({
+              lang: {
+                langLocale: selectedLang.value,
+                dateLocale: selectedLang.value,
+              },
+            });
+          }
+        }
+
+        setSubmitSuccess(true);
+        toast.success("Profile updated successfully");
+
+        setTimeout(() => {
+          setSubmitSuccess(false);
+        }, 2000);
+        return;
+      }
+
+      // Logic for Admin user types
       if (data.email !== profile.email) {
         const re =
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -147,10 +180,7 @@ const MyProfile = () => {
         }
       }
 
-      // Show success state in UI
       setSubmitSuccess(true);
-
-      // Use react-hot-toast for success message
       toast.success("Profile updated successfully");
 
       // Reset the form with new values to reset isDirty state
@@ -165,7 +195,6 @@ const MyProfile = () => {
         { keepValues: true },
       );
 
-      // Reset the success state after 2 seconds
       setTimeout(() => {
         setSubmitSuccess(false);
       }, 2000);
@@ -186,6 +215,14 @@ const MyProfile = () => {
   }
 
   const isDriver = profile?.usertype === "driver";
+  const isFleetAdmin = profile?.usertype === "fleetadmin";
+
+  // Function to determine if a field should be disabled
+  const isFieldDisabled = (fieldName: keyof ProfileFormData) => {
+    if (isDriver) return true;
+    if (isFleetAdmin && fieldName !== "usertype") return true;
+    return false;
+  };
 
   return (
     <div className="flex min-h-screen justify-center bg-[#F5F7FA] pr-72 pt-20">
@@ -230,9 +267,6 @@ const MyProfile = () => {
               accept="image/*"
               className="hidden"
             />
-            {/* <p className="mt-2 text-center text-base font-medium text-[#C74CC4]">
-              Upload Logo
-            </p> */}
           </div>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -247,7 +281,12 @@ const MyProfile = () => {
                 <input
                   id="firstName"
                   placeholder="Alex"
-                  className="h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none"
+                  className={`h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none ${
+                    isFieldDisabled("firstName")
+                      ? "cursor-not-allowed opacity-70"
+                      : ""
+                  }`}
+                  disabled={isFieldDisabled("firstName")}
                   {...register("firstName", {
                     required: "First name is required",
                   })}
@@ -270,9 +309,11 @@ const MyProfile = () => {
                   id="lastName"
                   placeholder="Rider"
                   className={`h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none ${
-                    isDriver ? "cursor-not-allowed opacity-70" : ""
+                    isFieldDisabled("lastName")
+                      ? "cursor-not-allowed opacity-70"
+                      : ""
                   }`}
-                  disabled={isDriver}
+                  disabled={isFieldDisabled("lastName")}
                   {...register("lastName", {
                     required: "Last name is required",
                   })}
@@ -296,9 +337,11 @@ const MyProfile = () => {
                   type="tel"
                   placeholder="+237 434352 232323"
                   className={`h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none ${
-                    isDriver ? "cursor-not-allowed opacity-70" : ""
+                    isFieldDisabled("mobile")
+                      ? "cursor-not-allowed opacity-70"
+                      : ""
                   }`}
-                  disabled={isDriver}
+                  disabled={isFieldDisabled("mobile")}
                   {...register("mobile", {
                     required: "Mobile is required",
                     minLength: {
@@ -326,9 +369,11 @@ const MyProfile = () => {
                   type="email"
                   placeholder="wedea3223@sdjs.com"
                   className={`h-[48px] w-full border-b-[1.5px] border-[#C1C7CD] bg-[#F8F8F8] px-3 py-2 outline-none ${
-                    isDriver ? "cursor-not-allowed opacity-70" : ""
+                    isFieldDisabled("email")
+                      ? "cursor-not-allowed opacity-70"
+                      : ""
                   }`}
-                  disabled={isDriver}
+                  disabled={isFieldDisabled("email")}
                   {...register("email", {
                     required: "Email is required",
                     pattern: {
@@ -395,7 +440,13 @@ const MyProfile = () => {
                 type="submit"
                 className="w-full max-w-sm rounded-full bg-[#9C4A9A] px-6 py-3 text-base font-medium text-white hover:bg-[#833F81] focus:outline-none disabled:bg-[#D0AFD0]"
                 disabled={
-                  isUpdating || (!isDirty && !selectedImage) || submitSuccess
+                  isUpdating ||
+                  (!isDirty &&
+                    !selectedImage &&
+                    (!isFleetAdmin ||
+                      (isFleetAdmin &&
+                        profile?.lang?.langLocale === selectedLanguage))) ||
+                  submitSuccess
                 }
               >
                 {isUpdating ? (
