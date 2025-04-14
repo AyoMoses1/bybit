@@ -3,17 +3,12 @@ import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useCreatePromo } from "@/lib/api/hooks/usePromo";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { PromoData } from "@/lib/api/apiHandlers/promoService";
-import { Label } from "@/components/ui/label";
-import { DatePicker } from "@/components/ui/datePicker";
+import TextInput from "@/components/TextInput";
+import { ChevronDown } from "lucide-react";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { z } from "zod";
+import { useForm } from "react-hook-form";
 
 type PromoFormData = Omit<PromoData, "id" | "tableData">;
 
@@ -21,7 +16,18 @@ const AddPromo: React.FC = () => {
   const router = useRouter();
   const createPromoMutation = useCreatePromo();
 
-  const [formData, setFormData] = useState<PromoFormData>({
+  const types = [
+    {
+      name: "Percentage",
+      id: "percentage",
+    },
+    {
+      name: "Flat",
+      id: "flat",
+    },
+  ];
+
+  const [formData] = useState<PromoFormData>({
     promo_name: "",
     promo_description: "",
     promo_discount_type: "percentage", // Default type
@@ -36,37 +42,43 @@ const AddPromo: React.FC = () => {
     createdAt: Date.now(),
   });
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  const formSchema = z.object({
+    promo_name: z.string().min(2, "Name must be at least 3 characters"),
+    promo_description: z.string().min(2, "Name must be at least 3 characters"),
+    promo_discount_type: z.enum(["percentage", "flat"]),
+    promo_code: z.string().min(2, "Name must be at least 3 characters"),
+    promo_discount_value: z.string(),
+    max_promo_discount_value: z.string(),
+    min_order: z.string(),
+    promo_validity: z.string(),
+    promo_usage_limit: z.string(),
+    promo_show: z.boolean(),
+    user_avail: z.string(),
+  });
 
-  const handleSelectChange = (name: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  type FormData = z.infer<typeof formSchema>;
 
-  const handleDateChange = (date: Date | null) => {
-    setFormData((prev) => ({
-      ...prev,
-      promo_validity: date ? date.getTime() : undefined,
-    }));
-  };
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isValid },
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    mode: "onChange",
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    const processedData: PromoFormData = {
-      ...formData,
-      promo_discount_value: Number(formData.promo_discount_value),
-      max_promo_discount_value: Number(formData.max_promo_discount_value),
-      min_order: Number(formData.min_order),
-      promo_usage_limit: Number(formData.promo_usage_limit),
+  const onSubmit = (data: FormData) => {
+    console.log(data);
+    const processedData = {
+      ...data,
+      promo_validity: data.promo_validity
+        ? new Date(data.promo_validity).getTime()
+        : undefined,
+      promo_discount_value: Number(data.promo_discount_value),
+      max_promo_discount_value: Number(data.max_promo_discount_value),
+      min_order: Number(data.min_order),
+      promo_usage_limit: Number(data.promo_usage_limit),
+      user_avail: Number(data.user_avail),
     };
 
     createPromoMutation.mutate(processedData, {
@@ -77,162 +89,212 @@ const AddPromo: React.FC = () => {
   };
 
   return (
-    <div className="mx-auto max-w-4xl p-6">
-      <h2 className="mb-6 text-2xl font-semibold">Add New Promo</h2>
+    <div className="p-6">
+      <p className="pb-6 text-[32px] font-semibold text-[#202224]">
+        {"Add New Promo"}
+      </p>
+      <div className="flex gap-6">
+        <div className="w-[85%] rounded-lg bg-white px-8 pb-12 shadow-md">
+          <div className="px-6 pt-8">
+            <form onSubmit={handleSubmit(onSubmit)} className="">
+              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+                <div>
+                  <TextInput
+                    className="w-full"
+                    placeholder="Enter promo name"
+                    label="Promo Name"
+                    {...register("promo_name")}
+                    type="text"
+                  />
+                  <div>
+                    {errors.promo_name && (
+                      <p className="text-red-500">
+                        {errors.promo_name.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div>
-            <Label htmlFor="promo_name">Promo Name</Label>
-            <Input
-              id="promo_name"
-              name="promo_name"
-              value={formData.promo_name}
-              onChange={handleChange}
-              placeholder="Enter promo name"
-              required
-              className="mt-1"
-            />
-          </div>
+                <div>
+                  <TextInput
+                    className="w-full"
+                    {...register("promo_description")}
+                    placeholder="Enter description"
+                    label="Description"
+                  />
+                  <div>
+                    {errors.promo_description && (
+                      <p className="text-red-500">
+                        {errors.promo_description.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-          <div>
-            <Label htmlFor="promo_description">Description</Label>
-            <Input
-              id="promo_description"
-              name="promo_description"
-              value={formData.promo_description}
-              onChange={handleChange}
-              placeholder="Enter description"
-              className="mt-1"
-            />
-          </div>
+                <div>
+                  {/* 2 */}
+                  <div className="w-full">
+                    <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
+                      Type
+                    </label>
+                    <div>
+                      <div className="relative w-full">
+                        <select
+                          {...register("promo_discount_type")}
+                          className={`mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors ${formData?.promo_discount_type ? "text-[#21272A]" : "text-[#697077]"}`}
+                        >
+                          <option value="" disabled className="text-[#697077]">
+                            Select Type
+                          </option>
+                          {types?.map((type, index) => {
+                            return (
+                              <option
+                                key={index}
+                                value={type.id}
+                                className="text-[#21272A]"
+                              >
+                                {type.name}
+                              </option>
+                            );
+                          })}
+                        </select>
 
-          <div>
-            <Label htmlFor="promo_discount_type">Type</Label>
-            <Select
-              value={formData.promo_discount_type}
-              onValueChange={(value) =>
-                handleSelectChange("promo_discount_type", value)
-              }
-            >
-              <SelectTrigger className="mt-1">
-                <SelectValue placeholder="Select type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="percentage">Percentage</SelectItem>
-                <SelectItem value="flat">Flat</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+                        {/* Custom Dropdown Icon */}
+                        <div className="pointer-events-none absolute inset-y-0 right-3 top-1 flex items-center text-gray-500">
+                          <ChevronDown className="size-5" />
+                        </div>
+                      </div>
+                      <div>
+                        {errors.promo_discount_type && (
+                          <p className="text-red-500">
+                            {errors.promo_discount_type.message}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                </div>
 
-          <div>
-            <Label htmlFor="promo_code">Promo Code</Label>
-            <Input
-              id="promo_code"
-              name="promo_code"
-              value={formData.promo_code}
-              onChange={handleChange}
-              placeholder="Enter promo code"
-              required
-              className="mt-1"
-            />
-          </div>
+                <div>
+                  <TextInput
+                    className="w-full"
+                    {...register("promo_code")}
+                    placeholder="Enter promo code"
+                    label="Promo Code"
+                  />
+                  <div>
+                    {errors.promo_code && (
+                      <p className="text-red-500">
+                        {errors.promo_code.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-          <div>
-            <Label htmlFor="promo_discount_value">
-              Discount Value{" "}
-              {formData.promo_discount_type === "percentage" ? "(%)" : "($)"}
-            </Label>
-            <Input
-              id="promo_discount_value"
-              name="promo_discount_value"
-              type="number"
-              value={formData.promo_discount_value.toString()}
-              onChange={handleChange}
-              placeholder={`Enter discount value ${formData.promo_discount_type === "percentage" ? "%" : "$"}`}
-              required
-              className="mt-1"
-            />
-          </div>
+                <div>
+                  <TextInput
+                    type="number"
+                    {...register("promo_discount_value")}
+                    placeholder={`Enter discount value ${formData.promo_discount_type === "percentage" ? "%" : "$"}`}
+                    label={` Discount Value
+                    ${
+                      formData.promo_discount_type === "percentage"
+                        ? "(%)"
+                        : "($)"
+                    }`}
+                  />
+                  <div>
+                    {errors.promo_discount_value && (
+                      <p className="text-red-500">
+                        {errors.promo_discount_value.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-          <div>
-            <Label htmlFor="max_promo_discount_value">
-              Max Discount Allowed ($)
-            </Label>
-            <Input
-              id="max_promo_discount_value"
-              name="max_promo_discount_value"
-              type="number"
-              value={formData.max_promo_discount_value.toString()}
-              onChange={handleChange}
-              placeholder="Enter max discount allowed"
-              required
-              className="mt-1"
-            />
-          </div>
+                <div>
+                  <TextInput
+                    className="w-full"
+                    type="number"
+                    {...register("max_promo_discount_value")}
+                    placeholder="Enter max discount allowed"
+                    label=" Max Discount Allowed ($)"
+                  />
+                  <div>
+                    {errors.max_promo_discount_value && (
+                      <p className="text-red-500">
+                        {errors.max_promo_discount_value.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-          <div>
-            <Label htmlFor="min_order">Minimum Order Value ($)</Label>
-            <Input
-              id="min_order"
-              name="min_order"
-              type="number"
-              value={formData.min_order.toString()}
-              onChange={handleChange}
-              placeholder="Enter minimum order value"
-              required
-              className="mt-1"
-            />
-          </div>
+                <div>
+                  <TextInput
+                    className="w-full"
+                    type="number"
+                    {...register("min_order")}
+                    placeholder="Enter minimum order value"
+                    label="Minimum Order Value ($)"
+                  />
+                  <div>
+                    {errors.min_order && (
+                      <p className="text-red-500">{errors.min_order.message}</p>
+                    )}
+                  </div>
+                </div>
 
-          <div>
-            <Label htmlFor="promo_validity">Validity End Date</Label>
-            <div className="mt-1">
-              <DatePicker
-                selected={
-                  formData.promo_validity
-                    ? new Date(formData.promo_validity)
-                    : null
-                }
-                onChange={handleDateChange}
-                placeholderText="Select end date"
-              />
-            </div>
-          </div>
+                <div>
+                  <TextInput
+                    className="w-full"
+                    type="date"
+                    {...register("promo_validity")}
+                    placeholder="Select end date"
+                    label="Validity End Date"
+                  />
+                  <div>
+                    {errors.promo_validity && (
+                      <p className="text-red-500">
+                        {errors.promo_validity.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
 
-          <div>
-            <Label htmlFor="promo_usage_limit">Usage Limit</Label>
-            <Input
-              id="promo_usage_limit"
-              name="promo_usage_limit"
-              type="number"
-              value={formData.promo_usage_limit.toString()}
-              onChange={handleChange}
-              placeholder="Enter usage limit"
-              required
-              className="mt-1"
-            />
+                <div>
+                  <TextInput
+                    className="w-full"
+                    type="number"
+                    {...register("promo_usage_limit")}
+                    placeholder="Enter usage limit"
+                    label="Usage Limit"
+                  />
+                </div>
+                <div>
+                  {errors.promo_usage_limit && (
+                    <p className="text-red-500">
+                      {errors.promo_usage_limit.message}
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              <div className="mt-12 flex justify-center">
+                <Button
+                  disabled={!isValid || !errors}
+                  type="submit"
+                  className="w-[287px] py-[10px] disabled:opacity-70"
+                  size={"default"}
+                >
+                  {createPromoMutation.isPending
+                    ? "Publishing..."
+                    : "Publish Promo"}
+                </Button>
+              </div>
+            </form>
           </div>
         </div>
-
-        <div className="flex justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/promos")}
-            className="mr-2"
-          >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            className="bg-purple-600 hover:bg-purple-700"
-            disabled={createPromoMutation.isPending}
-          >
-            {createPromoMutation.isPending ? "Publishing..." : "Publish Promo"}
-          </Button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 };
