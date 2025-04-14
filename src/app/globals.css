@@ -7,13 +7,13 @@ body {
   background-color: #f5f6fa;
 }
 
-input:-webkit-autofill,
+/* input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s !important;
   -webkit-text-fill-color: #fff !important;
-}
+} */
 
 @layer base {
   :root {
