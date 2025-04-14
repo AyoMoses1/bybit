@@ -65,7 +65,9 @@ const AddFleetAdmin = () => {
 
   return (
     <div className="p-6">
-      <p className="pb-6 text-2xl font-semibold text-[#202224]">Add Admin</p>
+      <p className="pb-6 text-2xl font-semibold text-[#202224]">
+        Add Fleet Admin
+      </p>
 
       <form onSubmit={handleSubmit(onSubmit)} className="">
         <div className="rounded-lg bg-white px-10 py-12 shadow-md">

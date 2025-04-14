@@ -145,8 +145,6 @@ const ComplaintsTable = ({
     }
   }, [clickExport, complaints, handleAudit, setClickExport]);
 
-  console.log(complaints);
-
   return (
     <div className="px-1">
       <div>
