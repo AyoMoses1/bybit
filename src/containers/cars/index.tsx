@@ -15,6 +15,7 @@ import DeleteConfirmation from "@/components/deleteConfirmation";
 import { AuditAction } from "@/lib/api/apiHandlers/auditService";
 import { useAuditLog } from "@/utils/useAuditLog";
 import Papa from "papaparse";
+import toast from "react-hot-toast";
 
 type CarType = {
   id: string;
@@ -67,11 +68,41 @@ const CarsTable = ({
     );
   };
 
-  const ActiveStatusCell = ({ car }: { car: CarType }) => {
+  const ActiveStatusCell = ({
+    car,
+    driver,
+    approved,
+  }: {
+    car: CarType;
+    driver: string;
+    approved: boolean;
+  }) => {
     const mutation = useUpdateCar();
     const [isChecked, setIsChecked] = React.useState(car.active);
 
+    const filteredData = cars?.filter((car) => car.driver === driver);
+
     const handleToggle = (checked: boolean) => {
+      const editedData = filteredData?.find((item) => item.active === true);
+
+      if (approved === false) {
+        return toast.error("Kindly approve this driver's car to make changes");
+      }
+
+      if (checked && editedData) {
+        toast.error(
+          "This driver currently has an active car. Kindly make previous car inactive to continue",
+          {
+            style: {
+              width: "600px",
+            },
+          },
+        );
+        return;
+      }
+
+      setIsChecked(!checked);
+
       mutation.mutate(
         { id: car.id, updatedData: { active: checked } as UpdateCarPayload },
         {
@@ -83,6 +114,7 @@ const CarsTable = ({
               AuditAction.UPDATE,
               `Update active status to ${checked}`,
             );
+            toast.success("Updated details successfully");
           },
         },
       );
@@ -107,6 +139,7 @@ const CarsTable = ({
               AuditAction.UPDATE,
               `Update approval status to ${checked}`,
             );
+            toast.success("Updated details successfully");
           },
         },
       );
@@ -154,7 +187,13 @@ const CarsTable = ({
     {
       accessorKey: "active",
       header: "Active Status",
-      cell: ({ row }) => <ActiveStatusCell car={row.original} />,
+      cell: ({ row }) => (
+        <ActiveStatusCell
+          car={row.original}
+          driver={row.original.driver ?? ""}
+          approved={row.original.approved ?? false}
+        />
+      ),
     },
     {
       accessorKey: "approved",
