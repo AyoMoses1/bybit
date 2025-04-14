@@ -178,7 +178,7 @@ const FleetAdmin = ({
       exportToCSV(user as FleetAdminUser[]);
 
       setClickExport(false);
-      handleAudit("User", "", AuditAction.EXPORT, "Export super admin data");
+      handleAudit("User", "", AuditAction.EXPORT, "Export fleet admin data");
     }
   }, [clickExport, user, setClickExport, handleAudit]);
 

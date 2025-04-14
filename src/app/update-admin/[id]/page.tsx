@@ -99,9 +99,7 @@ const UpdateAdmin = () => {
 
   return (
     <div className="p-6">
-      <p className="pb-6 text-2xl font-semibold text-[#202224]">
-        Update Super Admin
-      </p>
+      <p className="pb-6 text-2xl font-semibold text-[#202224]">Update Admin</p>
 
       <div className="rounded-lg bg-white px-8 py-12 shadow-md">
         <div className="flex justify-between gap-8">

@@ -158,7 +158,7 @@ const Admin = ({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", "Super Admin.csv");
+    link.setAttribute("download", "Admin.csv");
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -169,7 +169,7 @@ const Admin = ({
       exportToCSV(user as UserAdmin[]);
 
       setClickExport(false);
-      handleAudit("User", "", AuditAction.EXPORT, "Export super admin data");
+      handleAudit("User", "", AuditAction.EXPORT, "Export admin data");
     }
   }, [clickExport, user, setClickExport, handleAudit]);
 
