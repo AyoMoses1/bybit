@@ -1,16 +1,13 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import { useRouter } from "next/navigation";
 import { useCreatePromo } from "@/lib/api/hooks/usePromo";
 import { Button } from "@/components/ui/button";
-import { PromoData } from "@/lib/api/apiHandlers/promoService";
 import TextInput from "@/components/TextInput";
 import { ChevronDown } from "lucide-react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
-
-type PromoFormData = Omit<PromoData, "id" | "tableData">;
 
 const AddPromo: React.FC = () => {
   const router = useRouter();
@@ -27,33 +24,16 @@ const AddPromo: React.FC = () => {
     },
   ];
 
-  const [formData] = useState<PromoFormData>({
-    promo_name: "",
-    promo_description: "",
-    promo_discount_type: "percentage", // Default type
-    promo_code: "",
-    promo_discount_value: 0,
-    max_promo_discount_value: 0,
-    min_order: 0,
-    promo_validity: undefined,
-    promo_usage_limit: 0,
-    promo_show: true,
-    user_avail: 0,
-    createdAt: Date.now(),
-  });
-
   const formSchema = z.object({
     promo_name: z.string().min(2, "Name must be at least 3 characters"),
     promo_description: z.string().min(2, "Name must be at least 3 characters"),
     promo_discount_type: z.enum(["percentage", "flat"]),
     promo_code: z.string().min(2, "Name must be at least 3 characters"),
-    promo_discount_value: z.string(),
-    max_promo_discount_value: z.string(),
-    min_order: z.string(),
-    promo_validity: z.string(),
-    promo_usage_limit: z.string(),
-    promo_show: z.boolean(),
-    user_avail: z.string(),
+    promo_discount_value: z.string().nonempty("This field is required"),
+    max_promo_discount_value: z.string().nonempty("This field is required"),
+    min_order: z.string().nonempty("This field is required"),
+    promo_validity: z.string().nonempty("This field is required"),
+    promo_usage_limit: z.string().nonempty("This field is required"),
   });
 
   type FormData = z.infer<typeof formSchema>;
@@ -62,10 +42,13 @@ const AddPromo: React.FC = () => {
     register,
     handleSubmit,
     formState: { errors, isValid },
+    watch,
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
   });
+
+  const watchedValues = watch();
 
   const onSubmit = (data: FormData) => {
     console.log(data);
@@ -78,7 +61,6 @@ const AddPromo: React.FC = () => {
       max_promo_discount_value: Number(data.max_promo_discount_value),
       min_order: Number(data.min_order),
       promo_usage_limit: Number(data.promo_usage_limit),
-      user_avail: Number(data.user_avail),
     };
 
     createPromoMutation.mutate(processedData, {
@@ -88,6 +70,7 @@ const AddPromo: React.FC = () => {
     });
   };
 
+  console.log(watchedValues);
   return (
     <div className="p-6">
       <p className="pb-6 text-[32px] font-semibold text-[#202224]">
@@ -141,7 +124,7 @@ const AddPromo: React.FC = () => {
                       <div className="relative w-full">
                         <select
                           {...register("promo_discount_type")}
-                          className={`mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors ${formData?.promo_discount_type ? "text-[#21272A]" : "text-[#697077]"}`}
+                          className={`mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors ${watchedValues?.promo_discount_type ? "text-[#21272A]" : "text-[#697077]"}`}
                         >
                           <option value="" disabled className="text-[#697077]">
                             Select Type
@@ -195,10 +178,10 @@ const AddPromo: React.FC = () => {
                   <TextInput
                     type="number"
                     {...register("promo_discount_value")}
-                    placeholder={`Enter discount value ${formData.promo_discount_type === "percentage" ? "%" : "$"}`}
+                    placeholder={`Enter discount value ${watchedValues.promo_discount_type === "percentage" ? "%" : "$"}`}
                     label={` Discount Value
                     ${
-                      formData.promo_discount_type === "percentage"
+                      watchedValues.promo_discount_type === "percentage"
                         ? "(%)"
                         : "($)"
                     }`}
@@ -281,7 +264,9 @@ const AddPromo: React.FC = () => {
 
               <div className="mt-12 flex justify-center">
                 <Button
-                  disabled={!isValid || !errors}
+                  disabled={
+                    !isValid || !errors || createPromoMutation.isPending
+                  }
                   type="submit"
                   className="w-[287px] py-[10px] disabled:opacity-70"
                   size={"default"}
