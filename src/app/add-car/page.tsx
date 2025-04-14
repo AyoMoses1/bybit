@@ -114,6 +114,7 @@ const AddCar = () => {
       mutation.mutate(
         {
           ...car,
+          createdAt: Date.now(),
         },
         {
           onError: () => {

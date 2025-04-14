@@ -92,6 +92,11 @@ const CarsTable = ({
       if (checked && editedData) {
         toast.error(
           "This driver currently has an active car. Kindly make previous car inactive to continue",
+          {
+            style: {
+              width: "600px",
+            },
+          },
         );
         return;
       }
@@ -109,6 +114,7 @@ const CarsTable = ({
               AuditAction.UPDATE,
               `Update active status to ${checked}`,
             );
+            toast.success("Updated details successfully");
           },
         },
       );
@@ -133,6 +139,7 @@ const CarsTable = ({
               AuditAction.UPDATE,
               `Update approval status to ${checked}`,
             );
+            toast.success("Updated details successfully");
           },
         },
       );
