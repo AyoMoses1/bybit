@@ -108,13 +108,13 @@ const AddCar = () => {
         other_info: data?.other_info,
         driver: selectedDriver,
         carType: data.vehicleType,
+        createdAt: Date.now(),
         ...(passportURL && { car_image: passportURL }),
       };
 
       mutation.mutate(
         {
           ...car,
-          createdAt: Date.now(),
         },
         {
           onError: () => {
