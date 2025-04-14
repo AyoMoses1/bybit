@@ -125,8 +125,8 @@ const PromosTable = ({
               <div className="px-1 py-2">
                 <DeleteConfirmation
                   onClick={() => handleDelete(row.original.id)}
-                  iconStylesWidth={16}
-                  iconStylesHeight={16}
+                  iconStylesWidth={search ? 10 : 12}
+                  iconStylesHeight={search ? 10 : 12}
                   text={`Are you sure you want to delete this promo (${row.original.promo_name})? This action can not be undone`}
                 />
               </div>

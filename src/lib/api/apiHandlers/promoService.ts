@@ -7,6 +7,7 @@ import {
   push,
   remove,
 } from "firebase/database";
+import moment from "moment";
 
 export interface PromoData {
   id: string;
@@ -48,8 +49,11 @@ export const fetchPromos = (search: string): Promise<PromoData[]> => {
                   new Date(b.createdAt || 0).getTime() -
                   new Date(a.createdAt || 0).getTime(),
               )
-              .filter(
-                (user) =>
+              .filter((user) => {
+                const formattedDate = user.promo_validity
+                  ? moment(user.promo_validity).format("DD MMM YYYY - hh:mm a")
+                  : "";
+                return (
                   !search ||
                   user.promo_name
                     ?.toLowerCase()
@@ -65,8 +69,13 @@ export const fetchPromos = (search: string): Promise<PromoData[]> => {
                     .includes(search.toLowerCase()) ||
                   user.promo_discount_value
                     .toString()
-                    .includes(search.toLowerCase()),
-              );
+                    .includes(search.toLowerCase()) ||
+                  user.promo_usage_limit
+                    .toString()
+                    .includes(search.toLowerCase()) ||
+                  formattedDate.toLowerCase().includes(search.toLowerCase())
+                );
+              });
 
             resolve(promosArray as PromoData[]);
           } else {
