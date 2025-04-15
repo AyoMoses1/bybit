@@ -195,6 +195,7 @@ export const createUser = (updatedData: any) => {
           if (error?.code === "auth/email-already-in-use") {
             toast.error("Email already in use");
           }
+          reject(error);
         });
     } catch (error) {
       reject(error);
