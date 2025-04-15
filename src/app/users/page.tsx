@@ -75,9 +75,9 @@ const Users = () => {
 
           <Link
             href={
-              selectedTab === "Super Admins"
+              selectedTab === "Admins"
                 ? "/add-super-admin"
-                : selectedTab === "Admins"
+                : selectedTab === "Fleet Admins"
                   ? "/add-fleet-admin"
                   : selectedTab === "Customers"
                     ? "/add-customers"
