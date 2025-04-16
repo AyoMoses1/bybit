@@ -187,7 +187,28 @@ export const createUser = (updatedData: any) => {
           const userRef = ref(db, `users/${uid}`);
           return update(userRef, { ...updatedData, uid });
         })
-        .then(() => {
+        .then(async () => {
+          if (updatedData?.usertype === "fleetadmin") {
+            const mailData = {
+              email: updatedData?.email,
+              subject: "You have been invited successfully",
+              name: updatedData.firstName + " " + updatedData.lastName,
+            };
+
+            const res = await fetch("/api/sendEmail", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                email: mailData?.email,
+                subject: mailData.subject,
+              }),
+            });
+
+            await res.json();
+          }
+
           resolve();
         })
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
