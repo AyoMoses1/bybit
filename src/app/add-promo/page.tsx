@@ -70,7 +70,11 @@ const AddPromo: React.FC = () => {
     });
   };
 
-  console.log(watchedValues);
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const localNow = new Date(now.getTime() - offset * 60000);
+  const minDateTime = localNow.toISOString().slice(0, 16);
+
   return (
     <div className="p-6">
       <p className="pb-6 text-[32px] font-semibold text-[#202224]">
@@ -230,7 +234,8 @@ const AddPromo: React.FC = () => {
                 <div>
                   <TextInput
                     className="w-full"
-                    type="date"
+                    type="datetime-local"
+                    min={minDateTime}
                     {...register("promo_validity")}
                     placeholder="Select end date"
                     label="Validity End Date"

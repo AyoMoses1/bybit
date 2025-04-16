@@ -36,51 +36,69 @@ export const fetchPromos = (search: string): Promise<PromoData[]> => {
 
       const unsubscribe = onValue(
         promoRef,
-        (snapshot) => {
+        async (snapshot) => {
           const data = snapshot.val();
-          if (data) {
-            const promosArray = Object.entries(data)
-              .map(([key, value]) => ({
-                ...(value as Omit<PromoData, "id">),
-                id: key,
-              }))
-              .sort(
-                (a, b) =>
-                  new Date(b.createdAt || 0).getTime() -
-                  new Date(a.createdAt || 0).getTime(),
-              )
-              .filter((user) => {
-                const formattedDate = user.promo_validity
-                  ? moment(user.promo_validity).format("DD MMM YYYY - hh:mm a")
-                  : "";
-                return (
-                  !search ||
-                  user.promo_name
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  user.promo_code
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  user.promo_description
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  user.promo_discount_type
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase()) ||
-                  user.promo_discount_value
-                    .toString()
-                    .includes(search.toLowerCase()) ||
-                  user.promo_usage_limit
-                    .toString()
-                    .includes(search.toLowerCase()) ||
-                  formattedDate.toLowerCase().includes(search.toLowerCase())
-                );
-              });
+          if (!data) return resolve([]);
 
-            resolve(promosArray as PromoData[]);
-          } else {
-            resolve([]);
+          const now = new Date();
+          const promosArray: PromoData[] = [];
+
+          for (const [key, value] of Object.entries(data)) {
+            const promo = {
+              ...(value as Omit<PromoData, "id">),
+              id: key,
+            };
+
+            const promoDate = promo.promo_validity
+              ? new Date(promo.promo_validity)
+              : null;
+
+            const isExpired = promoDate && promoDate <= now;
+
+            const isUsedUp =
+              typeof promo.promo_usage_limit === "number" &&
+              promo.promo_usage_limit === 0;
+
+            // Auto-hide if expired or usage limit is 0
+            if ((isExpired || isUsedUp) && promo.promo_show !== false) {
+              await updatePromo(key, { promo_show: false });
+              promo.promo_show = false; // Reflect change in local data
+            }
+
+            promosArray.push(promo);
           }
+
+          const filtered = promosArray
+            .sort(
+              (a, b) =>
+                new Date(b.createdAt || 0).getTime() -
+                new Date(a.createdAt || 0).getTime(),
+            )
+            .filter((user) => {
+              const formattedDate = user.promo_validity
+                ? moment(user.promo_validity).format("DD MMM YYYY - hh:mm a")
+                : "";
+              return (
+                !search ||
+                user.promo_name?.toLowerCase().includes(search.toLowerCase()) ||
+                user.promo_code?.toLowerCase().includes(search.toLowerCase()) ||
+                user.promo_description
+                  ?.toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                user.promo_discount_type
+                  ?.toLowerCase()
+                  .includes(search.toLowerCase()) ||
+                user.promo_discount_value
+                  .toString()
+                  .includes(search.toLowerCase()) ||
+                user.promo_usage_limit
+                  ?.toString()
+                  .includes(search.toLowerCase()) ||
+                formattedDate.toLowerCase().includes(search.toLowerCase())
+              );
+            });
+
+          resolve(filtered);
         },
         (error) => {
           console.error("Firebase error:", error);

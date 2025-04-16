@@ -15,6 +15,7 @@ import {
 } from "@/lib/api/hooks/usePromo";
 import { formatDate } from "@/utils/formatDate";
 import { PromoData } from "@/lib/api/apiHandlers/promoService";
+import toast from "react-hot-toast";
 
 const PromosTable = ({
   search,
@@ -40,25 +41,35 @@ const PromosTable = ({
     );
   };
 
-  const ActiveStatusCell = ({ promos }: { promos: PromoData }) => {
+  const ActiveStatusCell = ({
+    promos,
+    usageLimit,
+  }: {
+    promos: PromoData;
+    usageLimit: number;
+  }) => {
     const mutation = useUpdatePromo();
     const [isChecked, setIsChecked] = React.useState(promos.promo_show);
 
     const handleToggle = (checked: boolean) => {
-      mutation.mutate(
-        { id: promos.id, updatedData: { promo_show: checked } },
-        {
-          onError: () => setIsChecked(!checked),
-          onSuccess: () => {
-            handleAudit(
-              "Promos",
-              promos.id,
-              AuditAction.UPDATE,
-              `Update promo show status to ${checked}`,
-            );
+      if (usageLimit < 1) {
+        toast.error("This promo has been exhausted");
+      } else {
+        mutation.mutate(
+          { id: promos.id, updatedData: { promo_show: checked } },
+          {
+            onError: () => setIsChecked(!checked),
+            onSuccess: () => {
+              handleAudit(
+                "Promos",
+                promos.id,
+                AuditAction.UPDATE,
+                `Update promo show status to ${checked}`,
+              );
+            },
           },
-        },
-      );
+        );
+      }
     };
 
     return <Switch checked={isChecked} onCheckedChange={handleToggle} />;
@@ -95,12 +106,17 @@ const PromosTable = ({
     {
       accessorKey: "promo_usage_limit",
       header: "Promo Count Available",
-      cell: ({ getValue }) => getValue() || "N/A",
+      cell: ({ getValue }) => getValue() || "0",
     },
     {
       accessorKey: "promo_show",
       header: "Show in List",
-      cell: ({ row }) => <ActiveStatusCell promos={row.original} />,
+      cell: ({ row }) => (
+        <ActiveStatusCell
+          promos={row.original}
+          usageLimit={row.original.promo_usage_limit}
+        />
+      ),
     },
     {
       accessorKey: "actions",
