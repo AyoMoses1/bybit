@@ -233,6 +233,8 @@ const CarsTable = ({
     },
   ];
 
+  console.log(cars);
+
   const exportToCSV = (data: CarType[]) => {
     const csvData = data.map((item) => ({
       ID: item.id || "N/A",

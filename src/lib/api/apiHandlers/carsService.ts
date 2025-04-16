@@ -5,6 +5,7 @@ import {
   update,
   remove,
   push,
+  get,
 } from "firebase/database";
 
 type Car = {
@@ -32,53 +33,50 @@ type CarType = {
   approved: boolean;
 };
 
-export const fetchCars = (userType: string, uid: string, search?: string) => {
-  return new Promise<Car[]>((resolve, reject) => {
-    try {
-      const db = getDatabase();
-      const carRef = ref(db, "cars");
+export const fetchCars = async (
+  userType: string,
+  uid: string,
+  search?: string,
+): Promise<Car[]> => {
+  try {
+    const db = getDatabase();
+    const [carSnapshot, userSnapshot] = await Promise.all([
+      get(ref(db, "cars")),
+      get(ref(db, "users")), // assuming driver/user data is under "users"
+    ]);
 
-      onValue(
-        carRef,
-        (snapshot) => {
-          if (!snapshot.exists()) {
-            resolve([]);
-            return;
-          }
-          const data = snapshot.val();
-          const arr = Object.keys(data || {})
-            .map((key) => ({
-              id: key,
-              ...data[key],
-            }))
-            .filter(
-              (user) =>
-                !search ||
-                user.carType?.toLowerCase().includes(search.toLowerCase()) ||
-                user.vehicleNumber
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                user.vehicleMake
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                user.vehicleModel
-                  ?.toLowerCase()
-                  .includes(search.toLowerCase()) ||
-                user.other_info?.toLowerCase().includes(search.toLowerCase()),
-            );
-          resolve(arr.reverse());
-        },
-        (error) => {
-          console.error("Firebase error:", error);
-          reject(error);
-        },
-        { onlyOnce: true },
+    if (!carSnapshot.exists()) return [];
+
+    const carData = carSnapshot.val();
+    const userData = userSnapshot.exists() ? userSnapshot.val() : {};
+
+    const cars: Car[] = Object.keys(carData).map((key) => ({
+      id: key,
+      ...carData[key],
+    }));
+
+    const filtered = cars.filter((car) => {
+      const driver = userData[car.driver];
+      const driverFullName = driver
+        ? `${driver.firstName ?? ""} ${driver.lastName ?? ""}`.toLowerCase()
+        : "";
+
+      return (
+        !search ||
+        car.carType?.toLowerCase().includes(search.toLowerCase()) ||
+        car.vehicleNumber?.toLowerCase().includes(search.toLowerCase()) ||
+        car.vehicleMake?.toLowerCase().includes(search.toLowerCase()) ||
+        car.vehicleModel?.toLowerCase().includes(search.toLowerCase()) ||
+        car.other_info?.toLowerCase().includes(search.toLowerCase()) ||
+        driverFullName.includes(search.toLowerCase())
       );
-    } catch (error) {
-      console.error("Fetch Cars Error:", error);
-      reject(error);
-    }
-  });
+    });
+
+    return filtered.reverse();
+  } catch (error) {
+    console.error("Fetch Cars Error:", error);
+    throw error;
+  }
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
