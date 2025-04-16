@@ -31,6 +31,18 @@ const UpdatePromo: React.FC = () => {
     user_avail: 0,
   });
 
+  const toLocalDateTimeInputValue = (timestamp: number) => {
+    const date = new Date(timestamp);
+    const offset = date.getTimezoneOffset();
+    const localDate = new Date(date.getTime() - offset * 60000);
+    return localDate.toISOString().slice(0, 16);
+  };
+
+  const now = new Date();
+  const offset = now.getTimezoneOffset();
+  const localNow = new Date(now.getTime() - offset * 60000);
+  const minDateTime = localNow.toISOString().slice(0, 16);
+
   useEffect(() => {
     if (promo) {
       setFormData({
@@ -262,15 +274,14 @@ const UpdatePromo: React.FC = () => {
                 <div>
                   <TextInput
                     className="w-full"
-                    type="date"
+                    type="datetime-local"
                     id="promo_validity"
                     value={
                       formData.promo_validity
-                        ? new Date(formData.promo_validity)
-                            .toISOString()
-                            .split("T")[0]
+                        ? toLocalDateTimeInputValue(formData.promo_validity)
                         : ""
                     }
+                    min={minDateTime}
                     onChange={(e) => {
                       const selectedDate = new Date(e.target.value);
                       setFormData((prev) => ({
@@ -290,10 +301,9 @@ const UpdatePromo: React.FC = () => {
                     type="number"
                     value={formData.promo_usage_limit.toString()}
                     onChange={(e) => {
-                      const selectedDate = new Date(e.target.value);
                       setFormData((prev) => ({
                         ...prev,
-                        promo_usage_limit: selectedDate.getTime(),
+                        promo_usage_limit: parseFloat(e.target.value),
                       }));
                     }}
                     placeholder="Enter usage limit"
