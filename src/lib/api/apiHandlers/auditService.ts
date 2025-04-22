@@ -79,6 +79,7 @@ export const fetchAudits = (
                   .includes(search.toLowerCase()) ||
                 user?.id?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.action?.toLowerCase().includes(search.toLowerCase()) ||
+                user?.ipAddress?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.entity?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.entityId?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.userId?.toLowerCase().includes(search.toLowerCase()) ||
