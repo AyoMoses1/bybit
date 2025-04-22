@@ -2,20 +2,20 @@
 
 import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
-import { PaymentMethod } from "@/lib/api/apiHandlers/paymentSettingsService";
 import {
   usePaymentSettings,
   useUpdatePaymentSettingField,
   useUpdatePaymentSettings,
 } from "@/lib/api/hooks/usePaymentSettings";
+import { formatPaymentMethodName, getPaymentMethodFields } from "@/lib/utils";
 import React, { useState, useEffect, FormEvent, ChangeEvent } from "react";
-
 import toast from "react-hot-toast";
 
 // Types
 type TabData = {
   key: number;
   title: string;
+  value: string;
 };
 
 interface FormInputProps {
@@ -39,41 +39,60 @@ const PaymentSettings: React.FC = () => {
   const updatePaymentSettingsMutation = useUpdatePaymentSettings();
   const updateFieldMutation = useUpdatePaymentSettingField();
 
-  const [selectedTab, setSelectedTab] = useState<string>("Flutterwave");
-  const [formData, setFormData] = useState<PaymentMethod>({
-    merchantId: "",
-    privateKey: "",
-    publicKey: "",
-    active: false,
-    testing: false,
+  const [tabsData, setTabsData] = useState<TabData[]>([]);
+  const [selectedTab, setSelectedTab] = useState<string>("");
+  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [fieldNames, setFieldNames] = useState<{ [key: string]: string }>({
+    merchantId: "merchantId",
+    privateKey: "privateKey",
+    publicKey: "publicKey",
   });
 
-  // Update tabs based on the database structure
-  const tabsData: TabData[] = [
-    { key: 1, title: "Flutterwave" },
-    { key: 2, title: "Braintree" },
-    { key: 3, title: "Culqi" },
-  ];
+  // Generate tabs from payment settings data
+  useEffect(() => {
+    if (paymentSettings) {
+      const methods = Object.keys(paymentSettings).map((method, index) => ({
+        key: index + 1,
+        title: formatPaymentMethodName(method),
+        value: method,
+      }));
+
+      setTabsData(methods);
+
+      if (!selectedTab && methods.length > 0) {
+        setSelectedTab(methods[0].value);
+      }
+    }
+  }, [paymentSettings, selectedTab]);
 
   useEffect(() => {
-    if (paymentSettings && paymentSettings[selectedTab.toLowerCase()]) {
-      const currentSettings = paymentSettings[selectedTab.toLowerCase()];
-      setFormData({
-        merchantId: currentSettings.merchantId || "",
-        privateKey: currentSettings.privateKey || "",
-        publicKey: currentSettings.publicKey || "",
-        active: currentSettings.active || false,
-        testing: currentSettings.testing || false,
-      });
-    } else {
-      // Reset form if no settings found for this payment method
-      setFormData({
-        merchantId: "",
-        privateKey: "",
-        publicKey: "",
-        active: false,
-        testing: false,
-      });
+    if (paymentSettings && selectedTab) {
+      const currentSettings = paymentSettings[selectedTab];
+
+      if (currentSettings) {
+        // Get the correct field names for this payment method
+        const methodFields = getPaymentMethodFields(
+          selectedTab,
+          currentSettings,
+        );
+        setFieldNames(methodFields);
+
+        // Set form data from current settings
+        setFormData(currentSettings);
+      } else {
+        // Reset form if no settings found
+        setFormData({
+          active: false,
+          testing: false,
+        });
+
+        // Reset field names to defaults
+        setFieldNames({
+          merchantId: "merchantId",
+          privateKey: "privateKey",
+          publicKey: "publicKey",
+        });
+      }
     }
   }, [selectedTab, paymentSettings]);
 
@@ -88,13 +107,18 @@ const PaymentSettings: React.FC = () => {
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
 
-    if (!formData.merchantId || !formData.privateKey || !formData.publicKey) {
+    // Check if required fields are filled
+    if (
+      !formData[fieldNames.merchantId] ||
+      !formData[fieldNames.privateKey] ||
+      !formData[fieldNames.publicKey]
+    ) {
       toast.error("Please fill all required fields");
       return;
     }
 
     updatePaymentSettingsMutation.mutate({
-      method: selectedTab.toLowerCase(),
+      method: selectedTab,
       data: formData,
     });
   };
@@ -106,7 +130,7 @@ const PaymentSettings: React.FC = () => {
     }));
 
     updateFieldMutation.mutate({
-      method: selectedTab.toLowerCase(),
+      method: selectedTab,
       field: "active",
       value: checked,
     });
@@ -119,7 +143,7 @@ const PaymentSettings: React.FC = () => {
     }));
 
     updateFieldMutation.mutate({
-      method: selectedTab.toLowerCase(),
+      method: selectedTab,
       field: "testing",
       value: checked,
     });
@@ -140,7 +164,7 @@ const PaymentSettings: React.FC = () => {
       <input
         type={type}
         name={name}
-        value={value}
+        value={value || ""}
         onChange={onChange}
         placeholder={placeholder}
         className="w-full rounded-md border border-gray-200 p-3 focus:outline-none focus:ring-1 focus:ring-purple-500"
@@ -166,21 +190,21 @@ const PaymentSettings: React.FC = () => {
         <form onSubmit={handleSubmit}>
           <FormInput
             label="Merchant ID"
-            name="merchantId"
-            value={formData.merchantId || ""}
+            name={fieldNames.merchantId}
+            value={formData[fieldNames.merchantId] || ""}
             onChange={handleInputChange}
           />
           <FormInput
-            label="PrivateKey"
-            name="privateKey"
-            value={formData.privateKey || ""}
+            label="Private Key"
+            name={fieldNames.privateKey}
+            value={formData[fieldNames.privateKey] || ""}
             onChange={handleInputChange}
             type="password"
           />
           <FormInput
-            label="PublicKey"
-            name="publicKey"
-            value={formData.publicKey || ""}
+            label="Public Key"
+            name={fieldNames.publicKey}
+            value={formData[fieldNames.publicKey] || ""}
             onChange={handleInputChange}
           />
 
@@ -207,17 +231,19 @@ const PaymentSettings: React.FC = () => {
             isChecked={formData.active || false}
             onChange={handleToggleActive}
           />
-          <SettingsToggle
-            label="Test Mode"
-            isChecked={formData.testing || false}
-            onChange={handleToggleTestMode}
-          />
+          {formData.hasOwnProperty("testing") && (
+            <SettingsToggle
+              label="Test Mode"
+              isChecked={formData.testing || false}
+              onChange={handleToggleTestMode}
+            />
+          )}
         </div>
       </div>
     </div>
   );
 
-  if (isLoading) {
+  if (isLoading || !selectedTab) {
     return (
       <div className="flex justify-center p-8">Loading payment settings...</div>
     );
@@ -225,16 +251,16 @@ const PaymentSettings: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="m-4 flex w-fit cursor-pointer pb-2 pt-2">
+      <div className="m-4 flex w-fit cursor-pointer overflow-x-auto pb-2 pt-2">
         {tabsData.map((tab) => (
           <div
             key={tab.key}
-            onClick={() => setSelectedTab(tab.title)}
+            onClick={() => setSelectedTab(tab.value)}
             className={`${
-              selectedTab === tab.title
+              selectedTab === tab.value
                 ? "border-b border-b-[#DA4CBF] pb-4 text-[#DA4CBF]"
                 : "border-b border-b-[#DDE1E6] text-[#64748B]"
-            } pl-4 pr-4 text-center font-[Roboto] text-sm font-normal`}
+            } whitespace-nowrap pl-4 pr-4 text-center font-[Roboto] text-sm font-normal`}
           >
             <p>{tab.title}</p>
           </div>
@@ -242,7 +268,9 @@ const PaymentSettings: React.FC = () => {
       </div>
 
       <div className="p-4">
-        <h1 className="mb-6 text-2xl font-medium">{selectedTab}</h1>
+        <h1 className="mb-6 text-2xl font-medium">
+          {formatPaymentMethodName(selectedTab)}
+        </h1>
         <PaymentMethodForm />
       </div>
     </div>
