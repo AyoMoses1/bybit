@@ -45,7 +45,11 @@ export const audit = (data: AuditLog) => {
   });
 };
 
-export const fetchAudits = (search?: string) => {
+export const fetchAudits = (
+  search?: string,
+  filter?: string | null,
+  customDateRange?: { from: string; to: string },
+) => {
   return new Promise<AuditLog[]>((resolve, reject) => {
     try {
       const db = getDatabase();
@@ -59,13 +63,16 @@ export const fetchAudits = (search?: string) => {
             return;
           }
           const data = snapshot.val();
+          const now = new Date();
+
           const arr = Object.keys(data || {})
             .map((key) => ({
               id: key,
               ...data[key],
             }))
-            .filter(
-              (user) =>
+            .filter((user) => {
+              // Search filter
+              const matchesSearch =
                 !search ||
                 user.description
                   ?.toLowerCase()
@@ -76,8 +83,43 @@ export const fetchAudits = (search?: string) => {
                 user?.entityId?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.userId?.toLowerCase().includes(search.toLowerCase()) ||
                 user?.userRole?.toLowerCase().includes(search.toLowerCase()) ||
-                user?.timestamp?.toLowerCase().includes(search.toLowerCase()),
-            );
+                user?.timestamp?.toLowerCase().includes(search.toLowerCase());
+
+              // Date filter
+              const timestamp = new Date(user.timestamp);
+              let matchesFilter = true;
+
+              if (filter === "today") {
+                matchesFilter = timestamp.toDateString() === now.toDateString();
+              } else if (filter === "thisMonth") {
+                matchesFilter =
+                  timestamp.getFullYear() === now.getFullYear() &&
+                  timestamp.getMonth() === now.getMonth();
+              } else if (filter === "lastMonth") {
+                const lastMonth = new Date(
+                  now.getFullYear(),
+                  now.getMonth() - 1,
+                  1,
+                );
+                matchesFilter =
+                  timestamp.getFullYear() === lastMonth.getFullYear() &&
+                  timestamp.getMonth() === lastMonth.getMonth();
+              } else if (filter === "last3Months") {
+                const threeMonthsAgo = new Date(
+                  now.getFullYear(),
+                  now.getMonth() - 3,
+                  1,
+                );
+                matchesFilter = timestamp >= threeMonthsAgo;
+              } else if (filter === "custom" && customDateRange) {
+                const from = new Date(customDateRange.from);
+                const to = new Date(customDateRange.to);
+                matchesFilter = timestamp >= from && timestamp <= to;
+              }
+
+              return matchesSearch && matchesFilter;
+            });
+
           resolve(
             arr.sort(
               (a, b) =>
@@ -93,7 +135,7 @@ export const fetchAudits = (search?: string) => {
         { onlyOnce: true },
       );
     } catch (error) {
-      console.error("Fetch Cars Error:", error);
+      console.error("Fetch Audits Error:", error);
       reject(error);
     }
   });

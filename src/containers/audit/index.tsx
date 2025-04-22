@@ -10,12 +10,14 @@ const AuditTable = ({
   search,
   clickExport,
   setClickExport,
+  filter,
 }: {
   search?: string;
   clickExport?: boolean;
   setClickExport: (value: boolean) => void;
+  filter: string;
 }) => {
-  const { data: audit, isLoading } = useAudit(search);
+  const { data: audit, isLoading } = useAudit(search, filter);
 
   const columns: ColumnDef<AuditLog>[] = [
     {

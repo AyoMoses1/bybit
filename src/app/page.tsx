@@ -60,7 +60,7 @@ export default function UsersPage() {
 
           if (Array.isArray(adminUser)) {
             const user = adminUser.find((user) => user.email === data.email);
-
+            console.log(user?.usertype);
             if (user?.usertype === "admin" || user?.usertype === "fleetadmin") {
               localStorage.setItem("authenticated", JSON.stringify(true));
               localStorage.setItem("userInfo", JSON.stringify(user));
@@ -152,7 +152,8 @@ export default function UsersPage() {
                 </span>
               </label>
               <a
-                href="#"
+                href="https://koloride-840e1.web.app/forgot-password"
+                target="_blank"
                 className="text-sm font-bold text-white hover:text-[#913B81]"
               >
                 Forgot Password?
