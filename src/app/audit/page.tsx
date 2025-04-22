@@ -6,7 +6,7 @@ import React, { useState } from "react";
 
 const Audit = () => {
   const [searchTerm, setSearchTerm] = useState("");
-  // const [clickExport, setClickExport] = useState(false);
+  const [clickExport, setClickExport] = useState(false);
 
   return (
     <div className="mt-6">
@@ -19,8 +19,8 @@ const Audit = () => {
           <SearchComponent
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            // onClick={() => setClickExport(!clickExport)}
-            // importTable={true}
+            onClick={() => setClickExport(!clickExport)}
+            importTable={true}
           />
         </div>
       </div>
@@ -28,7 +28,8 @@ const Audit = () => {
       {/* TAB CONTENT */}
       <AuditTable
         search={searchTerm}
-        // clickExport={clickExport}
+        clickExport={clickExport}
+        setClickExport={setClickExport}
       />
     </div>
   );

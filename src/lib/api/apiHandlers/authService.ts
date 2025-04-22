@@ -19,10 +19,29 @@ export const login = (credentials: Credentials): Promise<void> => {
           resolve();
         })
         .catch((error) => {
-          if (error.code === "auth/network-request-failed") {
-            toast.error("Network Request Error. Try again later");
+          switch (error.code) {
+            case "auth/network-request-failed":
+              toast.error("Network Request Error. Try again later");
+              break;
+            case "auth/invalid-credential":
+              toast.error("Invalid Credentials");
+              break;
+            case "auth/user-disabled":
+              toast.error("This account has been disabled");
+              break;
+            case "auth/user-not-found":
+              toast.error("Invalid Credentials");
+              break;
+            case "auth/invalid-email":
+              toast.error("Invalid Credentials");
+              break;
+            case "auth/too-many-requests":
+              toast.error("Too many failed attempts. Try again later");
+              break;
+            default:
+              toast.error("An error occurred during login");
           }
-          // reject(error);
+          reject(error);
         });
     } catch (error) {
       reject(error);
