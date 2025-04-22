@@ -61,7 +61,7 @@ const NotificationsTable = ({ search }: NotificationsTableProps) => {
       { notification, method: "Delete" },
       {
         onSuccess: () => {
-          toast.success("Notification deleted successfully");
+          // toast.success("Notification deleted successfully");
           queryClient.invalidateQueries({ queryKey: ["notifications"] });
           queryClient.invalidateQueries({ queryKey: ["notifications", "all"] });
           refetch();

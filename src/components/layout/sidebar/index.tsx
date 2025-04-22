@@ -6,7 +6,7 @@ import { usePathname, useRouter } from "next/navigation";
 import Logo from "../../../assets/svgs/logo.svg";
 import { Power } from "lucide-react";
 import dashboard from "../../../assets/icons/dashboard.svg";
-import addBookings from "../../../assets/icons/addBookings.svg";
+// import addBookings from "../../../assets/icons/addBookings.svg";
 import bookingHistory from "../../../assets/icons/bookingHistory.svg";
 import users from "../../../assets/icons/users.svg";
 import vehicleType from "../../../assets/icons/vehicleType.svg";
@@ -58,7 +58,7 @@ const routeGroups: Record<string, string[]> = {
 
 const mainMenuItems = [
   { url: "/dashboard", title: "Dashboard", image: dashboard },
-  { url: "/add-bookings", title: "Add Bookings", image: addBookings },
+  // { url: "/add-bookings", title: "Add Bookings", image: addBookings },
   { url: "/booking-history", title: "Booking History", image: bookingHistory },
   { url: "/users", title: "Users", image: users },
   { url: "/vehicle-type", title: "Vehicle Type", image: vehicleType },

@@ -74,7 +74,7 @@ export const useSendPushNotification = () => {
       return sendPushNotification(payload.notification);
     },
     onSuccess: () => {
-      toast.success("Push notification sent successfully");
+      // toast.success("Push notification sent successfully");
       queryClient.invalidateQueries({ queryKey: ["notifications"] });
       queryClient.invalidateQueries({ queryKey: ["notifications", "all"] });
       queryClient.refetchQueries({ queryKey: ["notifications", "all"] });
