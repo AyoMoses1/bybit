@@ -8,7 +8,6 @@ import React, { useState } from "react";
 const Audit = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [clickExport, setClickExport] = useState(false);
-
   const [filter, setFilter] = useState<string>("");
   // const [customDateRange, setCustomDateRange] = useState<{
   //   from: string;
