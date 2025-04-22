@@ -5,7 +5,6 @@ import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { ChevronDown, User } from "lucide-react";
 import { Locale } from "next-intl";
-
 import home from "../../../assets/svgs/icon.svg";
 import languageIcon from "../../../assets/svgs/system-uicons_translate.svg";
 

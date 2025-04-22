@@ -52,6 +52,16 @@ const PromosTable = ({
     const [isChecked, setIsChecked] = React.useState(promos.promo_show);
 
     const handleToggle = (checked: boolean) => {
+      const now = new Date();
+      const promoValidity = promos.promo_validity
+        ? new Date(promos.promo_validity)
+        : null;
+      const isExpired = promoValidity && promoValidity <= now;
+      if (isExpired) {
+        toast.error("This promo has expired");
+        return;
+      }
+
       if (usageLimit < 1) {
         toast.error("This promo has been exhausted");
       } else {
