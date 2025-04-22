@@ -17,10 +17,10 @@ export const useProcessAuditLog = () => {
   });
 };
 
-export const useAudit = (search?: string) => {
+export const useAudit = (search?: string, filter?: string | null) => {
   return useQuery({
-    queryKey: [USER_STATE_KEY, search],
-    queryFn: () => fetchAudits(search),
+    queryKey: [USER_STATE_KEY, search, filter],
+    queryFn: () => fetchAudits(search, filter),
     staleTime: Infinity,
     retry: 2,
   });
