@@ -8,7 +8,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useLogin } from "@/lib/api/hooks/auth";
 import toast from "react-hot-toast";
-import { FirebaseError } from "firebase/app";
 import { useUsers } from "@/lib/api/hooks/user";
 import { useRouter } from "next/navigation";
 
@@ -53,13 +52,8 @@ export default function UsersPage() {
     mutation.mutate(
       { credentials },
       {
-        onError: (error) => {
+        onError: () => {
           setLoading(false);
-          if (error instanceof FirebaseError) {
-            if (error.code === "auth/invalid-credential") {
-              toast.error("Invalid Credentials");
-            }
-          }
         },
         onSuccess: async () => {
           const { data: adminUser } = await refetch();

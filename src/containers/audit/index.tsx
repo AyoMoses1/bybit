@@ -1,11 +1,20 @@
 import { CustomTable } from "@/components/ui/data-table";
-import React from "react";
+import React, { useEffect } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { useAudit } from "@/lib/api/hooks/audit";
 import moment from "moment";
 import { AuditLog } from "@/lib/api/apiHandlers/auditService";
+import Papa from "papaparse";
 
-const AuditTable = ({ search }: { search?: string; clickExport?: boolean }) => {
+const AuditTable = ({
+  search,
+  clickExport,
+  setClickExport,
+}: {
+  search?: string;
+  clickExport?: boolean;
+  setClickExport: (value: boolean) => void;
+}) => {
   const { data: audit, isLoading } = useAudit(search);
 
   const columns: ColumnDef<AuditLog>[] = [
@@ -60,6 +69,37 @@ const AuditTable = ({ search }: { search?: string; clickExport?: boolean }) => {
       cell: ({ getValue }) => getValue() || "N/A",
     },
   ];
+
+  const exportToCSV = (data: AuditLog[]) => {
+    const csvData = data.map((item) => ({
+      Id: item.id || "N/A",
+      Action: item.action || "N/A",
+      Entity: item.entity || "N/A",
+      "Entity Id": item.entityId || "N/A",
+      "User ID": item.userId || "N/A",
+      "User Role": item.userRole || "N/A",
+      "Created Date/Time": moment(item.timestamp).format("LLL") || "N/A",
+      "Ip Address": item.ipAddress || "N/A",
+      Description: item.description || "N/A",
+    }));
+
+    const csv = Papa.unparse(csvData);
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.setAttribute("href", url);
+    link.setAttribute("download", "AuditLog.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  useEffect(() => {
+    if (clickExport) {
+      exportToCSV(audit as AuditLog[]);
+      setClickExport(false);
+    }
+  }, [clickExport, audit, setClickExport]);
 
   return (
     <div className="px-1">

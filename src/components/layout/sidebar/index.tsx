@@ -33,6 +33,12 @@ import {
 } from "@/components/ui/sidebar";
 
 import { getAuth, signOut } from "firebase/auth";
+import { useEffect, useState } from "react";
+
+type UserInfo = {
+  usertype: string;
+  id: string;
+};
 
 const routeGroups: Record<string, string[]> = {
   "/users": [
@@ -87,6 +93,14 @@ const otherMenuItems = [
 const AppSidebar = () => {
   const router = useRouter();
   const pathname = usePathname();
+  const [userType, setUserType] = useState<string>("");
+
+  const filteredMainMenuItems = mainMenuItems.filter((item) => {
+    if (item.url === "/audit") {
+      return userType === "admin";
+    }
+    return true;
+  });
 
   const isActive = (url: string) => {
     return routeGroups[url]
@@ -142,6 +156,16 @@ const AppSidebar = () => {
     );
   };
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const info = localStorage.getItem("userInfo");
+      if (info) {
+        const userData: UserInfo = JSON.parse(info);
+        setUserType(userData.usertype);
+      }
+    }
+  }, []);
+
   return (
     <Sidebar className="pb-10 pt-0">
       <div className="flex flex-col bg-white pb-2 pl-12 pt-6">
@@ -161,7 +185,7 @@ const AppSidebar = () => {
         <SidebarGroup className="space-y-2.5 pt-4">
           <SidebarGroupContent>
             <SidebarMenu>
-              {mainMenuItems.map((item) => (
+              {filteredMainMenuItems.map((item) => (
                 <MenuItem key={item.url} {...item} />
               ))}
             </SidebarMenu>
