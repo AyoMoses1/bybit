@@ -14,12 +14,6 @@ const Audit = () => {
   //   to: string;
   // }>({ from: "", to: "" });
 
-  const [filter, setFilter] = useState<string>("");
-  // const [customDateRange, setCustomDateRange] = useState<{
-  //   from: string;
-  //   to: string;
-  // }>({ from: "", to: "" });
-
   return (
     <div className="mt-6">
       <p className="px-5 text-[32px] font-semibold tracking-[-0.11px] text-[#202224]">
