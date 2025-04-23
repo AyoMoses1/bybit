@@ -11,13 +11,13 @@ export const formatPaymentMethodName = (method: string): string => {
 };
 
 // Helper function to get the appropriate field names for each payment method
+// Helper function to get the appropriate field names for each payment method
 export const getPaymentMethodFields = (
   method: string,
-  data: any,
+  data: Record<string, unknown>,
 ): { [key: string]: string } => {
   const result: { [key: string]: string } = {};
 
-  // Keys that might represent merchant ID
   const merchantIdKeys = [
     "merchantId",
     "MERCHANT_CODE",
@@ -38,7 +38,7 @@ export const getPaymentMethodFields = (
     "TXN_PASSWORD",
     "paypal_secret",
   ];
-  // Keys that might represent public keys
+
   const publicKeyKeys = [
     "publicKey",
     "PUBLIC_KEY",
@@ -51,7 +51,6 @@ export const getPaymentMethodFields = (
     "apiKey",
   ];
 
-  // Find corresponding field names
   for (const key in data) {
     if (merchantIdKeys.includes(key)) {
       result.merchantId = key;
@@ -62,7 +61,6 @@ export const getPaymentMethodFields = (
     }
   }
 
-  // Default values if not found
   result.merchantId = result.merchantId || "merchantId";
   result.privateKey = result.privateKey || "privateKey";
   result.publicKey = result.publicKey || "publicKey";

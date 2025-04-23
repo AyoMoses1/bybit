@@ -1,4 +1,4 @@
-import { getDatabase, ref, onValue, update, off } from "firebase/database";
+import { getDatabase, ref, onValue, update } from "firebase/database";
 
 export type PaymentMethod = {
   merchantId?: string;
@@ -12,7 +12,6 @@ export type PaymentSettings = {
   [key: string]: PaymentMethod;
 };
 
-// Fetch all payment settings
 export const fetchPaymentSettings = (): Promise<PaymentSettings> => {
   return new Promise((resolve, reject) => {
     try {
@@ -31,7 +30,7 @@ export const fetchPaymentSettings = (): Promise<PaymentSettings> => {
         },
       );
 
-      return () => off(settingsRef);
+      return () => unsubscribe();
     } catch (error) {
       console.error("Fetch Payment Settings Error:", error);
       reject(error);
@@ -60,7 +59,7 @@ export const fetchPaymentMethodSettings = (
         },
       );
 
-      return () => off(settingRef);
+      return () => unsubscribe();
     } catch (error) {
       console.error("Fetch Payment Method Settings Error:", error);
       reject(error);
