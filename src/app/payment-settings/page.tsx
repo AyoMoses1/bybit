@@ -41,7 +41,9 @@ const PaymentSettings: React.FC = () => {
 
   const [tabsData, setTabsData] = useState<TabData[]>([]);
   const [selectedTab, setSelectedTab] = useState<string>("");
-  const [formData, setFormData] = useState<Record<string, any>>({});
+  const [formData, setFormData] = useState<
+    Record<string, string | boolean | number>
+  >({});
   const [fieldNames, setFieldNames] = useState<{ [key: string]: string }>({
     merchantId: "merchantId",
     privateKey: "privateKey",
@@ -191,20 +193,20 @@ const PaymentSettings: React.FC = () => {
           <FormInput
             label="Merchant ID"
             name={fieldNames.merchantId}
-            value={formData[fieldNames.merchantId] || ""}
+            value={(formData[fieldNames.merchantId] as string) || ""}
             onChange={handleInputChange}
           />
           <FormInput
             label="Private Key"
             name={fieldNames.privateKey}
-            value={formData[fieldNames.privateKey] || ""}
+            value={(formData[fieldNames.privateKey] as string) || ""}
             onChange={handleInputChange}
             type="password"
           />
           <FormInput
             label="Public Key"
             name={fieldNames.publicKey}
-            value={formData[fieldNames.publicKey] || ""}
+            value={(formData[fieldNames.publicKey] as string) || ""}
             onChange={handleInputChange}
           />
 
@@ -228,13 +230,13 @@ const PaymentSettings: React.FC = () => {
         <div className="space-y-6">
           <SettingsToggle
             label="Active"
-            isChecked={formData.active || false}
+            isChecked={(formData.active as boolean) || false}
             onChange={handleToggleActive}
           />
           {formData.hasOwnProperty("testing") && (
             <SettingsToggle
               label="Test Mode"
-              isChecked={formData.testing || false}
+              isChecked={(formData.testing as boolean) || false}
               onChange={handleToggleTestMode}
             />
           )}
