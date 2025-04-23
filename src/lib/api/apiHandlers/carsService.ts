@@ -201,7 +201,6 @@ export const addCar = (car: Record<string, Car>) => {
           reject(error);
         });
     } catch (error) {
-      console.error("Add Car Error:", error);
       reject(error);
     }
   });

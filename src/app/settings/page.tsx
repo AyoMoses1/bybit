@@ -1,10 +1,10 @@
 "use client";
+import AppInformation from "@/containers/settings/appInformation";
 import SmsSettings from "@/containers/settings/sms";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import React, { JSX, useState } from "react";
 
 const Settings = () => {
-  // Define the type for the tab titles
   type TabTitle =
     | "App Information"
     | "General Settings"
@@ -17,7 +17,11 @@ const Settings = () => {
 
   //  TAB CONTENT
   const tabContent: Record<TabTitle, JSX.Element> = {
-    "App Information": <div>App Information Content</div>,
+    "App Information": (
+      <div>
+        <AppInformation />
+      </div>
+    ),
     "General Settings": <div>General Settings Content</div>,
     Languages: (
       <div>
