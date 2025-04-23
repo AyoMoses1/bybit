@@ -18,7 +18,7 @@ export const fetchPaymentSettings = (): Promise<PaymentSettings> => {
       const db = getDatabase();
       const settingsRef = ref(db, "payment_settings");
 
-      onValue(
+      const unsubscribe = onValue(
         settingsRef,
         (snapshot) => {
           const data = snapshot.val() || {};
@@ -47,7 +47,7 @@ export const fetchPaymentMethodSettings = (
       const db = getDatabase();
       const settingRef = ref(db, `payment_settings/${method.toLowerCase()}`);
 
-      onValue(
+      const unsubscribe = onValue(
         settingRef,
         (snapshot) => {
           const data = snapshot.val();
