@@ -13,14 +13,15 @@ export interface SettingsType {
   AllowCriticalEditsAdmin?: boolean;
 }
 
-const fetchSettings = async () => {
+const fetchSettings = async (): Promise<SettingsType> => {
   const { settingsRef } = firebase;
   return new Promise((resolve, reject) => {
     onValue(
       settingsRef,
       (snapshot) => {
         const data = snapshot.val();
-        if (data) resolve(data);
+        if (data)
+          resolve(data as SettingsType); // <-- cast to type
         else reject(new Error("Unable to fetch database and settings."));
       },
       { onlyOnce: true },
@@ -29,7 +30,7 @@ const fetchSettings = async () => {
 };
 
 export const useSettings = () => {
-  return useQuery({
+  return useQuery<SettingsType>({
     queryKey: ["settings"],
     queryFn: fetchSettings,
   });

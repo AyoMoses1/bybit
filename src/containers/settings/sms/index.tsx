@@ -37,6 +37,14 @@ const SmsSettings = () => {
   } = useForm<FormData>({
     resolver: zodResolver(formSchema),
     mode: "onChange",
+    defaultValues: {
+      apiUrl: "",
+      contentType: "",
+      method: "",
+      body: "",
+      authorization: "",
+      customMobileOTP: "",
+    },
   });
 
   const formValues = watch();
@@ -56,7 +64,10 @@ const SmsSettings = () => {
 
     try {
       setLoading(true);
-      await editSettings(data);
+      await editSettings({
+        ...data,
+        AllowCriticalEditsAdmin: settings?.AllowCriticalEditsAdmin,
+      });
     } catch {
       toast.error("Failed to submit settings.");
     } finally {
