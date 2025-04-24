@@ -21,7 +21,7 @@ const AppInformation = () => {
     CompanyAddress: z.string().optional(),
     CompanyWebsite: z.string().optional(),
     contact_email: z.string().email("Invalid email address").optional(),
-    ContactPhone: z.string().optional(),
+    CompanyPhone: z.string().optional(),
     CompanyTerms: z.string().optional(),
     CompanyTermCondition: z.string().optional(),
     FacebookHandle: z.string().optional(),
@@ -59,7 +59,7 @@ const AppInformation = () => {
               "Settings",
               "",
               AuditAction.UPDATE,
-              `Settings details updated`,
+              `App Information details updated`,
             );
           },
         },
@@ -76,7 +76,7 @@ const AppInformation = () => {
       setValue("CompanyAddress", settings.CompanyAddress || "");
       setValue("CompanyWebsite", settings.CompanyWebsite || "");
       setValue("contact_email", (settings.contact_email as string) || "");
-      setValue("ContactPhone", settings.CompanyPhone || "");
+      setValue("CompanyPhone", settings.CompanyPhone || "");
       setValue("CompanyTerms", settings.CompanyTerms || "");
       setValue("CompanyTermCondition", settings.CompanyTermCondition || "");
       setValue("FacebookHandle", settings.FacebookHandle || "");
@@ -166,11 +166,11 @@ const AppInformation = () => {
                     type="text"
                     label="Contact Phone"
                     placeholder="+236 6443"
-                    {...register("ContactPhone")}
+                    {...register("CompanyPhone")}
                   />
-                  {errors.ContactPhone && (
+                  {errors.CompanyPhone && (
                     <p className="text-red-500">
-                      {errors.ContactPhone.message}
+                      {errors.CompanyPhone.message}
                     </p>
                   )}
                 </div>
