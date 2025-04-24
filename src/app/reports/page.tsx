@@ -12,7 +12,7 @@ const Reports = () => {
   const tabsData = [
     { key: 1, title: "Driver Earning History" },
     { key: 2, title: "Earning Reports" },
-    { key: 3, title: "Fleet Admins Earning Reports" },
+    { key: 3, title: "Admins Earning Reports" },
   ];
 
   return (
@@ -71,7 +71,7 @@ const Reports = () => {
               setClickExport={setClickExport}
             />
           </div>
-        ) : selectedTab === "Fleet Admins Earning Reports" ? (
+        ) : selectedTab === "Admins Earning Reports" ? (
           <div>
             <FleetEarningHistory search={searchTerm} />
           </div>
