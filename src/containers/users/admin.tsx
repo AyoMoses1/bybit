@@ -120,7 +120,7 @@ const Admin = ({
               }}
               className="relative flex w-fit cursor-pointer items-center justify-between gap-3 rounded-md border-[0.6px] border-[#D5D5D5] bg-[#FAFBFD] px-2"
             >
-              <Link href={`/update-admin/${row.original.id}`}>
+              <Link href={`/update-super-admin/${row.original.id}`}>
                 <div className="px-1 py-2">
                   <ArrowRight className="size-4 text-gray-600" />
                 </div>

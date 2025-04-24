@@ -28,8 +28,8 @@ const Users = () => {
       : [
           { key: 1, title: "Customers" },
           { key: 2, title: "Drivers" },
-          { key: 3, title: "Fleet Admins" },
-          { key: 4, title: "Admins" },
+          { key: 3, title: "Admins" },
+          { key: 4, title: "Super Admins" },
         ];
 
   useEffect(() => {
@@ -75,10 +75,10 @@ const Users = () => {
 
           <Link
             href={
-              selectedTab === "Admins"
+              selectedTab === "Super Admins"
                 ? "/add-super-admin"
-                : selectedTab === "Fleet Admins"
-                  ? "/add-fleet-admin"
+                : selectedTab === "Admins"
+                  ? "/add-admin"
                   : selectedTab === "Customers"
                     ? "/add-customers"
                     : selectedTab === "Drivers"
@@ -113,22 +113,22 @@ const Users = () => {
             setClickExport={setClickExport}
           />
         </div>
-      ) : selectedTab === "Fleet Admins" ? (
+      ) : selectedTab === "Admins" ? (
         <div>
           {" "}
           <div>
             <FleetAdmin
               search={searchTerm}
-              clickExport={selectedTab === "Fleet Admins" ? clickExport : false}
+              clickExport={selectedTab === "Admins" ? clickExport : false}
               setClickExport={setClickExport}
             />
           </div>
         </div>
-      ) : selectedTab === "Admins" ? (
+      ) : selectedTab === "Super Admins" ? (
         <div>
           <Admin
             search={searchTerm}
-            clickExport={selectedTab === "Admins" ? clickExport : false}
+            clickExport={selectedTab === "Super Admins" ? clickExport : false}
             setClickExport={setClickExport}
           />
         </div>

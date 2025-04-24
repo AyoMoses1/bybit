@@ -1,13 +1,12 @@
 "use client";
-
+import { Camera, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { useGetUserById, useUpdateUser } from "@/lib/api/hooks/user";
 import { updateCustomerProfileImage } from "@/lib/api/apiHandlers/userService";
-import { Camera } from "lucide-react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
+import ProtectedRoute from "@/HOC/ProtectedRoute";
 import Image from "next/image";
 
 type User = {
@@ -16,12 +15,13 @@ type User = {
   mobile: string;
   email: string;
   profile_image?: string;
+  approved: boolean;
 };
 
-const UpdateAdmin = () => {
+const UpdateFleetAdmin = () => {
+  const [selectedValue, setSelectedValue] = useState("");
   const { id } = useParams();
   const mutation = useUpdateUser();
-  const router = useRouter();
   const userId = Array.isArray(id) ? id[0] : id;
   const { data: user } = useGetUserById(userId ?? "") as {
     data: User | undefined;
@@ -62,7 +62,9 @@ const UpdateAdmin = () => {
       }
 
       const updatedData = {
-        ...data,
+        firstName: data.firstName,
+        lastName: data.lastName,
+        approved: selectedValue === "approved" ? true : false,
         ...(downloadURL && { profile_image: downloadURL }),
       };
 
@@ -78,7 +80,6 @@ const UpdateAdmin = () => {
           onSuccess: () => {
             setLoading(false);
             toast.success("User updated successfully");
-            router.push("/users");
           },
         },
       );
@@ -94,6 +95,7 @@ const UpdateAdmin = () => {
       mobile: user?.mobile ?? "",
       email: user?.email ?? "",
     });
+    setSelectedValue(user?.approved ? "approved" : "not-approved");
     setSelectedImage(user?.profile_image ?? "");
   }, [user]);
 
@@ -118,9 +120,9 @@ const UpdateAdmin = () => {
             >
               {selectedImage ? (
                 <Image
-                  src={selectedImage}
                   width={70}
                   height={70}
+                  src={selectedImage}
                   alt="Uploaded preview"
                   className="h-full w-full rounded-full object-cover"
                 />
@@ -145,9 +147,9 @@ const UpdateAdmin = () => {
                 </label>
                 <input
                   type="text"
-                  value={data.firstName}
                   className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
                   placeholder="John"
+                  value={data.firstName}
                   onChange={(event) =>
                     setData((prev) => ({
                       ...prev,
@@ -162,15 +164,27 @@ const UpdateAdmin = () => {
                 </label>
                 <input
                   type="text"
-                  value={data.lastName}
                   className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
                   placeholder="Last"
+                  value={data.lastName}
                   onChange={(event) =>
                     setData((prev) => ({
                       ...prev,
                       lastName: event.target.value,
                     }))
                   }
+                />
+              </div>
+
+              <div className="w-full">
+                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
+                  Referral ID
+                </label>
+                <input
+                  disabled
+                  type="text"
+                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
+                  placeholder=""
                 />
               </div>
             </div>
@@ -182,9 +196,10 @@ const UpdateAdmin = () => {
                 </label>
                 <input
                   type="tel"
-                  value={data.mobile}
-                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none"
+                  className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
                   placeholder="+352 232323"
+                  disabled
+                  value={data.mobile}
                   onChange={(event) =>
                     setData((prev) => ({
                       ...prev,
@@ -200,9 +215,9 @@ const UpdateAdmin = () => {
                 <input
                   type="email"
                   disabled
-                  value={data.email}
                   className="mt-1 h-[48px] w-full border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] px-4 py-2 outline-none disabled:bg-muted disabled:text-[#697077]"
                   placeholder="email@vasas.com"
+                  value={data.email}
                   onChange={(event) =>
                     setData((prev) => ({
                       ...prev,
@@ -210,6 +225,34 @@ const UpdateAdmin = () => {
                     }))
                   }
                 />
+              </div>
+
+              <div className="w-full">
+                <label className="block font-[Roboto] text-sm font-normal text-[#21272A]">
+                  Approval Status
+                </label>
+                <div className="relative w-full">
+                  <select
+                    value={selectedValue}
+                    onChange={(e) => setSelectedValue(e.target.value)}
+                    className={`mt-1 h-[48px] w-full appearance-none border-b-[1.5px] border-b-[#C1C7CD] bg-[#F8F8F8] py-2 pl-3 pr-10 outline-none transition-colors ${selectedValue === "" ? "text-[#697077]" : "text-[#21272A]"}`}
+                  >
+                    <option value="" disabled className="text-[#697077]">
+                      Select an option
+                    </option>
+                    <option value="approved" className="text-[#21272A]">
+                      Approved
+                    </option>
+                    <option value="not-approved" className="text-[#21272A]">
+                      Not Approved
+                    </option>
+                  </select>
+
+                  {/* Custom Dropdown Icon */}
+                  <div className="pointer-events-none absolute inset-y-0 right-3 top-1 flex items-center text-gray-500">
+                    <ChevronDown className="size-5" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
@@ -231,4 +274,4 @@ const UpdateAdmin = () => {
   );
 };
 
-export default ProtectedRoute(UpdateAdmin);
+export default ProtectedRoute(UpdateFleetAdmin);
