@@ -4,9 +4,12 @@ import React, { useEffect, useState } from "react";
 import { SMTPDataType } from "@/lib/api/apiHandlers/settingsService";
 import { useSMTPInfo, useUpdateSMTPInfo } from "@/lib/api/hooks/settings";
 import { Switch } from "@/components/ui/switch";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 const SMTPSettings = () => {
   const mutation = useUpdateSMTPInfo();
+  const { handleAudit } = useAuditLog();
   const { data: SMTP }: { data: SMTPDataType | undefined } = useSMTPInfo();
 
   const [data, setData] = useState<{
@@ -52,6 +55,12 @@ const SMTPSettings = () => {
           },
           onSuccess: () => {
             setLoading(false);
+            handleAudit(
+              "Settings",
+              "",
+              AuditAction.UPDATE,
+              `SMTP details updated`,
+            );
           },
         },
       );

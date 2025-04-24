@@ -59,7 +59,7 @@ const AppInformation = () => {
               "Settings",
               "",
               AuditAction.UPDATE,
-              `Settings details updated`,
+              `App Information details updated`,
             );
           },
         },
