@@ -42,12 +42,12 @@ const FleetEarningHistory = ({ search }: { search?: string }) => {
   const columns: ColumnDef<FleetEarningReport>[] = [
     {
       accessorKey: "fleetadmin_id",
-      header: "Fleetadmin ID",
+      header: "Admin ID",
       cell: ({ getValue }) => getValue() || "N/A",
     },
     {
       accessorKey: "fleetadmin_name",
-      header: "Fleetadmin Name",
+      header: "Admin Name",
       cell: ({ getValue }) => getValue() || "N/A",
     },
     {
