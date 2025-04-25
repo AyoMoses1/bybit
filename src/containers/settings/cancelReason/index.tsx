@@ -26,15 +26,22 @@ const CancellationReasons = ({
   const { data, isLoading, error } = useCancelReasons();
   const { mutate } = useEditCancelReasons();
 
-  const filteredData = data?.complex?.filter((item) =>
-    item.label.toLowerCase().includes(search?.toLowerCase() ?? ""),
+  const filteredData = React.useMemo(
+    () =>
+      data?.complex?.filter((item) =>
+        item.label.toLowerCase().includes(search?.toLowerCase() ?? ""),
+      ),
+    [data?.complex, search],
   );
 
-  const reasons: CancelReason[] =
-    filteredData?.map((item, index) => ({
-      id: String(index),
-      label: item.label,
-    })) || [];
+  const reasons: CancelReason[] = React.useMemo(
+    () =>
+      filteredData?.map((item, index) => ({
+        id: String(index),
+        label: item.label,
+      })) || [],
+    [filteredData],
+  );
 
   React.useEffect(() => {
     if (clickExport && reasons.length > 0) {
@@ -44,6 +51,7 @@ const CancellationReasons = ({
         ...reasons.map((item) => Object.values(item).join(",")),
       ].join("\n");
 
+      // Create download link
       const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const link = document.createElement("a");
@@ -53,9 +61,11 @@ const CancellationReasons = ({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
+
+      // Reset export trigger
       setClickExport(false);
     }
-  }, [clickExport, setClickExport, reasons]);
+  }, [clickExport, reasons, setClickExport]);
 
   const handleDelete = (id: string) => {
     if (!data?.complex) return;
