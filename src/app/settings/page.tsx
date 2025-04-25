@@ -1,5 +1,6 @@
 "use client";
 import AppInformation from "@/containers/settings/appInformation";
+import CancellationReasonsPage from "@/app/cancel-reason/page";
 import SmsSettings from "@/containers/settings/sms";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import React, { JSX, useState } from "react";
@@ -30,7 +31,11 @@ const Settings = () => {
     ),
     SMTP: <div>SMTP Content</div>,
     "SMS Settings": <SmsSettings />,
-    "Cancellation Reason": <div>Cancellation Reason Content</div>,
+    "Cancellation Reason": (
+      <div>
+        <CancellationReasonsPage />
+      </div>
+    ),
   };
 
   return (
