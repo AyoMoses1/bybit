@@ -1,5 +1,6 @@
 "use client";
 import { useEffect } from "react";
+import { use } from "react";
 import { useForm } from "react-hook-form";
 import {
   useCancelReasons,
@@ -13,26 +14,31 @@ type FormValues = {
   label: string;
 };
 
-const UpdateCancelReason = ({ params }: { params: { id: string } }) => {
+const UpdateCancelReason = ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
+  const { id } = use(params);
   const router = useRouter();
   const { data } = useCancelReasons();
   const { mutate } = useEditCancelReasons();
   const { register, handleSubmit, reset } = useForm<FormValues>();
 
   useEffect(() => {
-    if (data?.complex && params?.id) {
-      const reason = data.complex[parseInt(params.id)];
+    if (data?.complex && id) {
+      const reason = data.complex[parseInt(id)];
       if (reason) {
         reset({ label: reason.label });
       }
     }
-  }, [data, params.id, reset]);
+  }, [data, id, reset]);
 
   const onSubmit = (values: FormValues) => {
     if (!data?.complex) return;
 
     const updatedReasons = data.complex.map((item, index) =>
-      index === parseInt(params.id) ? { ...item, label: values.label } : item,
+      index === parseInt(id) ? { ...item, label: values.label } : item,
     );
 
     mutate(updatedReasons, {
