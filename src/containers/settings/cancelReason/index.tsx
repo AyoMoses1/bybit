@@ -53,8 +53,6 @@ const CancellationReasons = ({
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
-
-      // Reset export trigger
       setClickExport(false);
     }
   }, [clickExport, setClickExport, reasons]);
