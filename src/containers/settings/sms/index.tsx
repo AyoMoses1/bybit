@@ -193,7 +193,7 @@ const SmsSettings = () => {
                   type="submit"
                   className="w-[287px] py-[10px] disabled:opacity-70"
                 >
-                  {loading ? "submitting" : "submit"}
+                  {loading ? "Submitting" : "Submit"}
                 </Button>
               </div>
             </div>

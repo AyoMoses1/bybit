@@ -1,5 +1,6 @@
 "use client";
 import AppInformation from "@/containers/settings/appInformation";
+import CancellationReasonsPage from "@/app/cancel-reason/page";
 import SmsSettings from "@/containers/settings/sms";
 import SMTPSettings from "@/containers/settings/smtpSettings";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
@@ -31,7 +32,11 @@ const Settings = () => {
     ),
     SMTP: <SMTPSettings />,
     "SMS Settings": <SmsSettings />,
-    "Cancellation Reason": <div>Cancellation Reason Content</div>,
+    "Cancellation Reason": (
+      <div>
+        <CancellationReasonsPage />
+      </div>
+    ),
   };
 
   return (
@@ -54,13 +59,15 @@ const Settings = () => {
       </div>
 
       {/* TAB HEADER */}
-      <div className="mb-2 flex items-center justify-between px-5">
-        <div>
-          <p className="text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
-            {selectedTab}
-          </p>
+      {selectedTab !== "Cancellation Reason" && (
+        <div className="mb-2 flex items-center justify-between px-5">
+          <div>
+            <p className="text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
+              {selectedTab}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* TAB CONTENT */}
       <div>{tabContent[selectedTab]}</div>
