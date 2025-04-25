@@ -11,7 +11,7 @@ const CancellationReasonsPage = () => {
   const [clickExport, setClickExport] = useState(false);
 
   return (
-    <div className="mt-10">
+    <div>
       <div className="mb-3 flex items-center justify-between px-5">
         <p className="text-[32px] font-semibold tracking-[-0.11px] text-[#202224]">
           Cancellation Reasons
