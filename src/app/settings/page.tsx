@@ -58,13 +58,15 @@ const Settings = () => {
       </div>
 
       {/* TAB HEADER */}
-      <div className="mb-2 flex items-center justify-between px-5">
-        <div>
-          <p className="text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
-            {selectedTab}
-          </p>
+      {selectedTab !== "Cancellation Reason" && (
+        <div className="mb-2 flex items-center justify-between px-5">
+          <div>
+            <p className="text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
+              {selectedTab}
+            </p>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* TAB CONTENT */}
       <div>{tabContent[selectedTab]}</div>
