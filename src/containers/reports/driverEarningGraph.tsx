@@ -199,9 +199,9 @@ const DriverEarningGraph = () => {
                 type="number"
                 axisLine={false}
                 tickLine={false}
-                domain={[0, 100]}
-                ticks={[0, 20, 40, 60, 80, 100]}
-                allowDataOverflow={true}
+                // domain={[0, 100]}
+                // ticks={[0, 20, 40, 60, 80, 100]}
+                // allowDataOverflow={true}
               />
               <Tooltip
                 content={({ payload }) => {
