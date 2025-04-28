@@ -80,7 +80,8 @@ const WithdrawalTable = ({
     {
       accessorKey: "date",
       header: "Request Date",
-      cell: ({ getValue }) => formatDate(Number(getValue())),
+      cell: ({ getValue }) =>
+        getValue() ? formatDate(Number(getValue())) : "N/A",
     },
     {
       accessorKey: "name",
