@@ -3,6 +3,7 @@ import SearchComponent from "@/components/SearchComponent";
 import DriverEarningGraph from "@/containers/reports/driverEarningGraph";
 import DriverEarningHistory from "@/containers/reports/driverEarningHistory";
 import EarningHistory from "@/containers/reports/earningHistory";
+import EarningReportGraph from "@/containers/reports/earningReportGraph";
 import FleetEarningHistory from "@/containers/reports/fleetEarningHistory";
 
 import React, { useState } from "react";
@@ -36,10 +37,13 @@ const Reports = () => {
         })}
       </div>
       {/* GRAPH SECTION */}
-      {selectedTab === "Driver Earning History" ||
-      selectedTab === "Earning Reports" ? (
+      {selectedTab === "Driver Earning History" ? (
         <div>
           <DriverEarningGraph />
+        </div>
+      ) : selectedTab === "Earning Reports" ? (
+        <div>
+          <EarningReportGraph />
         </div>
       ) : null}
       {/* TAB HEADER */}

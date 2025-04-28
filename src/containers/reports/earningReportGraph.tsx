@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { LineChart, Line } from "recharts";
+import { Bar, BarChart, Rectangle } from "recharts";
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -9,21 +9,12 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { useDriversReports } from "@/lib/api/hooks/reports";
+import { useEarningReports } from "@/lib/api/hooks/reports";
 
-const DriverEarningGraph = () => {
-  type UserInfo = {
-    id: string;
-    usertype: string;
-  };
+const EarningReportGraph = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [toggleSelect, setToggleSelect] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const { data: reports } = useDriversReports(
-    userInfo?.usertype ?? "",
-    userInfo?.id ?? "",
-    "",
-  );
+  const { data: reports } = useEarningReports("");
 
   const getLastThreeYears = () => {
     const currentYear = new Date().getFullYear();
@@ -75,7 +66,7 @@ const DriverEarningGraph = () => {
 
   const formatDataForChart = (
     filteredData: Report[],
-  ): { name: string; bookingCount: number }[] => {
+  ): { name: string; bookingCount: number; myEarning: string }[] => {
     const monthNames = [
       "Jan",
       "Feb",
@@ -92,11 +83,11 @@ const DriverEarningGraph = () => {
     ];
 
     const dataMap = filteredData.reduce<
-      Record<number, { total_rides: number; driverName: string }>
+      Record<number, { total_rides: number; myEarning: string }>
     >((acc, item) => {
       acc[item.month] = {
         total_rides: item.total_rides,
-        driverName: item.driverName,
+        myEarning: item.driverShare,
       };
       return acc;
     }, {});
@@ -104,20 +95,13 @@ const DriverEarningGraph = () => {
     return monthNames.map((month, index) => ({
       name: month,
       bookingCount: dataMap[index + 1]?.total_rides || 0,
-      driverName: dataMap[index + 1]?.driverName || "N/A",
+      myEarning: dataMap[index + 1]?.myEarning || "N/A",
     }));
   };
 
   const formattedData = formatDataForChart(filteredData);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const info = localStorage.getItem("userInfo");
-      if (info) {
-        setUserInfo(JSON.parse(info));
-      }
-    }
-  }, []);
+  console.log(formattedData);
 
   return (
     <div>
@@ -126,7 +110,7 @@ const DriverEarningGraph = () => {
         {/* SELECT */}
         <div className="flex items-center justify-between pb-2">
           <p className="font-nunito text-base font-bold text-[#202224]">
-            Driver Earning Chart
+            Earnings Chart
           </p>
           <div className="relative">
             <div
@@ -168,7 +152,7 @@ const DriverEarningGraph = () => {
         {/* GRAPH */}
         <div className="h-[300px] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart
+            <BarChart
               width={774}
               height={234}
               data={formattedData}
@@ -206,11 +190,11 @@ const DriverEarningGraph = () => {
               <Tooltip
                 content={({ payload }) => {
                   if (payload && payload.length) {
-                    const { driverName, bookingCount } = payload[0].payload;
+                    const { myEarning, bookingCount } = payload[0].payload;
                     return (
                       <div
                         style={{
-                          backgroundColor: "#68B752",
+                          backgroundColor: "#6C2860",
                           color: "#FFFFFF",
                           padding: "8px",
                           borderRadius: "4px",
@@ -220,7 +204,7 @@ const DriverEarningGraph = () => {
                       >
                         <p style={{ margin: 0 }}>
                           {" "}
-                          Driver&apos;s Name: {driverName}
+                          Gross Profit: CFA{myEarning}
                         </p>
                         <p style={{ margin: 0 }}>
                           Booking count: {bookingCount}
@@ -232,56 +216,79 @@ const DriverEarningGraph = () => {
                 }}
               />
               <Legend
-                formatter={() => (
-                  <span
+                content={() => (
+                  <div
                     style={{
-                      color: "#000000B2",
-                      font: "Inter",
-                      fontSize: "12px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "20px",
                     }}
                   >
-                    Driver Earning History
-                  </span>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "8px",
+                          height: "8px",
+                          backgroundColor: "#6C2860",
+                          borderRadius: "2px",
+                        }}
+                      ></div>
+                      <span
+                        style={{
+                          color: "#2B303466",
+                          fontSize: "12px",
+                          fontFamily: "Inter",
+                        }}
+                      >
+                        Booking Count
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "8px",
+                          height: "8px",
+                          backgroundColor: "#DA4CBF",
+                          borderRadius: "2px",
+                        }}
+                      ></div>
+                      <span
+                        style={{
+                          color: "#2B303466",
+                          fontSize: "12px",
+                          fontFamily: "Inter",
+                        }}
+                      >
+                        Gross Profit
+                      </span>
+                    </div>
+                  </div>
                 )}
               />
 
-              <defs>
-                <filter
-                  id="shadow"
-                  x="-50%"
-                  y="-50%"
-                  width="200%"
-                  height="200%"
-                >
-                  <feDropShadow
-                    dx="0"
-                    dy="3"
-                    stdDeviation="3"
-                    floodColor="#68B75266"
-                  />
-                  <feDropShadow
-                    dx="0"
-                    dy="6"
-                    stdDeviation="9"
-                    floodColor="#68B75266"
-                  />
-                  <feDropShadow
-                    dx="0"
-                    dy="9"
-                    stdDeviation="18"
-                    floodColor="#68B75266"
-                  />
-                </filter>
-              </defs>
-
-              <Line
-                type="monotone"
+              <Bar
                 dataKey="bookingCount"
-                stroke="#68B752"
-                strokeWidth={1.2}
-                filter="url(#shadow)"
+                fill="#6C2860"
+                activeBar={<Rectangle fill="#6C2860" stroke="#6C2860" />}
               />
-            </LineChart>
+              <Bar
+                dataKey="myEarning"
+                fill="#DA4CBF"
+                activeBar={<Rectangle fill="#DA4CBF" stroke="#DA4CBF" />}
+              />
+            </BarChart>
           </ResponsiveContainer>
         </div>
       </div>
@@ -289,4 +296,4 @@ const DriverEarningGraph = () => {
   );
 };
 
-export default DriverEarningGraph;
+export default EarningReportGraph;
