@@ -1,14 +1,17 @@
 "use client";
 import SearchComponent from "@/components/SearchComponent";
+import DriverEarningGraph from "@/containers/reports/driverEarningGraph";
 import DriverEarningHistory from "@/containers/reports/driverEarningHistory";
 import EarningHistory from "@/containers/reports/earningHistory";
 import FleetEarningHistory from "@/containers/reports/fleetEarningHistory";
+
 import React, { useState } from "react";
 
 const Reports = () => {
   const [clickExport, setClickExport] = useState(false);
   const [selectedTab, setSelectedTab] = useState("Driver Earning History");
   const [searchTerm, setSearchTerm] = useState("");
+
   const tabsData = [
     { key: 1, title: "Driver Earning History" },
     { key: 2, title: "Earning Reports" },
@@ -32,6 +35,13 @@ const Reports = () => {
           );
         })}
       </div>
+      {/* GRAPH SECTION */}
+      {selectedTab === "Driver Earning History" ||
+      selectedTab === "Earning Reports" ? (
+        <div>
+          <DriverEarningGraph />
+        </div>
+      ) : null}
       {/* TAB HEADER */}
       <div className="mb-2 flex items-center justify-between px-5">
         <div>
