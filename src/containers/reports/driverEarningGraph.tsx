@@ -202,7 +202,7 @@ const DriverEarningGraph = () => {
               <Tooltip
                 content={({ payload }) => {
                   if (payload && payload.length) {
-                    const { driverName, bookingCount } = payload[0].payload; // Access driverName and booking count (uv)
+                    const { driverName, bookingCount } = payload[0].payload;
                     return (
                       <div
                         style={{
@@ -214,7 +214,10 @@ const DriverEarningGraph = () => {
                           fontFamily: "Inter",
                         }}
                       >
-                        <p style={{ margin: 0 }}>{driverName}</p>
+                        <p style={{ margin: 0 }}>
+                          {" "}
+                          Driver&apos;s Name: {driverName}
+                        </p>
                         <p style={{ margin: 0 }}>
                           Booking count: {bookingCount}
                         </p>
