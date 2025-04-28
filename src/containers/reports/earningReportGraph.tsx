@@ -95,7 +95,7 @@ const EarningReportGraph = () => {
     return monthNames.map((month, index) => ({
       name: month,
       bookingCount: dataMap[index + 1]?.total_rides || 0,
-      myEarning: dataMap[index + 1]?.myEarning || "N/A",
+      myEarning: dataMap[index + 1]?.myEarning || "0",
     }));
   };
 
@@ -204,7 +204,7 @@ const EarningReportGraph = () => {
                       >
                         <p style={{ margin: 0 }}>
                           {" "}
-                          Gross Profit: CFA{myEarning}
+                          Gross Profit: CFA{myEarning || 0}
                         </p>
                         <p style={{ margin: 0 }}>
                           Booking count: {bookingCount}
