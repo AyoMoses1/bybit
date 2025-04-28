@@ -80,8 +80,6 @@ const SMTPSettings = () => {
     });
   }, [SMTP]);
 
-  console.log(SMTP);
-
   return (
     <div className="px-6 py-3">
       <div className="rounded-lg bg-white px-8 py-12 shadow-md">
