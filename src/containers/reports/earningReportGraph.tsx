@@ -137,9 +137,9 @@ const EarningReportGraph = () => {
                     }}
                     className={`cursor-pointer px-4 py-2 text-sm ${
                       selectedYear === year
-                        ? "bg-[#DA4CBF] text-white"
+                        ? "bg-gray-100 text-black"
                         : "text-[#646464]"
-                    } hover:bg-[#DA4CBF] hover:text-white`}
+                    } `}
                   >
                     {year}
                   </div>

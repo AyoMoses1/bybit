@@ -153,9 +153,9 @@ const DriverEarningGraph = () => {
                     }}
                     className={`cursor-pointer px-4 py-2 text-sm ${
                       selectedYear === year
-                        ? "bg-[#DA4CBF] text-white"
+                        ? "bg-gray-100 text-black"
                         : "text-[#646464]"
-                    } hover:bg-[#DA4CBF] hover:text-white`}
+                    } `}
                   >
                     {year}
                   </div>
@@ -199,9 +199,9 @@ const DriverEarningGraph = () => {
                 type="number"
                 axisLine={false}
                 tickLine={false}
-                // domain={[0, 100]}
-                // ticks={[0, 20, 40, 60, 80, 100]}
-                // allowDataOverflow={true}
+                domain={[0, 100]}
+                ticks={[0, 20, 40, 60, 80, 100]}
+                allowDataOverflow={true}
               />
               <Tooltip
                 content={({ payload }) => {

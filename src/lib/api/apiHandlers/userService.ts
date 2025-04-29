@@ -24,6 +24,7 @@ export type User = {
   createdAt?: string;
   usertype?: string;
   approved?: boolean;
+  driverActiveStatus?: boolean;
 };
 
 export const fetchUsers = () => {
