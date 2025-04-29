@@ -87,6 +87,8 @@ const AppInformation = () => {
     }
   }, [settings, setValue]);
 
+  console.log(settings);
+
   return (
     <div className="p-6">
       <form onSubmit={handleSubmit(onSubmit)} className="">
