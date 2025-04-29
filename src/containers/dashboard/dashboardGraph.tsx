@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { Bar, BarChart, Rectangle } from "recharts";
+import { AreaChart } from "recharts";
+import { Area } from "recharts";
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -11,7 +12,7 @@ import {
 } from "recharts";
 import { useEarningReports } from "@/lib/api/hooks/reports";
 
-const EarningReportGraph = () => {
+const DashboardGraph = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [toggleSelect, setToggleSelect] = useState(false);
   const { data: reports } = useEarningReports("");
@@ -101,19 +102,21 @@ const EarningReportGraph = () => {
 
   const formattedData = formatDataForChart(filteredData);
 
+  console.log(reports);
+
   return (
     <div>
       {" "}
-      <div className="mx-4 mb-6 h-full w-[70%] rounded-lg bg-white px-3 py-4 shadow-sm">
+      <div className="w-fullrounded-lg mb-6 h-full bg-white px-3 py-4 shadow-sm">
         {/* SELECT */}
-        <div className="flex items-center justify-between pb-2">
-          <p className="font-nunito text-base font-bold text-[#202224]">
-            Earnings Chart
+        <div className="flex items-center justify-between pb-4">
+          <p className="font-nunito text-2xl font-bold text-[#202224]">
+            Booking Chart
           </p>
           <div className="relative">
             <div
               onClick={() => setToggleSelect(!toggleSelect)}
-              className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-[#00000033] px-2 py-1"
+              className="flex cursor-pointer items-center justify-between gap-2 rounded-md border border-[#00000033] px-[6px] py-[2px]"
             >
               <p className="font-inter text-sm font-normal text-[#646464]">
                 {selectedYear}
@@ -148,16 +151,16 @@ const EarningReportGraph = () => {
         </div>
 
         {/* GRAPH */}
-        <div className="h-[300px] w-full">
+        <div className="h-[400] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <BarChart
+            <AreaChart
               width={774}
-              height={234}
+              height={350}
               data={formattedData}
               margin={{
                 top: 10,
                 right: 0,
-                left: -24,
+                left: 0,
                 bottom: 0,
               }}
             >
@@ -181,9 +184,9 @@ const EarningReportGraph = () => {
                 type="number"
                 axisLine={false}
                 tickLine={false}
-                domain={[0, 100]}
-                ticks={[0, 20, 40, 60, 80, 100]}
                 allowDataOverflow={true}
+                // domain={[0, 100]}
+                // ticks={[0, 20, 40, 60, 80, 100]}
               />
               <Tooltip
                 content={({ payload }) => {
@@ -233,8 +236,8 @@ const EarningReportGraph = () => {
                         style={{
                           width: "8px",
                           height: "8px",
-                          backgroundColor: "#6C2860",
-                          borderRadius: "2px",
+                          backgroundColor: "#68B752",
+                          borderRadius: "50%",
                         }}
                       ></div>
                       <span
@@ -258,8 +261,8 @@ const EarningReportGraph = () => {
                         style={{
                           width: "8px",
                           height: "8px",
-                          backgroundColor: "#DA4CBF",
-                          borderRadius: "2px",
+                          backgroundColor: "#D8394C",
+                          borderRadius: "50%",
                         }}
                       ></div>
                       <span
@@ -276,17 +279,23 @@ const EarningReportGraph = () => {
                 )}
               />
 
-              <Bar
+              <Area
+                type="monotone"
                 dataKey="bookingCount"
+                stackId="1"
+                stroke="#6C2860"
                 fill="#6C2860"
-                activeBar={<Rectangle fill="#6C2860" stroke="#6C2860" />}
+                dot
               />
-              <Bar
+              <Area
+                type="monotone"
                 dataKey="myEarning"
-                fill="#DA4CBF"
-                activeBar={<Rectangle fill="#DA4CBF" stroke="#DA4CBF" />}
+                stackId="1"
+                stroke="#D8394C"
+                fill="#D8394C"
+                dot
               />
-            </BarChart>
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
@@ -294,4 +303,4 @@ const EarningReportGraph = () => {
   );
 };
 
-export default EarningReportGraph;
+export default DashboardGraph;
