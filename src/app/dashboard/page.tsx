@@ -15,6 +15,8 @@ import {
   TooltipTrigger,
 } from "@radix-ui/react-tooltip";
 import { useUser } from "@/lib/api/hooks/user";
+import DashboardGraph from "@/containers/dashboard/dashboardGraph";
+import DashboardMap from "@/containers/dashboard/dashboardMap";
 
 const Dashboard = () => {
   const [gross, setGross] = useState({
@@ -280,6 +282,10 @@ const Dashboard = () => {
         </div>
 
         {/* MAP SECTION */}
+        <DashboardMap />
+
+        {/* GRAPH SECTION */}
+        <DashboardGraph />
       </div>
     </div>
   );
