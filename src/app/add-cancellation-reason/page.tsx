@@ -4,6 +4,8 @@ import { useRouter } from "next/navigation";
 import { useAddCancelReason } from "@/lib/api/apiHandlers/useCancelReason";
 import TextInput from "@/components/TextInput";
 import { Button } from "@/components/ui/button";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 type FormValues = {
   label: string;
@@ -11,6 +13,7 @@ type FormValues = {
 
 const AddCancelReasonPage = () => {
   const router = useRouter();
+  const { handleAudit } = useAuditLog();
 
   const {
     register,
@@ -27,6 +30,12 @@ const AddCancelReasonPage = () => {
       {
         onSuccess: () => {
           reset();
+          handleAudit(
+            "Cancellation Reason",
+            "",
+            AuditAction.CREATE,
+            `Added new cancellation reason: ${values.label}`,
+          );
           router.push("/settings");
         },
       },

@@ -9,6 +9,8 @@ import {
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import TextInput from "@/components/TextInput";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 type FormValues = {
   label: string;
@@ -21,6 +23,7 @@ const UpdateCancelReason = ({
 }) => {
   const { id } = use(params);
   const router = useRouter();
+  const { handleAudit } = useAuditLog();
   const { data } = useCancelReasons();
   const { mutate } = useEditCancelReasons();
   const { register, handleSubmit, reset } = useForm<FormValues>();
@@ -37,12 +40,21 @@ const UpdateCancelReason = ({
   const onSubmit = (values: FormValues) => {
     if (!data?.complex) return;
 
+    const reason = data.complex[parseInt(id)];
     const updatedReasons = data.complex.map((item, index) =>
       index === parseInt(id) ? { ...item, label: values.label } : item,
     );
 
     mutate(updatedReasons, {
-      onSuccess: () => router.push("/cancel-reason"),
+      onSuccess: () => {
+        handleAudit(
+          "Cancellation Reason",
+          id,
+          AuditAction.UPDATE,
+          `Updated reason from "${reason?.label}" to "${values.label}"`,
+        );
+        router.push("/cancel-reason");
+      },
     });
   };
 

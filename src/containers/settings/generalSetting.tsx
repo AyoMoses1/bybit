@@ -9,17 +9,85 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useAppInfo, useUpdateAppInfo } from "@/lib/api/hooks/settings";
 import { toast } from "react-hot-toast";
 import { SettingsType } from "@/lib/api/apiHandlers/settingsService";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
+
+const FIELD_LABELS: Record<keyof SettingsType, string> = {
+  symbol: "Currency Symbol",
+  code: "Currency Code",
+  decimal: "Decimal Places",
+  swipe_symbol: "Swipe Symbol Direction",
+  disable_online: "Disable Online Payments",
+  disable_cash: "Disable Cash Payments",
+  country: "Country",
+  restrictCountry: "Country Restriction",
+  AllowCountrySelection: "Allow Multi Country Selection",
+  convert_to_mile: "Convert to Mile",
+  RiderWithDraw: "Customer Withdraw",
+  horizontal_view: "Car List View Horizontal",
+  useDistanceMatrix: "Use Distance Matrix API",
+  CarHornRepeat: "Repeat Sound on New Trip",
+  disablesystemprice: "Disable System Price",
+  disable_tips: "Disable Tips",
+  walletMoneyField: "Wallet Denominations",
+  tipMoneyField: "Tip Denominations",
+  panic: "Panic Dial Number",
+  driverRadius: "Driver Radius",
+  driverThreshold: "Driver Threshold",
+  otp_secure: "Booking OTP",
+  driver_approval: "Driver Approval",
+  carApproval: "Car Approval",
+  imageIdApproval: "Verify ID/Passport",
+  emailLogin: "Email Login",
+  mobileLogin: "Mobile Login",
+  socialLogin: "Social Login",
+  negativeBalance: "Allow Driver Negative Balance",
+  realtime_drivers: "Driver Live Location",
+  bank_fields: "Bank Reg Fields",
+  showLiveRoute: "Show Live Route",
+  carType_required: "Car Is Required",
+  term_required: "Term Required",
+  license_image_required: "License Image Required",
+  coustomerBidPriceType: "Bid Price Type",
+  bidprice: "Bid Lower Price",
+  coustomerBidPrice: "Disable Customer Bid Price",
+  bonus: "Referral Bonus",
+  appName: "App Name",
+  CompanyName: "Company Name",
+  CompanyAddress: "Company Address",
+  CompanyPhone: "Company Phone",
+  CompanyWebsite: "Company Website",
+  CompanyTerms: "Company Terms",
+  CompanyTermCondition: "Company Terms & Conditions",
+  contact_email: "Contact Email",
+  FacebookHandle: "Facebook Handle",
+  InstagramHandle: "Instagram Handle",
+  TwitterHandle: "Twitter Handle",
+  PlayStoreLink: "Play Store Link",
+  AppleStoreLink: "App Store Link",
+  AppleLoginEnabled: "Apple Login Enabled",
+  FacebookLoginEnabled: "Facebook Login Enabled",
+  AllowCriticalEditsAdmin: "Allow Critical Edits (Admin)",
+  autoDispatch: "Auto Dispatch",
+  customMobileOTP: "Custom Mobile OTP",
+  prepaid: "Prepaid System",
+  mapLanguage: "Map Language",
+  bookingFlow: "Booking Flow",
+};
 
 const GeneralSetting = () => {
   const queryClient = useQueryClient();
   const { data: settings, isLoading, isError } = useAppInfo();
   const updateSettingsMutation = useUpdateAppInfo();
+  const { handleAudit } = useAuditLog();
 
   const [formData, setFormData] = useState<Partial<SettingsType>>({});
+  const [initialData, setInitialData] = useState<Partial<SettingsType>>({});
 
   useEffect(() => {
     if (settings) {
       setFormData(settings);
+      setInitialData(settings);
     }
   }, [settings]);
 
@@ -55,6 +123,18 @@ const GeneralSetting = () => {
     }));
   };
 
+  const getChangedFields = () => {
+    const changes: string[] = [];
+
+    (Object.keys(formData) as Array<keyof SettingsType>).forEach((key) => {
+      if (JSON.stringify(formData[key]) !== JSON.stringify(initialData[key])) {
+        changes.push(FIELD_LABELS[key] || key);
+      }
+    });
+
+    return changes;
+  };
+
   const handleSubmit = () => {
     if (!formData) return;
 
@@ -68,11 +148,24 @@ const GeneralSetting = () => {
       return;
     }
 
+    const changedFields = getChangedFields();
+    if (changedFields.length === 0) {
+      toast.error("No changes detected");
+      return;
+    }
+
     updateSettingsMutation.mutate(
       { updatedData: formData },
       {
         onSuccess: () => {
           queryClient.invalidateQueries({ queryKey: ["settings"] });
+          handleAudit(
+            "Settings",
+            "",
+            AuditAction.UPDATE,
+            `General settings updated: ${changedFields.join(", ")}`,
+          );
+          setInitialData(formData);
         },
         onError: (error) => {
           toast.error("Failed to update settings");

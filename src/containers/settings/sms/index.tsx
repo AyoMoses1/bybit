@@ -9,6 +9,8 @@ import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
 import { Controller } from "react-hook-form";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 const formSchema = z.object({
   apiUrl: z.string().min(2, "API URL must be at least 2 characters"),
@@ -26,6 +28,7 @@ const SmsSettings = () => {
   const [loading, setLoading] = useState(false);
   const { data: settings, isLoading } = useSettings();
   const { mutateAsync: editSettings } = useEditSettings();
+  const { handleAudit } = useAuditLog();
 
   const {
     register,
@@ -68,6 +71,13 @@ const SmsSettings = () => {
         ...data,
         AllowCriticalEditsAdmin: settings?.AllowCriticalEditsAdmin,
       });
+
+      handleAudit(
+        "SMS Settings",
+        "",
+        AuditAction.UPDATE,
+        "SMS API settings updated",
+      );
     } catch {
       toast.error("Failed to submit settings.");
     } finally {
