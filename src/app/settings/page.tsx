@@ -5,6 +5,7 @@ import SmsSettings from "@/containers/settings/sms";
 import SMTPSettings from "@/containers/settings/smtpSettings";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import React, { JSX, useState } from "react";
+import GeneralSetting from "@/containers/settings/generalSetting";
 
 const Settings = () => {
   type TabTitle =
@@ -24,7 +25,11 @@ const Settings = () => {
         <AppInformation />
       </div>
     ),
-    "General Settings": <div>General Settings Content</div>,
+    "General Settings": (
+      <div>
+        <GeneralSetting />
+      </div>
+    ),
     Languages: (
       <div>
         <div>Languages Content</div>
@@ -59,15 +64,16 @@ const Settings = () => {
       </div>
 
       {/* TAB HEADER */}
-      {selectedTab !== "Cancellation Reason" && (
-        <div className="mb-2 flex items-center justify-between px-5">
-          <div>
-            <p className="text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
-              {selectedTab}
-            </p>
+      {selectedTab !== "Cancellation Reason" &&
+        selectedTab !== "General Settings" && (
+          <div className="mb-2 flex items-center justify-between px-5">
+            <div>
+              <p className="text-2xl font-semibold tracking-[-0.11px] text-[#202224]">
+                {selectedTab}
+              </p>
+            </div>
           </div>
-        </div>
-      )}
+        )}
 
       {/* TAB CONTENT */}
       <div>{tabContent[selectedTab]}</div>
