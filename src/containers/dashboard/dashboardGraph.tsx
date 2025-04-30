@@ -102,14 +102,30 @@ const DashboardGraph = () => {
 
   const formattedData = formatDataForChart(filteredData);
 
-  console.log(reports);
+  console.log(formattedData);
+
+  // const dummyData = [
+  //   { name: "", bookingCount: 0, myEarning: "0" },
+  //   { name: "Jan", bookingCount: 10, myEarning: "15" },
+  //   { name: "Feb", bookingCount: 20, myEarning: "30" },
+  //   { name: "Mar", bookingCount: 25, myEarning: "30" },
+  //   { name: "Apr", bookingCount: 30, myEarning: "40" },
+  //   { name: "May", bookingCount: 18, myEarning: "21" },
+  //   { name: "Jun", bookingCount: 22, myEarning: "25" },
+  //   { name: "Jul", bookingCount: 28, myEarning: "33" },
+  //   { name: "Aug", bookingCount: 35, myEarning: "40" },
+  //   { name: "Sep", bookingCount: 40, myEarning: "44" },
+  //   { name: "Oct", bookingCount: 32, myEarning: "35" },
+  //   { name: "Nov", bookingCount: 25, myEarning: "25" },
+  //   { name: "Dec", bookingCount: 30, myEarning: "20" },
+  // ];
 
   return (
     <div>
       {" "}
       <div className="w-fullrounded-lg mb-6 h-full bg-white px-3 py-4 shadow-sm">
         {/* SELECT */}
-        <div className="flex items-center justify-between pb-4">
+        <div className="flex items-center justify-between pb-10">
           <p className="font-nunito text-2xl font-bold text-[#202224]">
             Booking Chart
           </p>
@@ -160,11 +176,46 @@ const DashboardGraph = () => {
               margin={{
                 top: 10,
                 right: 0,
-                left: 0,
+                left: 20,
                 bottom: 0,
               }}
             >
-              <CartesianGrid strokeDasharray="4 4" />
+              {/* Gradient Definitions */}
+              <defs>
+                <linearGradient
+                  id="bookingCountGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="50%" stopColor="rgba(12, 194, 95, 0.1)" />
+                  <stop
+                    offset="100%"
+                    stopColor="rgba(255, 255, 255, 0.176942)"
+                  />
+                </linearGradient>
+                <linearGradient
+                  id="myEarningGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="50%" stopColor="rgba(216, 57, 76, 0.1)" />
+                  <stop
+                    offset="100%"
+                    stopColor="rgba(255, 255, 255, 0.176942)"
+                  />
+                </linearGradient>
+              </defs>
+
+              <CartesianGrid
+                strokeDasharray="0 0"
+                vertical={false}
+                horizontal={true}
+                stroke="#EAEAEA"
+              />
               <XAxis
                 dataKey="name"
                 tick={{
@@ -173,11 +224,8 @@ const DashboardGraph = () => {
                   fontFamily: "Inter",
                   fontWeight: "500",
                 }}
-                tickMargin={10}
-                axisLine={{
-                  stroke: "#2B303466",
-                  strokeWidth: 1.5,
-                }}
+                tickMargin={23}
+                axisLine={false}
                 tickLine={false}
               />
               <YAxis
@@ -185,17 +233,24 @@ const DashboardGraph = () => {
                 axisLine={false}
                 tickLine={false}
                 allowDataOverflow={true}
+                tick={{
+                  fill: "#2B303466",
+                  fontSize: 12,
+                  fontFamily: "Inter",
+                  fontWeight: "600",
+                }}
+                tickMargin={20}
                 // domain={[0, 100]}
                 // ticks={[0, 20, 40, 60, 80, 100]}
               />
               <Tooltip
-                content={({ payload }) => {
-                  if (payload && payload.length) {
+                content={({ active, payload }) => {
+                  if (active && payload && payload.length) {
                     const { myEarning, bookingCount } = payload[0].payload;
                     return (
                       <div
                         style={{
-                          backgroundColor: "#6C2860",
+                          backgroundColor: "#68B752",
                           color: "#FFFFFF",
                           padding: "8px",
                           borderRadius: "4px",
@@ -205,10 +260,12 @@ const DashboardGraph = () => {
                       >
                         <p style={{ margin: 0 }}>
                           {" "}
-                          Gross Profit: CFA{myEarning || 0}
+                          Gross Profit: CFA
+                          {parseInt(myEarning).toLocaleString()}
                         </p>
                         <p style={{ margin: 0 }}>
-                          Booking count: {bookingCount}
+                          Booking count:{" "}
+                          {parseInt(bookingCount).toLocaleString()}
                         </p>
                       </div>
                     );
@@ -223,6 +280,7 @@ const DashboardGraph = () => {
                       display: "flex",
                       justifyContent: "center",
                       gap: "20px",
+                      marginTop: "30px",
                     }}
                   >
                     <div
@@ -278,22 +336,27 @@ const DashboardGraph = () => {
                   </div>
                 )}
               />
-
               <Area
                 type="monotone"
                 dataKey="bookingCount"
                 stackId="1"
-                stroke="#6C2860"
-                fill="#6C2860"
-                dot
+                stroke="#68B752"
+                strokeWidth={2.5}
+                fill="url(#bookingCountGradient)"
               />
               <Area
                 type="monotone"
                 dataKey="myEarning"
-                stackId="1"
+                stackId="2"
                 stroke="#D8394C"
-                fill="#D8394C"
-                dot
+                fill="url(#myEarningGradient)"
+                strokeWidth={2.5}
+                dot={{
+                  stroke: "#D8394C",
+                  strokeWidth: 6,
+                  fill: "#D8394C",
+                  r: 1,
+                }}
               />
             </AreaChart>
           </ResponsiveContainer>
