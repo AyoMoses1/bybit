@@ -1,6 +1,5 @@
 "use client";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
-import { TrendingDown, TrendingUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import customer from "../../assets/icons/Icon.svg";
 import driver from "../../assets/icons/Icon (1).svg";
@@ -164,10 +163,8 @@ const Dashboard = () => {
                   </p>
 
                   <div className="absolute bottom-3 flex items-center gap-2">
-                    <TrendingDown color={"#F93C65"} size={18} />
-                    <p className="font-roboto text-sm text-[#202224]">
-                      <span className="text-[#F93C65]"> 4.3% </span>Down from
-                      yesterday
+                    <p className="font-roboto text-sm text-[#606060]">
+                      Total income today
                     </p>
                   </div>
                 </div>
@@ -194,10 +191,8 @@ const Dashboard = () => {
                   </p>
 
                   <div className="absolute bottom-3 flex items-center gap-2">
-                    <TrendingUp color={"#68B752"} size={18} />
-                    <p className="font-roboto text-sm text-[#202224]">
-                      <span className="text-[#68B752]"> 4.3% </span>Down from
-                      yesterday
+                    <p className="font-roboto text-sm text-[#606060]">
+                      Total income this month
                     </p>
                   </div>
                 </div>
@@ -222,10 +217,8 @@ const Dashboard = () => {
                   </p>
 
                   <div className="absolute bottom-3 flex items-center gap-2">
-                    <TrendingUp color={"#F93C65"} size={18} />
-                    <p className="font-roboto text-sm text-[#202224]">
-                      <span className="text-[#F93C65]"> 4.3% </span>Down from
-                      yesterday
+                    <p className="font-roboto text-sm text-[#606060]">
+                      Total income of all time
                     </p>
                   </div>
                 </div>
