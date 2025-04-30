@@ -5,6 +5,8 @@ import {
   updateSettings,
   updateSMTPSettings,
 } from "../apiHandlers/settingsService";
+import { SettingsType, SMTPDataType } from "../apiHandlers/settingsService"; 
+
 const USER_STATE_KEY = "settings";
 const SMTP_STATE_KEY = "SMTP";
 
@@ -29,8 +31,7 @@ export const useSMTPInfo = () => {
 export const useUpdateAppInfo = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFn: ({ updatedData }: { updatedData: any }) =>
+    mutationFn: ({ updatedData }: { updatedData: Partial<SettingsType> }) =>
       updateSettings(updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [USER_STATE_KEY] });
@@ -44,8 +45,7 @@ export const useUpdateAppInfo = () => {
 export const useUpdateSMTPInfo = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    mutationFn: ({ updatedData }: { updatedData: any }) =>
+    mutationFn: ({ updatedData }: { updatedData: SMTPDataType }) =>
       updateSMTPSettings(updatedData),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: [SMTP_STATE_KEY] });
