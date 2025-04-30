@@ -56,6 +56,12 @@ export interface SettingsType {
   symbol: string;
   term_required: boolean;
   useDistanceMatrix: boolean;
+  disable_cash?: boolean;
+  disable_tips?: boolean;
+  walletMoneyField?: string;
+  tipMoneyField?: string;
+  driverThreshold?: number;
+  bookingFlow?: string;
 }
 export interface SMTPDataType {
   fromEmail: string;
@@ -100,10 +106,7 @@ export const fetchAppInfo = () => {
   });
 };
 
-export const updateSettings = (
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  updatedData: Record<string, any>,
-) => {
+export const updateSettings = (updatedData: Partial<SettingsType>) => {
   return new Promise<void>((resolve, reject) => {
     try {
       const db = getDatabase();
