@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { ChevronDown, ChevronUp } from "lucide-react";
-import { LineChart, Line } from "recharts";
+import { AreaChart } from "recharts";
+import { Area } from "recharts";
 import {
   ResponsiveContainer,
   CartesianGrid,
@@ -9,21 +10,12 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { useDriversReports } from "@/lib/api/hooks/reports";
+import { useEarningReports } from "@/lib/api/hooks/reports";
 
-const DriverEarningGraph = () => {
-  type UserInfo = {
-    id: string;
-    usertype: string;
-  };
+const DashboardGraph = () => {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [toggleSelect, setToggleSelect] = useState(false);
-  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
-  const { data: reports } = useDriversReports(
-    userInfo?.usertype ?? "",
-    userInfo?.id ?? "",
-    "",
-  );
+  const { data: reports } = useEarningReports("");
 
   const getLastThreeYears = () => {
     const currentYear = new Date().getFullYear();
@@ -75,7 +67,7 @@ const DriverEarningGraph = () => {
 
   const formatDataForChart = (
     filteredData: Report[],
-  ): { name: string; bookingCount: number }[] => {
+  ): { name: string; bookingCount: number; myEarning: string }[] => {
     const monthNames = [
       "Jan",
       "Feb",
@@ -92,11 +84,11 @@ const DriverEarningGraph = () => {
     ];
 
     const dataMap = filteredData.reduce<
-      Record<number, { total_rides: number; driverName: string }>
+      Record<number, { total_rides: number; myEarning: string }>
     >((acc, item) => {
       acc[item.month] = {
         total_rides: item.total_rides,
-        driverName: item.driverName,
+        myEarning: item.driverShare,
       };
       return acc;
     }, {});
@@ -104,34 +96,27 @@ const DriverEarningGraph = () => {
     return monthNames.map((month, index) => ({
       name: month,
       bookingCount: dataMap[index + 1]?.total_rides || 0,
-      driverName: dataMap[index + 1]?.driverName || "N/A",
+      myEarning: dataMap[index + 1]?.myEarning || "0",
     }));
   };
 
   const formattedData = formatDataForChart(filteredData);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const info = localStorage.getItem("userInfo");
-      if (info) {
-        setUserInfo(JSON.parse(info));
-      }
-    }
-  }, []);
+  console.log(reports);
 
   return (
     <div>
       {" "}
-      <div className="mx-4 mb-6 h-full w-[70%] rounded-lg bg-white px-3 py-4 shadow-sm">
+      <div className="w-fullrounded-lg mb-6 h-full bg-white px-3 py-4 shadow-sm">
         {/* SELECT */}
-        <div className="flex items-center justify-between pb-2">
-          <p className="font-nunito text-base font-bold text-[#202224]">
-            Driver Earning Chart
+        <div className="flex items-center justify-between pb-4">
+          <p className="font-nunito text-2xl font-bold text-[#202224]">
+            Booking Chart
           </p>
           <div className="relative">
             <div
               onClick={() => setToggleSelect(!toggleSelect)}
-              className="flex cursor-pointer items-center justify-between gap-3 rounded-lg border border-[#00000033] px-2 py-1"
+              className="flex cursor-pointer items-center justify-between gap-2 rounded-md border border-[#00000033] px-[6px] py-[2px]"
             >
               <p className="font-inter text-sm font-normal text-[#646464]">
                 {selectedYear}
@@ -166,16 +151,16 @@ const DriverEarningGraph = () => {
         </div>
 
         {/* GRAPH */}
-        <div className="h-[300px] w-full">
+        <div className="h-[400] w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart
+            <AreaChart
               width={774}
-              height={234}
+              height={350}
               data={formattedData}
               margin={{
                 top: 10,
                 right: 0,
-                left: -24,
+                left: 0,
                 bottom: 0,
               }}
             >
@@ -199,18 +184,18 @@ const DriverEarningGraph = () => {
                 type="number"
                 axisLine={false}
                 tickLine={false}
-                domain={[0, 100]}
-                ticks={[0, 20, 40, 60, 80, 100]}
                 allowDataOverflow={true}
+                // domain={[0, 100]}
+                // ticks={[0, 20, 40, 60, 80, 100]}
               />
               <Tooltip
                 content={({ payload }) => {
                   if (payload && payload.length) {
-                    const { driverName, bookingCount } = payload[0].payload;
+                    const { myEarning, bookingCount } = payload[0].payload;
                     return (
                       <div
                         style={{
-                          backgroundColor: "#68B752",
+                          backgroundColor: "#6C2860",
                           color: "#FFFFFF",
                           padding: "8px",
                           borderRadius: "4px",
@@ -220,7 +205,7 @@ const DriverEarningGraph = () => {
                       >
                         <p style={{ margin: 0 }}>
                           {" "}
-                          Driver&apos;s Name: {driverName}
+                          Gross Profit: CFA{myEarning || 0}
                         </p>
                         <p style={{ margin: 0 }}>
                           Booking count: {bookingCount}
@@ -232,56 +217,85 @@ const DriverEarningGraph = () => {
                 }}
               />
               <Legend
-                formatter={() => (
-                  <span
+                content={() => (
+                  <div
                     style={{
-                      color: "#000000B2",
-                      font: "Inter",
-                      fontSize: "12px",
+                      display: "flex",
+                      justifyContent: "center",
+                      gap: "20px",
                     }}
                   >
-                    Driver Earning History
-                  </span>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "8px",
+                          height: "8px",
+                          backgroundColor: "#68B752",
+                          borderRadius: "50%",
+                        }}
+                      ></div>
+                      <span
+                        style={{
+                          color: "#2B303466",
+                          fontSize: "12px",
+                          fontFamily: "Inter",
+                        }}
+                      >
+                        Booking Count
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          width: "8px",
+                          height: "8px",
+                          backgroundColor: "#D8394C",
+                          borderRadius: "50%",
+                        }}
+                      ></div>
+                      <span
+                        style={{
+                          color: "#2B303466",
+                          fontSize: "12px",
+                          fontFamily: "Inter",
+                        }}
+                      >
+                        Gross Profit
+                      </span>
+                    </div>
+                  </div>
                 )}
               />
 
-              <defs>
-                <filter
-                  id="shadow"
-                  x="-50%"
-                  y="-50%"
-                  width="200%"
-                  height="200%"
-                >
-                  <feDropShadow
-                    dx="0"
-                    dy="3"
-                    stdDeviation="3"
-                    floodColor="#68B75266"
-                  />
-                  <feDropShadow
-                    dx="0"
-                    dy="6"
-                    stdDeviation="9"
-                    floodColor="#68B75266"
-                  />
-                  <feDropShadow
-                    dx="0"
-                    dy="9"
-                    stdDeviation="18"
-                    floodColor="#68B75266"
-                  />
-                </filter>
-              </defs>
-
-              <Line
+              <Area
                 type="monotone"
                 dataKey="bookingCount"
-                stroke="#68B752"
-                strokeWidth={1.2}
-                filter="url(#shadow)"
+                stackId="1"
+                stroke="#6C2860"
+                fill="#6C2860"
+                dot
               />
-            </LineChart>
+              <Area
+                type="monotone"
+                dataKey="myEarning"
+                stackId="1"
+                stroke="#D8394C"
+                fill="#D8394C"
+                dot
+              />
+            </AreaChart>
           </ResponsiveContainer>
         </div>
       </div>
@@ -289,4 +303,4 @@ const DriverEarningGraph = () => {
   );
 };
 
-export default DriverEarningGraph;
+export default DashboardGraph;
