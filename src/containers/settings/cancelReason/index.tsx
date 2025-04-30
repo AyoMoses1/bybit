@@ -8,6 +8,8 @@ import {
   useCancelReasons,
   useEditCancelReasons,
 } from "@/lib/api/apiHandlers/useCancelReason";
+import { AuditAction } from "@/lib/api/apiHandlers/auditService";
+import { useAuditLog } from "@/utils/useAuditLog";
 
 type CancelReason = {
   id: string;
@@ -24,6 +26,7 @@ const CancellationReasons = ({
   setClickExport: (value: boolean) => void;
 }) => {
   const { data, isLoading, error } = useCancelReasons();
+  const { handleAudit } = useAuditLog();
   const { mutate } = useEditCancelReasons();
 
   const filteredData = React.useMemo(
@@ -69,10 +72,21 @@ const CancellationReasons = ({
 
   const handleDelete = (id: string) => {
     if (!data?.complex) return;
+    const reasonToDelete = data.complex[parseInt(id)];
     const updatedReasons = data.complex.filter(
       (_, index) => String(index) !== id,
     );
-    mutate(updatedReasons);
+
+    mutate(updatedReasons, {
+      onSuccess: () => {
+        handleAudit(
+          "Cancellation Reason",
+          id,
+          AuditAction.DELETE,
+          `Deleted reason: ${reasonToDelete?.label}`,
+        );
+      },
+    });
   };
 
   const columns: ColumnDef<CancelReason>[] = [
