@@ -4,17 +4,19 @@ import { Button } from "@/components/ui/button";
 import PromosTable from "@/containers/promos";
 import ProtectedRoute from "@/HOC/ProtectedRoute";
 import { Plus } from "lucide-react";
+import { useTranslation } from "next-i18next";
 import Link from "next/link";
 import React, { useState } from "react";
 
 const Promos = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [clickExport, setClickExport] = useState(false);
+  const { t } = useTranslation("common");
 
   return (
     <div className="mt-6">
       <p className="px-5 text-[32px] font-semibold tracking-[-0.11px] text-[#202224]">
-        Promos
+        {t("description")}
       </p>
       <div className="mb-3 flex items-center justify-between px-5">
         <div></div>

@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { ChevronDown, User } from "lucide-react";
 import { Locale } from "next-intl";
 import home from "../../../assets/svgs/icon.svg";
@@ -203,8 +203,10 @@ const Header = () => {
   }, []);
 
   const changeLanguage = (locale: Locale) => {
-    if (locale === currentLocale) return;
-    router.push(`/${locale}${pathname.substring(3)}`);
+    // Remove the first segment (the locale)
+    const newPath = `/${locale}${pathname.substring(3)}`;
+
+    router.push(newPath);
   };
 
   const navigateToProfile = () => {
