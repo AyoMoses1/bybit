@@ -14,7 +14,7 @@ interface AppSidebarLayoutProps {
 const AppSidebarLayout = ({ children }: AppSidebarLayoutProps) => {
   const pathname = usePathname();
 
-  if (pathname === "/login") {
+  if (pathname === "/") {
     return <>{children}</>;
   }
 
