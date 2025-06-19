@@ -13,28 +13,38 @@ const Dashboard = () => {
 
   const campaigns = [
     {
-      title: "Exclusive Pre-Sale Access to T...",
-      period: "2025-03-21 08:00:00 - 2025-10-31 23:5...",
+      title: "Exclusive Pre-Sale Access to Tomorrow Brasil experience",
       status: "Hot",
       type: "Ongoing",
+      period: "2025-03-21 08:00:00 - 2025-10-31 23:59:59",
+      image:
+        "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=225&fit=crop", // Brazil landscape
+      overlayText: "Priority Tomorrowland Brasil experience",
     },
     {
-      title: "Position Airdrop Campaign - Ex...",
-      period: "2025-03-10 10:00:00 - 2025-06-06 23:...",
+      title: "Position Airdrop Campaign - Exclusive",
       status: "Hot",
       type: "Ongoing",
+      period: "2025-03-10 10:00:00 - 2025-06-06 23:59:59",
+      image:
+        "https://images.unsplash.com/photo-1640340434855-6084b1f4901c?w=400&h=225&fit=crop", // Crypto/Bitcoin themed
     },
     {
       title: "Bybit Starter Rewards",
-      period: "2023-02-20 21:30:00 - 2025-12-31 21:3...",
       status: "Hot",
       type: "Ongoing",
+      period: "2023-02-20 21:30:00 - 2025-12-31 21:30:00",
+      image:
+        "https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&h=225&fit=crop", // Gift/rewards themed
+      overlayText: "Bybit Starter Rewards",
     },
     {
-      title: "Trade at least $50k in volume t...",
-      period: "2025-05-06 16:00:00 - 2025-05-19 23:...",
+      title: "Trade at least $50k in volume to win up to $500 USDT",
       status: "Exclusive",
       type: "Ended",
+      period: "2025-05-06 16:00:00 - 2025-05-19 23:59:59",
+      image:
+        "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=400&h=225&fit=crop", // Trading/charts themed
     },
   ];
 
@@ -86,92 +96,86 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 p-6 font-inter">
       <h1 className="mb-8 text-3xl font-bold text-gray-900">My Dashboard</h1>
 
-      {/* Account Overview */}
-      <Card className="mb-8">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Account Overview</CardTitle>
-          <div className="flex space-x-2">
-            {timeFilters.map((period) => (
-              <Button
-                key={period}
-                variant={timeFilter === period ? "default" : "outline"}
-                size="sm"
-                onClick={() => setTimeFilter(period)}
-                className={
-                  timeFilter === period
-                    ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
-                    : "border-gray-300"
-                }
-              >
-                {period}
-              </Button>
-            ))}
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="mb-6 text-sm text-gray-600">
-            Data from 2024-01-01 - 2025-06-01
-          </div>
-
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <div>
-              <div className="mb-1 text-sm text-gray-600">No. of Sign-ups</div>
-              <div className="text-3xl font-bold">961</div>
-            </div>
-            <div>
-              <div className="mb-1 text-sm text-gray-600">
-                Clients' Trading Volume
-              </div>
-              <div className="text-3xl font-bold">793,178,164.23</div>
-              <div className="text-sm text-gray-600">USDT</div>
-            </div>
-            <div>
-              <div className="mb-1 text-sm text-gray-600">
-                No. of First Time Deposits
-              </div>
-              <div className="text-3xl font-bold">779</div>
-            </div>
-            <div>
-              <div className="mb-1 text-sm text-gray-600">
-                Clients Who Traded
-              </div>
-              <div className="text-3xl font-bold">721</div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
-      {/* Account Balance and Commission Tier */}
       <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        {/* Account Balance */}
-        <Card>
+        <Card className="mb-8 h-full">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+            <CardTitle className="text-xl font-semibold">
+              Account Overview
+            </CardTitle>
+            <div className="flex space-x-2">
+              {timeFilters.map((period) => (
+                <Button
+                  key={period}
+                  variant={timeFilter === period ? "default" : "outline"}
+                  size="sm"
+                  onClick={() => setTimeFilter(period)}
+                  className={
+                    timeFilter === period
+                      ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
+                      : "border-gray-300"
+                  }
+                >
+                  {period}
+                </Button>
+              ))}
+            </div>
+          </CardHeader>
+          <CardContent className="pt-6">
+            <div className="mb-8 text-sm text-gray-600">
+              Data from 2024-01-01 - 2025-06-01
+            </div>
+
+            <div className="grid grid-cols-2 gap-8">
+              <div className="space-y-2">
+                <div className="text-sm text-gray-600">No. of Sign-ups</div>
+                <div className="text-2xl font-bold">961</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm text-gray-600">
+                  Clients' Trading Volume
+                </div>
+                <div className="text-2xl font-bold">793,178,164.23</div>
+                <div className="text-sm text-gray-600">USDT</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm text-gray-600">
+                  No. of First Time Deposits
+                </div>
+                <div className="text-2xl font-bold">779</div>
+              </div>
+              <div className="space-y-2">
+                <div className="text-sm text-gray-600">Clients Who Traded</div>
+                <div className="text-2xl font-bold">721</div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="h-full">
           <CardHeader>
-            <CardTitle>Account Balance</CardTitle>
+            <CardTitle className="text-xl font-semibold">
+              Account Balance
+            </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-2 text-3xl font-bold">
-              ≈ 155.11366555 <span className="text-lg text-gray-500">USDT</span>
+            <div className="mb-2 text-2xl font-bold">
+              ≈ 155.11366555{" "}
+              <span className="text-lg font-normal text-gray-500">USDT</span>
             </div>
-            <div className="mb-4 text-sm text-gray-600">
+            <div className="mb-6 text-sm text-gray-600">
               ≈ 76.7 USDT pending
             </div>
 
-            <div className="mb-6 space-y-3">
+            <div className="mb-6 space-y-2">
               {balanceTransactions.map((transaction, index) => (
-                <div
-                  key={index}
-                  className={`flex items-center justify-between rounded-lg p-3 ${
-                    transaction.positive ? "bg-green-50" : "bg-red-50"
-                  }`}
-                >
-                  <div className="flex items-center space-x-2">
-                    <div
-                      className={`h-2 w-2 rounded-full ${
-                        transaction.positive ? "bg-green-500" : "bg-red-500"
-                      }`}
-                    ></div>
-                    <span className="text-sm">{transaction.amount}</span>
+                <div key={index} className="flex items-center space-x-3">
+                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-100">
+                    <div className="h-3 w-3 rounded-sm bg-teal-500"></div>
                   </div>
+                  <span className="text-sm text-gray-600">
+                    {transaction.amount}
+                  </span>
+                  <span className="text-sm text-gray-400">•</span>
                   <span className="text-sm text-gray-600">
                     {transaction.type}
                   </span>
@@ -180,74 +184,90 @@ const Dashboard = () => {
             </div>
 
             <Button variant="outline" className="w-full">
-              <Eye className="mr-2 h-4 w-4" />
               View Balance
             </Button>
           </CardContent>
         </Card>
 
-        {/* Commission Tier */}
-        <Card>
+        <Card className="h-full">
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <CardTitle className="text-xl font-semibold">
+              My Promotion Tools
+            </CardTitle>
+            <div className="flex space-x-4">
+              <Button
+                variant="link"
+                className="p-0 text-yellow-500 hover:text-yellow-600"
+              >
+                Manage
+              </Button>
+              <Button
+                variant="link"
+                className="p-0 text-yellow-500 hover:text-yellow-600"
+              >
+                Invite Sub-Affiliates
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+              <div className="lg:col-span-2">
+                <div className="mb-4">
+                  <div className="mb-2 text-sm text-gray-600">
+                    Referral Code
+                  </div>
+                  <div className="text-2xl font-bold">Investorruth</div>
+                </div>
+
+                <div className="mb-4">
+                  <div className="mb-2 text-sm text-gray-600">
+                    Referral Link(My Sign-Up Page)
+                  </div>
+                  <div className="break-all text-lg font-semibold">
+                    https://partner.bybit.com/b/Investorruth
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <span className="text-gray-600">
+                    Create short link with your affiliate ID
+                  </span>
+                  <Button
+                    variant="link"
+                    className="p-0 text-yellow-500 hover:text-yellow-600"
+                  >
+                    Create Now
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex items-start justify-end lg:col-span-1">
+                <Button variant="outline">Personalize</Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="h-full">
           <CardHeader>
-            <CardTitle>My Commission Tier</CardTitle>
+            <CardTitle className="text-xl font-semibold">
+              My Commission Tier
+            </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <div className="mb-1 text-sm text-gray-600">
-                Profits From Your Clients' Trades:
-              </div>
-              <div className="text-2xl font-bold text-green-600">35%</div>
+              <span className="text-sm">
+                Profits From Your Clients' Trades:{" "}
+              </span>
+              <span className="text-lg font-bold text-green-600">35%</span>
             </div>
             <div>
-              <div className="mb-1 text-sm text-gray-600">
-                Your Sub-Affiliates' Earnings:
-              </div>
-              <div className="text-2xl font-bold text-blue-600">0% - 10%</div>
+              <span className="text-sm">Your Sub-Affiliates' Earnings: </span>
+              <span className="text-lg font-bold text-green-600">0% - 10%</span>
             </div>
           </CardContent>
         </Card>
       </div>
-
-      {/* Promotion Tools */}
-      <Card className="mb-8">
-        <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>My Promotion Tools</CardTitle>
-          <div className="flex space-x-2">
-            <Button variant="outline" size="sm">
-              Manage
-            </Button>
-            <Button variant="outline" size="sm">
-              Invite Sub-Affiliates
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center justify-between">
-            <div className="flex-1">
-              <div className="mb-4">
-                <div className="mb-1 text-sm text-gray-600">Referral Code</div>
-                <div className="text-2xl font-bold">Investorruth</div>
-              </div>
-              <div className="mb-4">
-                <div className="mb-1 text-sm text-gray-600">
-                  Referral Link (My Sign-Up Page)
-                </div>
-                <div className="break-all text-blue-600">
-                  https://partner.bybit.com/b/Investorruth
-                </div>
-              </div>
-              <div className="text-sm text-gray-600">
-                Create short link with your affiliate ID{" "}
-                <button className="text-yellow-500 hover:underline">
-                  Create Now
-                </button>
-              </div>
-            </div>
-            <Button variant="outline">Personalize</Button>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Campaigns */}
       <Card className="mb-8">
         <CardHeader className="flex flex-row items-center justify-between">
@@ -260,27 +280,40 @@ const Dashboard = () => {
           <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
             {campaigns.map((campaign, index) => (
               <div key={index} className="overflow-hidden rounded-lg border">
-                <div className="flex aspect-video items-center justify-center bg-gradient-to-br from-purple-400 to-blue-500">
-                  <div className="font-medium text-white">Campaign Image</div>
+                <div className="relative aspect-video">
+                  <img
+                    src={
+                      campaign.image ||
+                      `https://picsum.photos/400/225?random=${index}`
+                    }
+                    alt={campaign.title}
+                    className="h-full w-full object-cover"
+                  />
+                  {/* Overlay text if needed */}
+                  {campaign.overlayText && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
+                      <div className="px-4 text-center font-medium text-white">
+                        {campaign.overlayText}
+                      </div>
+                    </div>
+                  )}
                 </div>
                 <div className="p-4">
                   <div className="mb-2 flex gap-2">
                     <Badge
-                      variant={
-                        campaign.status === "Hot" ? "destructive" : "secondary"
-                      }
+                      variant="destructive"
                       className={
                         campaign.status === "Hot"
                           ? "bg-red-500 text-white"
-                          : "bg-purple-500 text-white"
+                          : campaign.status === "Exclusive"
+                            ? "bg-yellow-500 text-black"
+                            : "bg-gray-500 text-white"
                       }
                     >
                       {campaign.status}
                     </Badge>
                     <Badge
-                      variant={
-                        campaign.type === "Ongoing" ? "default" : "secondary"
-                      }
+                      variant="default"
                       className={
                         campaign.type === "Ongoing"
                           ? "bg-green-500 text-white"
@@ -290,7 +323,9 @@ const Dashboard = () => {
                       {campaign.type}
                     </Badge>
                   </div>
-                  <h3 className="mb-2 text-sm font-medium">{campaign.title}</h3>
+                  <h3 className="mb-2 line-clamp-2 text-sm font-medium">
+                    {campaign.title}
+                  </h3>
                   <p className="text-xs text-gray-600">{campaign.period}</p>
                 </div>
               </div>
@@ -298,7 +333,6 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
-
       {/* Recent Signups */}
       <Card>
         <CardHeader>

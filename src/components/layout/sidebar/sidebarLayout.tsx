@@ -18,20 +18,22 @@ interface AppSidebarLayoutProps {
 const AppSidebarLayout = ({ children }: AppSidebarLayoutProps) => {
   const pathname = usePathname();
 
-  // Hide sidebar and header on login page
   if (pathname === "/login") {
     return <>{children}</>;
   }
 
-  // Show sidebar and header for all other pages
   return (
-    <SidebarProvider>
-      <AppSidebar />
-      <SidebarInset>
-        <Header />
-        <div className="flex flex-1 flex-col gap-4 p-4 pt-0">{children}</div>
-      </SidebarInset>
-    </SidebarProvider>
+    <>
+      <Header />
+      <SidebarProvider>
+        <div className="sticky top-0 h-screen">
+          <AppSidebar />
+        </div>
+        <SidebarInset>
+          <div className="flex flex-1 flex-col gap-4">{children}</div>
+        </SidebarInset>
+      </SidebarProvider>
+    </>
   );
 };
 
