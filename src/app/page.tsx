@@ -2,11 +2,33 @@
 import React, { useState } from "react";
 import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/button";
 
 const BybitAffiliateLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    try {
+      // Simulate API call
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Route to dashboard after successful login
+      router.push("/dashboard");
+    } catch (error) {
+      console.error("Login failed:", error);
+      // Handle error here (show error message, etc.)
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-white font-sans">
@@ -83,44 +105,82 @@ const BybitAffiliateLogin = () => {
           <div className="w-full max-w-md">
             <h2 className="mb-6 text-3xl font-bold text-gray-900">Log In</h2>
 
-            {/* Email Input */}
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="Email"
-              className="mb-4 w-full rounded-md bg-[#eaf1fe] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-            />
-
-            {/* Password Input */}
-            <div className="relative mb-4">
+            <form onSubmit={handleSubmit}>
+              {/* Email Input */}
               <input
-                type={showPassword ? "text" : "password"}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="w-full rounded-md bg-[#eaf1fe] px-4 py-3 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                type="email"
+                value={email}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                  setEmail(e.target.value)
+                }
+                placeholder="Email"
+                className="mb-4 w-full rounded-md bg-[#eaf1fe] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                required
               />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-3 text-gray-600"
+
+              {/* Password Input */}
+              <div className="relative mb-4">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setPassword(e.target.value)
+                  }
+                  placeholder="Password"
+                  className="w-full rounded-md bg-[#eaf1fe] px-4 py-3 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  required
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-3 text-gray-600"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
+
+              {/* Forgot Password */}
+              <div className="mb-6 text-right">
+                <a href="#" className="text-sm text-yellow-500 hover:underline">
+                  Forgot Password?
+                </a>
+              </div>
+
+              {/* Login Button */}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="flex w-full items-center justify-center rounded-md bg-yellow-400 py-3 font-semibold text-black transition duration-200 hover:bg-yellow-500 disabled:cursor-not-allowed disabled:opacity-50"
               >
-                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
-              </button>
-            </div>
-
-            {/* Forgot Password */}
-            <div className="mb-6 text-right">
-              <a href="#" className="text-sm text-yellow-500 hover:underline">
-                Forgot Password?
-              </a>
-            </div>
-
-            {/* Login Button */}
-            <button className="w-full rounded-md bg-yellow-400 py-3 font-semibold text-black transition duration-200 hover:bg-yellow-500">
-              LOG IN
-            </button>
+                {isLoading ? (
+                  <>
+                    <svg
+                      className="-ml-1 mr-3 h-5 w-5 animate-spin text-black"
+                      xmlns="http://www.w3.org/2000/svg"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle
+                        className="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        strokeWidth="4"
+                      ></circle>
+                      <path
+                        className="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      ></path>
+                    </svg>
+                    Logging in...
+                  </>
+                ) : (
+                  "LOG IN"
+                )}
+              </Button>
+            </form>
 
             {/* Agreements */}
             <p className="mt-4 text-center text-xs text-gray-500">
@@ -130,7 +190,7 @@ const BybitAffiliateLogin = () => {
               </a>{" "}
               and{" "}
               <a href="#" className="text-yellow-500 underline">
-                Privacy Policy
+                Privacy Policysss
               </a>
               .
             </p>
