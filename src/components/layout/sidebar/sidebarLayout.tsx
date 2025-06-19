@@ -1,28 +1,35 @@
+// src/components/layout/sidebar/sidebarLayout.tsx
 "use client";
-import React, { ReactNode } from "react";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { usePathname } from "next/navigation";
-import { AppSidebar, Header } from "@/components/layout";
 
-const AppSidebarLayout = ({ children }: { children: ReactNode }) => {
+import { usePathname } from "next/navigation";
+import { ReactNode } from "react";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
+import AppSidebar from ".";
+import Header from "../header";
+
+interface AppSidebarLayoutProps {
+  children: ReactNode;
+}
+
+const AppSidebarLayout = ({ children }: AppSidebarLayoutProps) => {
   const pathname = usePathname();
-  const showSidebar = pathname === "/" || pathname === "/sign-up";
+
+  if (pathname === "/login") {
+    return <>{children}</>;
+  }
 
   return (
-    <div>
-      {" "}
+    <>
+      <Header />
       <SidebarProvider>
-        <div className="flex h-screen w-full">
-          {showSidebar ? <></> : <AppSidebar />}
-
-          <div className="relative w-full overflow-auto">
-            {showSidebar ? <></> : <Header />}
-
-            {children}
-          </div>
+        <div className="sticky top-0 h-screen">
+          <AppSidebar />
         </div>
+        <SidebarInset>
+          <div className="flex flex-1 flex-col gap-4">{children}</div>
+        </SidebarInset>
       </SidebarProvider>
-    </div>
+    </>
   );
 };
 
