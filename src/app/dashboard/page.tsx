@@ -4,12 +4,92 @@ import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Eye } from "lucide-react";
+import {
+  LineChart,
+  Line,
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  ResponsiveContainer,
+} from "recharts";
 
 const Dashboard = () => {
   const [timeFilter, setTimeFilter] = useState("All");
 
   const timeFilters = ["24H", "7D", "1M", "1Y", "All"];
+
+  // Mock data for charts
+  const recentData = [
+    { date: "2025-04-30", signUps: 0, deposits: 0 },
+    { date: "2025-05-02", signUps: 0, deposits: 0 },
+    { date: "2025-05-04", signUps: 0, deposits: 0 },
+    { date: "2025-05-06", signUps: 0, deposits: 0 },
+    { date: "2025-05-08", signUps: 0, deposits: 0 },
+    { date: "2025-05-10", signUps: 0, deposits: 0 },
+    { date: "2025-05-12", signUps: 0, deposits: 0 },
+    { date: "2025-05-14", signUps: 0, deposits: 0 },
+    { date: "2025-05-16", signUps: 0, deposits: 0 },
+    { date: "2025-05-18", signUps: 0, deposits: 0 },
+  ];
+
+  const commissionsData = [
+    { date: "2025-04-30", value: 2 },
+    { date: "2025-05-01", value: 4 },
+    { date: "2025-05-02", value: 6 },
+    { date: "2025-05-03", value: 8 },
+    { date: "2025-05-04", value: 10 },
+    { date: "2025-05-05", value: 8 },
+    { date: "2025-05-06", value: 6 },
+    { date: "2025-05-07", value: 4 },
+    { date: "2025-05-08", value: 2 },
+    { date: "2025-05-09", value: 1 },
+    { date: "2025-05-10", value: 1 },
+    { date: "2025-05-11", value: 1 },
+    { date: "2025-05-12", value: 1 },
+    { date: "2025-05-13", value: 1 },
+    { date: "2025-05-14", value: 1 },
+    { date: "2025-05-15", value: 1 },
+    { date: "2025-05-16", value: 1 },
+    { date: "2025-05-17", value: 1 },
+    { date: "2025-05-18", value: 1 },
+  ];
+
+  const subAffiliatesData = [
+    { date: "2025-04-30", value: 0 },
+    { date: "2025-05-02", value: 0 },
+    { date: "2025-05-04", value: 0 },
+    { date: "2025-05-06", value: 0 },
+    { date: "2025-05-08", value: 0 },
+    { date: "2025-05-10", value: 0 },
+    { date: "2025-05-12", value: 0 },
+    { date: "2025-05-14", value: 0 },
+    { date: "2025-05-16", value: 0 },
+    { date: "2025-05-18", value: 0 },
+  ];
+
+  const tradingVolumeData = [
+    { date: "2025-04-30", value: 10000 },
+    { date: "2025-05-01", value: 20000 },
+    { date: "2025-05-02", value: 30000 },
+    { date: "2025-05-03", value: 40000 },
+    { date: "2025-05-04", value: 50000 },
+    { date: "2025-05-05", value: 60000 },
+    { date: "2025-05-06", value: 45000 },
+    { date: "2025-05-07", value: 35000 },
+    { date: "2025-05-08", value: 25000 },
+    { date: "2025-05-09", value: 15000 },
+    { date: "2025-05-10", value: 10000 },
+    { date: "2025-05-11", value: 8000 },
+    { date: "2025-05-12", value: 6000 },
+    { date: "2025-05-13", value: 5000 },
+    { date: "2025-05-14", value: 4000 },
+    { date: "2025-05-15", value: 3000 },
+    { date: "2025-05-16", value: 2000 },
+    { date: "2025-05-17", value: 1500 },
+    { date: "2025-05-18", value: 1000 },
+  ];
 
   const campaigns = [
     {
@@ -18,7 +98,7 @@ const Dashboard = () => {
       type: "Ongoing",
       period: "2025-03-21 08:00:00 - 2025-10-31 23:59:59",
       image:
-        "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=225&fit=crop", // Brazil landscape
+        "https://images.unsplash.com/photo-1501594907352-04cda38ebc29?w=400&h=225&fit=crop",
       overlayText: "Priority Tomorrowland Brasil experience",
     },
     {
@@ -27,7 +107,7 @@ const Dashboard = () => {
       type: "Ongoing",
       period: "2025-03-10 10:00:00 - 2025-06-06 23:59:59",
       image:
-        "https://images.unsplash.com/photo-1640340434855-6084b1f4901c?w=400&h=225&fit=crop", // Crypto/Bitcoin themed
+        "https://images.unsplash.com/photo-1640340434855-6084b1f4901c?w=400&h=225&fit=crop",
     },
     {
       title: "Bybit Starter Rewards",
@@ -35,7 +115,7 @@ const Dashboard = () => {
       type: "Ongoing",
       period: "2023-02-20 21:30:00 - 2025-12-31 21:30:00",
       image:
-        "https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&h=225&fit=crop", // Gift/rewards themed
+        "https://images.unsplash.com/photo-1559526324-593bc073d938?w=400&h=225&fit=crop",
       overlayText: "Bybit Starter Rewards",
     },
     {
@@ -44,7 +124,7 @@ const Dashboard = () => {
       type: "Ended",
       period: "2025-05-06 16:00:00 - 2025-05-19 23:59:59",
       image:
-        "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=400&h=225&fit=crop", // Trading/charts themed
+        "https://images.unsplash.com/photo-1621761191319-c6fb62004040?w=400&h=225&fit=crop",
     },
   ];
 
@@ -96,6 +176,7 @@ const Dashboard = () => {
     <div className="min-h-screen bg-gray-50 p-6 font-inter">
       <h1 className="mb-8 text-3xl font-bold text-gray-900">My Dashboard</h1>
 
+      {/* Four Equal Height Cards */}
       <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
         <Card className="mb-8 h-full">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
@@ -124,7 +205,6 @@ const Dashboard = () => {
             <div className="mb-8 text-sm text-gray-600">
               Data from 2024-01-01 - 2025-06-01
             </div>
-
             <div className="grid grid-cols-2 gap-8">
               <div className="space-y-2">
                 <div className="text-sm text-gray-600">No. of Sign-ups</div>
@@ -165,7 +245,6 @@ const Dashboard = () => {
             <div className="mb-6 text-sm text-gray-600">
               ≈ 76.7 USDT pending
             </div>
-
             <div className="mb-6 space-y-2">
               {balanceTransactions.map((transaction, index) => (
                 <div key={index} className="flex items-center space-x-3">
@@ -182,7 +261,6 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-
             <Button variant="outline" className="w-full">
               View Balance
             </Button>
@@ -218,7 +296,6 @@ const Dashboard = () => {
                   </div>
                   <div className="text-2xl font-bold">Investorruth</div>
                 </div>
-
                 <div className="mb-4">
                   <div className="mb-2 text-sm text-gray-600">
                     Referral Link(My Sign-Up Page)
@@ -227,7 +304,6 @@ const Dashboard = () => {
                     https://partner.bybit.com/b/Investorruth
                   </div>
                 </div>
-
                 <div className="flex items-center space-x-2">
                   <span className="text-gray-600">
                     Create short link with your affiliate ID
@@ -240,7 +316,6 @@ const Dashboard = () => {
                   </Button>
                 </div>
               </div>
-
               <div className="flex items-start justify-end lg:col-span-1">
                 <Button variant="outline">Personalize</Button>
               </div>
@@ -268,6 +343,7 @@ const Dashboard = () => {
           </CardContent>
         </Card>
       </div>
+
       {/* Campaigns */}
       <Card className="mb-8">
         <CardHeader className="flex flex-row items-center justify-between">
@@ -289,7 +365,6 @@ const Dashboard = () => {
                     alt={campaign.title}
                     className="h-full w-full object-cover"
                   />
-                  {/* Overlay text if needed */}
                   {campaign.overlayText && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
                       <div className="px-4 text-center font-medium text-white">
@@ -333,8 +408,9 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
-      {/* Recent Signups */}
-      <Card>
+
+      {/* Recent Signups Table */}
+      <Card className="mb-8">
         <CardHeader>
           <CardTitle>Recent Signups</CardTitle>
         </CardHeader>
@@ -385,6 +461,261 @@ const Dashboard = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Analytics Charts Section */}
+      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+        {/* Recent Signups Chart */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-lg font-semibold">Recent</CardTitle>
+              <p className="text-sm text-gray-600">
+                Data from 2025-04-28 - 2025-05-27
+              </p>
+            </div>
+            <div className="flex space-x-2">
+              {timeFilters.map((period) => (
+                <Button
+                  key={period}
+                  variant={period === "1M" ? "default" : "outline"}
+                  size="sm"
+                  className={
+                    period === "1M"
+                      ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
+                      : "border-gray-300"
+                  }
+                >
+                  {period}
+                </Button>
+              ))}
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4 flex items-center space-x-6">
+              <div className="flex items-center space-x-2">
+                <div className="h-3 w-3 rounded-full bg-blue-500"></div>
+                <span className="text-sm text-gray-600">Sign Ups</span>
+              </div>
+              <div className="flex items-center space-x-2">
+                <div className="h-3 w-3 rounded-full bg-green-500"></div>
+                <span className="text-sm text-gray-600">
+                  First Time Deposits
+                </span>
+              </div>
+            </div>
+            <div className="mb-4 flex space-x-8">
+              <div className="text-3xl font-bold">0</div>
+              <div className="text-3xl font-bold">0</div>
+            </div>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={recentData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="date" tick={false} axisLine={false} />
+                  <YAxis tick={false} axisLine={false} />
+                  <Line
+                    type="monotone"
+                    dataKey="signUps"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                  <Line
+                    type="monotone"
+                    dataKey="deposits"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Clients Commissions Chart */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-lg font-semibold">
+                Clients Commissions
+              </CardTitle>
+              <p className="text-sm text-gray-600">
+                Data from 2025-04-28 - 2025-05-27
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex space-x-2">
+                {timeFilters.map((period) => (
+                  <Button
+                    key={period}
+                    variant={period === "1M" ? "default" : "outline"}
+                    size="sm"
+                    className={
+                      period === "1M"
+                        ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
+                        : "border-gray-300"
+                    }
+                  >
+                    {period}
+                  </Button>
+                ))}
+              </div>
+              <select className="rounded border px-2 py-1 text-sm">
+                <option>All Coins</option>
+              </select>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4 flex items-center space-x-2">
+              <div className="h-3 w-3 rounded-full bg-red-400"></div>
+              <span className="text-sm text-gray-600">Clients Commissions</span>
+            </div>
+            <div className="mb-4 text-3xl font-bold">26.8241784</div>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={commissionsData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="date" tick={false} axisLine={false} />
+                  <YAxis tick={false} axisLine={false} />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#f87171"
+                    fill="#fca5a5"
+                    fillOpacity={0.6}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Sub-Affiliates Commissions Chart */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-lg font-semibold">
+                Sub-Affiliates Commissions
+              </CardTitle>
+              <p className="text-sm text-gray-600">
+                Data from 2025-04-28 - 2025-05-27
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex space-x-2">
+                {timeFilters.map((period) => (
+                  <Button
+                    key={period}
+                    variant={period === "1M" ? "default" : "outline"}
+                    size="sm"
+                    className={
+                      period === "1M"
+                        ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
+                        : "border-gray-300"
+                    }
+                  >
+                    {period}
+                  </Button>
+                ))}
+              </div>
+              <select className="rounded border px-2 py-1 text-sm">
+                <option>All Coins</option>
+              </select>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4 flex items-center space-x-2">
+              <div className="h-3 w-3 rounded-full bg-purple-400"></div>
+              <span className="text-sm text-gray-600">
+                Sub-Affiliates Commissions
+              </span>
+            </div>
+            <div className="mb-4 text-3xl font-bold">0</div>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={subAffiliatesData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="date" tick={false} axisLine={false} />
+                  <YAxis tick={false} axisLine={false} />
+                  <Line
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#a855f7"
+                    strokeWidth={2}
+                    dot={false}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Clients' Trading Volume Chart */}
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+            <div>
+              <CardTitle className="text-lg font-semibold">
+                Clients' Trading Volume
+              </CardTitle>
+              <p className="text-sm text-gray-600">
+                Data from 2025-04-28 - 2025-05-27
+              </p>
+            </div>
+            <div className="flex items-center space-x-2">
+              <div className="flex space-x-2">
+                {timeFilters.map((period) => (
+                  <Button
+                    key={period}
+                    variant={period === "1M" ? "default" : "outline"}
+                    size="sm"
+                    className={
+                      period === "1M"
+                        ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
+                        : "border-gray-300"
+                    }
+                  >
+                    {period}
+                  </Button>
+                ))}
+              </div>
+              <select className="rounded border px-2 py-1 text-sm">
+                <option>All Coins</option>
+              </select>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-4 flex items-center space-x-2">
+              <div className="h-3 w-3 rounded-full bg-orange-400"></div>
+              <span className="text-sm text-gray-600">Trading Volumes</span>
+            </div>
+            <div className="mb-4 text-3xl font-bold">63,165,325.04</div>
+            <div className="h-48">
+              <ResponsiveContainer width="100%" height="100%">
+                <AreaChart data={tradingVolumeData}>
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <XAxis dataKey="date" tick={false} axisLine={false} />
+                  <YAxis tick={false} axisLine={false} />
+                  <Area
+                    type="monotone"
+                    dataKey="value"
+                    stroke="#fb923c"
+                    fill="#fed7aa"
+                    fillOpacity={0.6}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Footer */}
+      <div className="mt-8 flex justify-end space-x-4 text-sm text-gray-500">
+        <span>Affiliate Agreement</span>
+        <span>|</span>
+        <span className="text-yellow-500">Privacy Policy</span>
+      </div>
     </div>
   );
 };
