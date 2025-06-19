@@ -3,11 +3,7 @@
 
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
-import {
-  SidebarProvider,
-  SidebarInset,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
 import AppSidebar from ".";
 import Header from "../header";
 

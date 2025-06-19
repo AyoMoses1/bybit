@@ -1,10 +1,11 @@
 "use client";
 import React, { useState } from "react";
+import Image from "next/image";
 import { Eye, EyeOff } from "lucide-react";
 
 const BybitAffiliateLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
-  const [email, setEmail] = useState("ayomoses111+first@gmail.com");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   return (
@@ -60,13 +61,15 @@ const BybitAffiliateLogin = () => {
         {/* Left Section */}
         <div className="flex flex-1 items-center justify-center bg-[#f7f8f9] p-8">
           <div className="max-w-md text-center">
-            <img
-              src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=800&q=80" // Replace with actual image path
+            <Image
+              src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=800&q=80"
               alt="Bybit dashboard preview"
+              width={800}
+              height={600}
               className="mx-auto mb-6 rounded-lg"
             />
             <h2 className="mb-4 text-2xl font-bold text-gray-800">
-              Grow your audience with Bybit's affiliate portal:
+              Grow your audience with Bybit&apos;s affiliate portal:
             </h2>
             <p className="text-base text-gray-700">
               Gain insights, access campaigns, assets, and products.

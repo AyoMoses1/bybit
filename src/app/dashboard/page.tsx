@@ -1,9 +1,9 @@
 "use client";
 
 import React, { useState } from "react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   LineChart,
   Line,
@@ -14,6 +14,7 @@ import {
   CartesianGrid,
   ResponsiveContainer,
 } from "recharts";
+import { Badge } from "@/components/ui/badge";
 
 const Dashboard = () => {
   const [timeFilter, setTimeFilter] = useState("All");
@@ -212,7 +213,7 @@ const Dashboard = () => {
               </div>
               <div className="space-y-2">
                 <div className="text-sm text-gray-600">
-                  Clients' Trading Volume
+                  Clients&apos; Trading Volume
                 </div>
                 <div className="text-2xl font-bold">793,178,164.23</div>
                 <div className="text-sm text-gray-600">USDT</div>
@@ -332,12 +333,14 @@ const Dashboard = () => {
           <CardContent className="space-y-6">
             <div>
               <span className="text-sm">
-                Profits From Your Clients' Trades:{" "}
+                Profits From Your Clients&apos; Trades:{" "}
               </span>
               <span className="text-lg font-bold text-green-600">35%</span>
             </div>
             <div>
-              <span className="text-sm">Your Sub-Affiliates' Earnings: </span>
+              <span className="text-sm">
+                Your Sub-Affiliates&apos; Earnings:{" "}
+              </span>
               <span className="text-lg font-bold text-green-600">0% - 10%</span>
             </div>
           </CardContent>
@@ -357,12 +360,14 @@ const Dashboard = () => {
             {campaigns.map((campaign, index) => (
               <div key={index} className="overflow-hidden rounded-lg border">
                 <div className="relative aspect-video">
-                  <img
+                  <Image
                     src={
                       campaign.image ||
                       `https://picsum.photos/400/225?random=${index}`
                     }
                     alt={campaign.title}
+                    width={400}
+                    height={225}
                     className="h-full w-full object-cover"
                   />
                   {campaign.overlayText && (
@@ -656,7 +661,7 @@ const Dashboard = () => {
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
               <CardTitle className="text-lg font-semibold">
-                Clients' Trading Volume
+                Clients&apos; Trading Volume
               </CardTitle>
               <p className="text-sm text-gray-600">
                 Data from 2025-04-28 - 2025-05-27
