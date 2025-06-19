@@ -1,216 +1,90 @@
 "use client";
 
-import Link from "next/link";
-import Image, { StaticImageData } from "next/image";
-import { usePathname, useRouter } from "next/navigation";
-import Logo from "../../../assets/svgs/logo.svg";
-import { Power } from "lucide-react";
-import dashboard from "../../../assets/icons/dashboard.svg";
-// import addBookings from "../../../assets/icons/addBookings.svg";
-import bookingHistory from "../../../assets/icons/bookingHistory.svg";
-import users from "../../../assets/icons/users.svg";
-import vehicleType from "../../../assets/icons/vehicleType.svg";
-import cars from "../../../assets/icons/cars.svg";
-import withdrawals from "../../../assets/icons/withdrawal.svg";
-import addToWallet from "../../../assets/icons/addtoWallet.svg";
-import reports from "../../../assets/icons/reports.svg";
-import promos from "../../../assets/icons/promos.svg";
-import pushNotifications from "../../../assets/icons/pushNotification.svg";
-import sos from "../../../assets/icons/sos.svg";
-import complaint from "../../../assets/icons/complaint.svg";
-import profile from "../../../assets/icons/profile.svg";
-import settings from "../../../assets/icons/settings.svg";
-import audit from "../../../assets/icons/audit.png";
-
+import React, { useState } from "react";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar";
-
-import { getAuth, signOut } from "firebase/auth";
-import { useEffect, useState } from "react";
-
-type UserInfo = {
-  usertype: string;
-  id: string;
-};
-
-const routeGroups: Record<string, string[]> = {
-  "/users": [
-    "/users",
-    "/add-super-admin",
-    "/add-customers",
-    "/add-drivers",
-    "/update-super-admin",
-    "/add-admin",
-    "/update-admin",
-    "/customer",
-    "/driver",
-  ],
-  "/vehicle-type": ["/vehicle-type", "/vehicle-type/[id]", "/add-vehicle"],
-  "/booking-history": ["/booking-history", "/booking-history/[id]"],
-  "/cars": ["/cars", "/add-car"],
-  "/push-notification": ["/push-notification", "/add-notification"],
-  "/withdrawals": ["/withdrawals", "/withdrawals/[id]"],
-  "/complaints": ["/complaint"],
-  "/promos": ["/promos", "/add-promo", "/update-promo/"],
-  "/audit": ["/audit"],
-};
-
-const mainMenuItems = [
-  { url: "/dashboard", title: "Dashboard", image: dashboard },
-  // { url: "/add-bookings", title: "Add Bookings", image: addBookings },
-  { url: "/booking-history", title: "Booking History", image: bookingHistory },
-  { url: "/users", title: "Users", image: users },
-  { url: "/vehicle-type", title: "Vehicle Type", image: vehicleType },
-  { url: "/cars", title: "Cars", image: cars },
-  { url: "/withdrawals", title: "Withdrawals", image: withdrawals },
-  { url: "/add-to-wallet", title: "Add to Wallet", image: addToWallet },
-  { url: "/reports", title: "Reports", image: reports },
-  { url: "/promos", title: "Promos", image: promos },
-  {
-    url: "/push-notification",
-    title: "Push Notifications",
-    image: pushNotifications,
-  },
-  { url: "/sos", title: "SOS", image: sos },
-  { url: "/complaints", title: "Complaints", image: complaint },
-  { url: "/audit", title: "Audit", image: audit },
-];
-
-const otherMenuItems = [
-  { url: "/payment-settings", title: "Payment Settings", image: settings },
-  { url: "/settings", title: "Settings", image: settings },
-  { url: "/profile", title: "Profile", image: profile },
-  { url: "/logout", title: "Logout", icon: Power },
-];
+  Home,
+  DollarSign,
+  TrendingUp,
+  Gift,
+  BarChart3,
+  BookOpen,
+  FileText,
+  ChevronRight,
+} from "lucide-react";
 
 const AppSidebar = () => {
-  const router = useRouter();
-  const pathname = usePathname();
-  const [userType, setUserType] = useState<string>("");
+  const [activeItem, setActiveItem] = useState("Overview");
 
-  const filteredMainMenuItems = mainMenuItems.filter((item) => {
-    if (item.url === "/audit") {
-      return userType === "admin";
-    }
-    return true;
-  });
+  const sidebarItems = [
+    { icon: Home, label: "Overview", active: true },
+    { icon: DollarSign, label: "Account Balance" },
+    { icon: TrendingUp, label: "Commissions" },
+    { icon: Gift, label: "Promotion Tools" },
+    { icon: BarChart3, label: "Campaigns" },
+    { icon: BarChart3, label: "My Performance", hasSubmenu: true },
+    { icon: BookOpen, label: "Academy" },
+    { icon: FileText, label: "Resources" },
+  ];
 
-  const isActive = (url: string) => {
-    return routeGroups[url]
-      ? routeGroups[url].some((prefix) => pathname.startsWith(prefix))
-      : pathname === url;
+  const handleItemClick = (label: string) => {
+    setActiveItem(label);
   };
-
-  const handleLogout = async () => {
-    const auth = getAuth();
-    await signOut(auth);
-    localStorage.clear();
-    router.push("/");
-  };
-
-  const MenuItem = ({
-    url,
-    title,
-    image,
-    icon: Icon,
-    onClick,
-  }: {
-    url: string;
-    title: string;
-    image?: StaticImageData;
-    icon?: React.ElementType;
-    onClick?: () => void;
-  }) => {
-    const active = isActive(url);
-
-    return (
-      <div className="flex gap-5">
-        <div
-          className={`h-[50px] w-[4px] rounded-r-[4px] ${
-            active ? "bg-[#DA4CBF]" : "bg-[#1E1E1E]"
-          }`}
-        />
-        <SidebarMenuItem className="w-[85%]">
-          <SidebarMenuButton asChild isActive={active} onClick={onClick}>
-            {url === "/logout" && Icon ? (
-              <button className="flex items-center gap-2">
-                <Icon className="size-5" />
-                <span>{title}</span>
-              </button>
-            ) : image ? (
-              <Link href={url} className="flex items-center gap-2">
-                <Image src={image} alt={title} width={20} height={20} />
-                <span>{title}</span>
-              </Link>
-            ) : null}
-          </SidebarMenuButton>
-        </SidebarMenuItem>
-      </div>
-    );
-  };
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const info = localStorage.getItem("userInfo");
-      if (info) {
-        const userData: UserInfo = JSON.parse(info);
-        setUserType(userData.usertype);
-      }
-    }
-  }, []);
 
   return (
-    <Sidebar className="pb-10 pt-0">
-      <div className="flex flex-col bg-white pb-2 pl-12 pt-6">
-        <Image
-          src={Logo}
-          alt="Koloride Logo"
-          width={100}
-          height={24}
-          className="object-contain"
-        />
-        <p className="mt-[1px] pb-2 text-xs font-[400] tracking-[0.3px] text-[#000]">
-          Admin
-        </p>
-      </div>
-
-      <SidebarContent>
-        <SidebarGroup className="space-y-2.5 pt-4">
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {filteredMainMenuItems.map((item) => (
-                <MenuItem key={item.url} {...item} />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <div className="my-2">
-          <hr />
+    <div className="flex h-screen w-64 flex-col bg-gray-900 font-inter text-white">
+      {/* User Info Section */}
+      <div className="border-b border-gray-700 p-6">
+        <div className="mb-1 text-sm text-gray-400">Need help?</div>
+        <div className="mb-4 text-sm text-gray-400">
+          Contact your account manager
         </div>
 
-        <SidebarGroup>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {otherMenuItems.map((item) => (
-                <MenuItem
-                  key={item.url}
-                  {...item}
-                  onClick={item.url === "/logout" ? handleLogout : undefined}
-                />
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-      </SidebarContent>
-    </Sidebar>
+        <div className="flex items-center space-x-3">
+          <div className="flex h-6 w-6 items-center justify-center rounded bg-yellow-400 text-xs font-bold text-black">
+            bybit
+          </div>
+          <div>
+            <div className="text-sm font-medium text-white">
+              Wilson Ogheneovo
+            </div>
+            <div className="text-xs text-gray-400">
+              wilson.ogheneovo@bybit.com
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-2 flex items-center space-x-2">
+          <div className="flex h-4 w-4 items-center justify-center rounded-full bg-green-500">
+            <span className="text-xs text-white">✓</span>
+          </div>
+          <span className="text-xs text-gray-400">Honourable_Minister</span>
+        </div>
+      </div>
+
+      {/* Navigation Menu */}
+      <nav className="flex-1 py-6">
+        <ul className="space-y-1">
+          {sidebarItems.map((item, index) => (
+            <li key={index}>
+              <button
+                onClick={() => handleItemClick(item.label)}
+                className={`flex w-full items-center justify-between px-6 py-3 text-left transition-colors ${
+                  activeItem === item.label
+                    ? "bg-yellow-400 font-medium text-black"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                }`}
+              >
+                <div className="flex items-center space-x-3">
+                  <item.icon className="h-5 w-5" />
+                  <span className="text-sm">{item.label}</span>
+                </div>
+                {item.hasSubmenu && <ChevronRight className="h-4 w-4" />}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   );
 };
 
