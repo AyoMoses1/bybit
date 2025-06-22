@@ -167,24 +167,18 @@ const Dashboard = () => {
     },
   ];
 
-  const balanceTransactions = [
-    { amount: "+155.11366555 USDT", type: "Commission", positive: true },
-    { amount: "-130.02518233 USDT", type: "Withdrawal", positive: false },
-    { amount: "+130.02519233 USDT", type: "Commission", positive: true },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-50 p-6 font-inter">
-      <h1 className="mb-8 text-3xl font-bold text-gray-900">My Dashboard</h1>
+    <div className="min-h-screen bg-gray-200 p-6 font-inter">
+      <h1 className="mb-8 text-2xl font-bold text-gray-900">My Dashboard</h1>
 
       {/* Four Equal Height Cards */}
-      <div className="mb-8 grid grid-cols-1 gap-8 lg:grid-cols-2">
-        <Card className="mb-8 h-full">
+      <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <Card className="h-full border-0 shadow-lg">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
-            <CardTitle className="text-xl font-semibold">
+            <CardTitle className="text-lg font-semibold text-gray-900">
               Account Overview
             </CardTitle>
-            <div className="flex space-x-2">
+            <div className="flex space-x-1">
               {timeFilters.map((period) => (
                 <Button
                   key={period}
@@ -193,8 +187,8 @@ const Dashboard = () => {
                   onClick={() => setTimeFilter(period)}
                   className={
                     timeFilter === period
-                      ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
-                      : "border-gray-300"
+                      ? "h-8 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
+                      : "h-8 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                   }
                 >
                   {period}
@@ -202,143 +196,164 @@ const Dashboard = () => {
               ))}
             </div>
           </CardHeader>
-          <CardContent className="pt-6">
-            <div className="mb-8 text-sm text-gray-600">
-              Data from 2024-01-01 - 2025-06-01
+          <CardContent className="pt-2">
+            <div className="mb-6 text-xs text-gray-500">
+              Data from 2025-06-21 - 2025-06-21
             </div>
-            <div className="grid grid-cols-2 gap-8">
-              <div className="space-y-2">
-                <div className="text-sm text-gray-600">No. of Sign-ups</div>
-                <div className="text-2xl font-bold">961</div>
+            <div className="grid grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <div className="text-xs text-gray-500">No. of Sign-ups</div>
+                <div className="text-2xl font-bold text-gray-900">0</div>
               </div>
-              <div className="space-y-2">
-                <div className="text-sm text-gray-600">
+              <div className="space-y-1">
+                <div className="text-xs text-gray-500">
                   Clients&apos; Trading Volume
                 </div>
-                <div className="text-2xl font-bold">793,178,164.23</div>
-                <div className="text-sm text-gray-600">USDT</div>
+                <div className="text-2xl font-bold text-gray-900">0</div>
+                <div className="text-xs text-gray-500">USDT</div>
               </div>
-              <div className="space-y-2">
-                <div className="text-sm text-gray-600">
+              <div className="space-y-1">
+                <div className="text-xs text-gray-500">
                   No. of First Time Deposits
                 </div>
-                <div className="text-2xl font-bold">779</div>
+                <div className="text-2xl font-bold text-gray-900">0</div>
               </div>
-              <div className="space-y-2">
-                <div className="text-sm text-gray-600">Clients Who Traded</div>
-                <div className="text-2xl font-bold">721</div>
+              <div className="space-y-1">
+                <div className="text-xs text-gray-500">Clients Who Traded</div>
+                <div className="text-2xl font-bold text-gray-900">0</div>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="h-full">
+        <Card className="h-full border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl font-semibold">
+            <CardTitle className="text-lg font-semibold text-gray-900">
               Account Balance
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-2 text-2xl font-bold">
-              ≈ 155.11366555{" "}
-              <span className="text-lg font-normal text-gray-500">USDT</span>
+            <div className="mb-2 text-2xl font-bold text-gray-900">
+              ≈ 0.06097805{" "}
+              <span className="text-sm font-normal text-gray-500">USDT</span>
             </div>
-            <div className="mb-6 text-sm text-gray-600">
-              ≈ 76.7 USDT pending
+            <div className="mb-6 text-xs text-gray-500">
+              ≈ 0.00992722 USDT pending
             </div>
-            <div className="mb-6 space-y-2">
-              {balanceTransactions.map((transaction, index) => (
-                <div key={index} className="flex items-center space-x-3">
-                  <div className="flex h-6 w-6 items-center justify-center rounded-full bg-teal-100">
-                    <div className="h-3 w-3 rounded-sm bg-teal-500"></div>
-                  </div>
-                  <span className="text-sm text-gray-600">
-                    {transaction.amount}
-                  </span>
-                  <span className="text-sm text-gray-400">•</span>
-                  <span className="text-sm text-gray-600">
-                    {transaction.type}
-                  </span>
+            <div className="mb-6 space-y-3">
+              <div className="mb-2 text-xs font-medium text-gray-700">
+                Recent Transactions
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
                 </div>
-              ))}
+                <span className="text-xs text-gray-600">+ 0.00001434 USDT</span>
+                <span className="text-xs text-gray-400">•</span>
+                <span className="text-xs text-gray-600">Commission</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                </div>
+                <span className="text-xs text-gray-600">+ 0.00001446 USDT</span>
+                <span className="text-xs text-gray-400">•</span>
+                <span className="text-xs text-gray-600">Commission</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
+                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
+                </div>
+                <span className="text-xs text-gray-600">+ 0.02913994 USDT</span>
+                <span className="text-xs text-gray-400">•</span>
+                <span className="text-xs text-gray-600">Commission</span>
+              </div>
             </div>
-            <Button variant="outline" className="w-full">
+            <Button
+              variant="outline"
+              className="w-full border-gray-200 text-gray-700 hover:bg-gray-50"
+            >
               View Balance
             </Button>
           </CardContent>
         </Card>
 
-        <Card className="h-full">
+        <Card className="h-full border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
-            <CardTitle className="text-xl font-semibold">
+            <CardTitle className="text-lg font-semibold text-gray-900">
               My Promotion Tools
             </CardTitle>
             <div className="flex space-x-4">
               <Button
                 variant="link"
-                className="p-0 text-yellow-500 hover:text-yellow-600"
+                className="p-0 text-sm text-[#F7931A] hover:text-[#e8870f]"
               >
                 Manage
               </Button>
               <Button
                 variant="link"
-                className="p-0 text-yellow-500 hover:text-yellow-600"
+                className="p-0 text-sm text-[#F7931A] hover:text-[#e8870f]"
               >
                 Invite Sub-Affiliates
               </Button>
             </div>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+          <CardContent className="space-y-4">
+            <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
               <div className="lg:col-span-2">
-                <div className="mb-4">
-                  <div className="mb-2 text-sm text-gray-600">
+                <div className="mb-3">
+                  <div className="mb-1 text-xs text-gray-500">
                     Referral Code
                   </div>
-                  <div className="text-2xl font-bold">Investorruth</div>
+                  <div className="text-xl font-bold text-gray-900">49818</div>
                 </div>
                 <div className="mb-4">
-                  <div className="mb-2 text-sm text-gray-600">
+                  <div className="mb-1 text-xs text-gray-500">
                     Referral Link(My Sign-Up Page)
                   </div>
-                  <div className="break-all text-lg font-semibold">
-                    https://partner.bybit.com/b/Investorruth
+                  <div className="break-all text-sm font-medium text-gray-700">
+                    https://partner.bybit.com/b/49818
                   </div>
                 </div>
                 <div className="flex items-center space-x-2">
-                  <span className="text-gray-600">
+                  <span className="text-xs text-gray-500">
                     Create short link with your affiliate ID
                   </span>
                   <Button
                     variant="link"
-                    className="p-0 text-yellow-500 hover:text-yellow-600"
+                    className="p-0 text-xs text-[#F7931A] hover:text-[#e8870f]"
                   >
                     Create Now
                   </Button>
                 </div>
               </div>
               <div className="flex items-start justify-end lg:col-span-1">
-                <Button variant="outline">Personalize</Button>
+                <Button
+                  variant="outline"
+                  className="border-gray-200 text-gray-700 hover:bg-gray-50"
+                >
+                  Personalize
+                </Button>
               </div>
             </div>
           </CardContent>
         </Card>
 
-        <Card className="h-full">
+        <Card className="h-full border-0 shadow-sm">
           <CardHeader>
-            <CardTitle className="text-xl font-semibold">
+            <CardTitle className="text-lg font-semibold text-gray-900">
               My Commission Tier
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="space-y-4">
             <div>
-              <span className="text-sm">
+              <span className="text-sm text-gray-600">
                 Profits From Your Clients&apos; Trades:{" "}
               </span>
-              <span className="text-lg font-bold text-green-600">35%</span>
+              <span className="text-lg font-bold text-green-600">33%</span>
             </div>
             <div>
-              <span className="text-sm">
+              <span className="text-sm text-gray-600">
                 Your Sub-Affiliates&apos; Earnings:{" "}
               </span>
               <span className="text-lg font-bold text-green-600">0% - 10%</span>
@@ -348,17 +363,22 @@ const Dashboard = () => {
       </div>
 
       {/* Campaigns */}
-      <Card className="mb-8">
+      <Card className="mb-8 border-0 shadow-sm">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Campaigns</CardTitle>
-          <button className="text-yellow-500 hover:underline">
+          <CardTitle className="text-lg font-semibold text-gray-900">
+            Campaigns
+          </CardTitle>
+          <button className="text-sm font-medium text-[#F7931A] hover:underline">
             All campaigns →
           </button>
         </CardHeader>
         <CardContent>
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
             {campaigns.map((campaign, index) => (
-              <div key={index} className="overflow-hidden rounded-lg border">
+              <div
+                key={index}
+                className="overflow-hidden rounded-lg border border-gray-100"
+              >
                 <div className="relative aspect-video">
                   <Image
                     src={
@@ -372,41 +392,39 @@ const Dashboard = () => {
                   />
                   {campaign.overlayText && (
                     <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
-                      <div className="px-4 text-center font-medium text-white">
+                      <div className="px-4 text-center text-sm font-medium text-white">
                         {campaign.overlayText}
                       </div>
                     </div>
                   )}
                 </div>
-                <div className="p-4">
+                <div className="p-3">
                   <div className="mb-2 flex gap-2">
                     <Badge
-                      variant="destructive"
                       className={
                         campaign.status === "Hot"
-                          ? "bg-red-500 text-white"
+                          ? "bg-red-500 px-2 py-0.5 text-xs text-white"
                           : campaign.status === "Exclusive"
-                            ? "bg-yellow-500 text-black"
-                            : "bg-gray-500 text-white"
+                            ? "bg-[#F7931A] px-2 py-0.5 text-xs text-white"
+                            : "bg-gray-500 px-2 py-0.5 text-xs text-white"
                       }
                     >
                       {campaign.status}
                     </Badge>
                     <Badge
-                      variant="default"
                       className={
                         campaign.type === "Ongoing"
-                          ? "bg-green-500 text-white"
-                          : "bg-gray-500 text-white"
+                          ? "bg-green-500 px-2 py-0.5 text-xs text-white"
+                          : "bg-gray-500 px-2 py-0.5 text-xs text-white"
                       }
                     >
                       {campaign.type}
                     </Badge>
                   </div>
-                  <h3 className="mb-2 line-clamp-2 text-sm font-medium">
+                  <h3 className="mb-2 line-clamp-2 text-sm font-medium text-gray-900">
                     {campaign.title}
                   </h3>
-                  <p className="text-xs text-gray-600">{campaign.period}</p>
+                  <p className="text-xs text-gray-500">{campaign.period}</p>
                 </div>
               </div>
             ))}
@@ -415,50 +433,61 @@ const Dashboard = () => {
       </Card>
 
       {/* Recent Signups Table */}
-      <Card className="mb-8">
+      <Card className="mb-8 border-0 shadow-sm">
         <CardHeader>
-          <CardTitle>Recent Signups</CardTitle>
+          <CardTitle className="text-lg font-semibold text-gray-900">
+            Recent Signups
+          </CardTitle>
         </CardHeader>
         <CardContent>
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead>
-                <tr className="border-b">
-                  <th className="py-3 text-left text-sm font-medium text-gray-600">
+                <tr className="border-b border-gray-100">
+                  <th className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     Clients
                   </th>
-                  <th className="py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     Joined Bybit
                   </th>
-                  <th className="py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     KYC
                   </th>
-                  <th className="py-3 text-left text-sm font-medium text-gray-600">
+                  <th className="py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                     First-Time Deposited
                   </th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody className="divide-y divide-gray-100">
                 {recentSignups.map((signup, index) => (
-                  <tr key={index} className="border-b">
+                  <tr key={index}>
                     <td className="py-3">
-                      <div className="text-sm font-medium">
+                      <div className="text-sm font-medium text-gray-900">
                         UID {signup.uid}
                       </div>
-                      <div className="text-xs text-gray-600">
+                      <div className="text-xs text-gray-500">
                         {signup.email}
                       </div>
                     </td>
                     <td className="py-3">
-                      <div className="text-sm">{signup.joined}</div>
-                      <div className="text-xs text-gray-500">🔗 Default</div>
+                      <div className="text-sm text-gray-900">
+                        {signup.joined}
+                      </div>
+                      <div className="flex items-center text-xs text-gray-500">
+                        🔗 Alag
+                      </div>
                     </td>
                     <td className="py-3">
-                      <Badge variant="outline" className="border-gray-300">
+                      <Badge
+                        variant="outline"
+                        className="border-gray-300 text-xs text-gray-700"
+                      >
                         {signup.kyc}
                       </Badge>
                     </td>
-                    <td className="py-3 text-sm">{signup.deposit}</td>
+                    <td className="py-3 text-sm text-gray-900">
+                      {signup.deposit}
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -468,26 +497,28 @@ const Dashboard = () => {
       </Card>
 
       {/* Analytics Charts Section */}
-      <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         {/* Recent Signups Chart */}
-        <Card>
+        <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
-              <CardTitle className="text-lg font-semibold">Recent</CardTitle>
-              <p className="text-sm text-gray-600">
-                Data from 2025-04-28 - 2025-05-27
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                Recent
+              </CardTitle>
+              <p className="text-xs text-gray-500">
+                Data from 2025-06-15 - 2025-06-22
               </p>
             </div>
-            <div className="flex space-x-2">
+            <div className="flex space-x-1">
               {timeFilters.map((period) => (
                 <Button
                   key={period}
-                  variant={period === "1M" ? "default" : "outline"}
+                  variant={period === "7D" ? "default" : "outline"}
                   size="sm"
                   className={
-                    period === "1M"
-                      ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
-                      : "border-gray-300"
+                    period === "7D"
+                      ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
+                      : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                   }
                 >
                   {period}
@@ -499,18 +530,18 @@ const Dashboard = () => {
             <div className="mb-4 flex items-center space-x-6">
               <div className="flex items-center space-x-2">
                 <div className="h-3 w-3 rounded-full bg-blue-500"></div>
-                <span className="text-sm text-gray-600">Sign Ups</span>
+                <span className="text-xs text-gray-600">Sign Ups</span>
               </div>
               <div className="flex items-center space-x-2">
                 <div className="h-3 w-3 rounded-full bg-green-500"></div>
-                <span className="text-sm text-gray-600">
+                <span className="text-xs text-gray-600">
                   First Time Deposits
                 </span>
               </div>
             </div>
             <div className="mb-4 flex space-x-8">
-              <div className="text-3xl font-bold">0</div>
-              <div className="text-3xl font-bold">0</div>
+              <div className="text-2xl font-bold text-gray-900">0</div>
+              <div className="text-2xl font-bold text-gray-900">0</div>
             </div>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
@@ -539,34 +570,34 @@ const Dashboard = () => {
         </Card>
 
         {/* Clients Commissions Chart */}
-        <Card>
+        <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
-              <CardTitle className="text-lg font-semibold">
+              <CardTitle className="text-lg font-semibold text-gray-900">
                 Clients Commissions
               </CardTitle>
-              <p className="text-sm text-gray-600">
-                Data from 2025-04-28 - 2025-05-27
+              <p className="text-xs text-gray-500">
+                Data from 2025-06-15 - 2025-06-22
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="flex space-x-2">
+              <div className="flex space-x-1">
                 {timeFilters.map((period) => (
                   <Button
                     key={period}
-                    variant={period === "1M" ? "default" : "outline"}
+                    variant={period === "7D" ? "default" : "outline"}
                     size="sm"
                     className={
-                      period === "1M"
-                        ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
-                        : "border-gray-300"
+                      period === "7D"
+                        ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
+                        : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                     }
                   >
                     {period}
                   </Button>
                 ))}
               </div>
-              <select className="rounded border px-2 py-1 text-sm">
+              <select className="rounded border border-gray-200 px-2 py-1 text-xs">
                 <option>All Coins</option>
               </select>
             </div>
@@ -574,9 +605,11 @@ const Dashboard = () => {
           <CardContent>
             <div className="mb-4 flex items-center space-x-2">
               <div className="h-3 w-3 rounded-full bg-red-400"></div>
-              <span className="text-sm text-gray-600">Clients Commissions</span>
+              <span className="text-xs text-gray-600">Clients Commissions</span>
             </div>
-            <div className="mb-4 text-3xl font-bold">26.8241784</div>
+            <div className="mb-4 text-2xl font-bold text-gray-900">
+              0.03915544
+            </div>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={commissionsData}>
@@ -597,34 +630,34 @@ const Dashboard = () => {
         </Card>
 
         {/* Sub-Affiliates Commissions Chart */}
-        <Card>
+        <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
-              <CardTitle className="text-lg font-semibold">
+              <CardTitle className="text-lg font-semibold text-gray-900">
                 Sub-Affiliates Commissions
               </CardTitle>
-              <p className="text-sm text-gray-600">
-                Data from 2025-04-28 - 2025-05-27
+              <p className="text-xs text-gray-500">
+                Data from 2025-06-15 - 2025-06-22
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="flex space-x-2">
+              <div className="flex space-x-1">
                 {timeFilters.map((period) => (
                   <Button
                     key={period}
-                    variant={period === "1M" ? "default" : "outline"}
+                    variant={period === "7D" ? "default" : "outline"}
                     size="sm"
                     className={
-                      period === "1M"
-                        ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
-                        : "border-gray-300"
+                      period === "7D"
+                        ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
+                        : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                     }
                   >
                     {period}
                   </Button>
                 ))}
               </div>
-              <select className="rounded border px-2 py-1 text-sm">
+              <select className="rounded border border-gray-200 px-2 py-1 text-xs">
                 <option>All Coins</option>
               </select>
             </div>
@@ -632,11 +665,11 @@ const Dashboard = () => {
           <CardContent>
             <div className="mb-4 flex items-center space-x-2">
               <div className="h-3 w-3 rounded-full bg-purple-400"></div>
-              <span className="text-sm text-gray-600">
+              <span className="text-xs text-gray-600">
                 Sub-Affiliates Commissions
               </span>
             </div>
-            <div className="mb-4 text-3xl font-bold">0</div>
+            <div className="mb-4 text-2xl font-bold text-gray-900">0</div>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={subAffiliatesData}>
@@ -657,34 +690,34 @@ const Dashboard = () => {
         </Card>
 
         {/* Clients' Trading Volume Chart */}
-        <Card>
+        <Card className="border-0 shadow-sm">
           <CardHeader className="flex flex-row items-center justify-between space-y-0">
             <div>
-              <CardTitle className="text-lg font-semibold">
+              <CardTitle className="text-lg font-semibold text-gray-900">
                 Clients&apos; Trading Volume
               </CardTitle>
-              <p className="text-sm text-gray-600">
-                Data from 2025-04-28 - 2025-05-27
+              <p className="text-xs text-gray-500">
+                Data from 2025-06-15 - 2025-06-22
               </p>
             </div>
             <div className="flex items-center space-x-2">
-              <div className="flex space-x-2">
+              <div className="flex space-x-1">
                 {timeFilters.map((period) => (
                   <Button
                     key={period}
-                    variant={period === "1M" ? "default" : "outline"}
+                    variant={period === "7D" ? "default" : "outline"}
                     size="sm"
                     className={
-                      period === "1M"
-                        ? "border-yellow-400 bg-yellow-400 text-black hover:bg-yellow-500"
-                        : "border-gray-300"
+                      period === "7D"
+                        ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
+                        : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                     }
                   >
                     {period}
                   </Button>
                 ))}
               </div>
-              <select className="rounded border px-2 py-1 text-sm">
+              <select className="rounded border border-gray-200 px-2 py-1 text-xs">
                 <option>All Coins</option>
               </select>
             </div>
@@ -692,9 +725,11 @@ const Dashboard = () => {
           <CardContent>
             <div className="mb-4 flex items-center space-x-2">
               <div className="h-3 w-3 rounded-full bg-orange-400"></div>
-              <span className="text-sm text-gray-600">Trading Volumes</span>
+              <span className="text-xs text-gray-600">Trading Volumes</span>
             </div>
-            <div className="mb-4 text-3xl font-bold">63,165,325.04</div>
+            <div className="mb-4 text-2xl font-bold text-gray-900">
+              127.44074
+            </div>
             <div className="h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={tradingVolumeData}>
@@ -716,10 +751,10 @@ const Dashboard = () => {
       </div>
 
       {/* Footer */}
-      <div className="mt-8 flex justify-end space-x-4 text-sm text-gray-500">
+      <div className="mt-8 flex justify-end space-x-4 text-xs text-gray-500">
         <span>Affiliate Agreement</span>
         <span>|</span>
-        <span className="text-yellow-500">Privacy Policy</span>
+        <span className="text-[#F7931A]">Privacy Policy</span>
       </div>
     </div>
   );

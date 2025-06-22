@@ -31,28 +31,28 @@ const BybitAffiliateLogin = () => {
   };
 
   return (
-    <div className="min-h-screen bg-white font-sans">
+    <div className="min-h-screen bg-white font-inter">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-200 px-6 py-4">
+      <header className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
         {/* Left - Logo */}
         <div className="flex items-center space-x-2">
-          <span className="text-xl font-semibold text-black">
-            <span className="font-bold text-yellow-500">BYB</span>IT
+          <span className="text-xl font-bold text-black">
+            <span className="font-bold text-[#F7931A]">BYB</span>IT
           </span>
-          <span className="text-xl font-light tracking-wide">AFFILIATES</span>
+          <span className="text-lg font-normal tracking-wide text-gray-700">AFFILIATES</span>
         </div>
 
         {/* Right - Navigation */}
         <div className="flex items-center space-x-6">
-          <a href="#" className="text-sm text-gray-700 hover:text-black">
+          <a href="#" className="text-sm font-medium text-gray-600 hover:text-black">
             FAQ
           </a>
-          <a href="#" className="text-sm text-gray-700 hover:text-black">
+          <a href="#" className="text-sm font-medium text-gray-600 hover:text-black">
             Contact Us
           </a>
 
           {/* Language Toggle */}
-          <div className="flex cursor-pointer items-center space-x-1 rounded-md border px-2 py-1 text-sm text-gray-700">
+          <div className="flex cursor-pointer items-center space-x-1 rounded border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -64,62 +64,68 @@ const BybitAffiliateLogin = () => {
                 strokeLinecap="round"
                 strokeLinejoin="round"
                 strokeWidth={2}
-                d="M12 4v1m0 14v1m8-8h1M4 12H3m15.36 6.36l-.71-.71M6.34 6.34l-.7-.7m12.02 0l.7-.7m-12.02 12.02l.7-.7"
+                d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
               />
             </svg>
-            <span>EN</span>
+            <span className="font-medium">EN</span>
           </div>
 
           {/* Log In + Apply Buttons */}
-          <button className="rounded-md border border-gray-300 px-4 py-1 text-sm hover:bg-gray-100">
+          <button className="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
             Log In
           </button>
-          <button className="rounded-md bg-yellow-400 px-4 py-1 text-sm font-semibold text-black hover:bg-yellow-500">
+          <button className="rounded bg-[#F7931A] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e8870f]">
             Apply
           </button>
         </div>
       </header>
-      <div className="flex min-h-screen flex-col bg-white font-sans lg:flex-row">
+
+      <div className="flex min-h-screen flex-col bg-white font-inter lg:flex-row">
         {/* Left Section */}
-        <div className="flex flex-1 items-center justify-center bg-[#f7f8f9] p-8">
-          <div className="max-w-md text-center">
-            <Image
-              src="https://images.unsplash.com/photo-1603791440384-56cd371ee9a7?auto=format&fit=crop&w=800&q=80"
-              alt="Bybit dashboard preview"
-              width={800}
-              height={600}
-              className="mx-auto mb-6 rounded-lg"
-            />
-            <h2 className="mb-4 text-2xl font-bold text-gray-800">
-              Grow your audience with Bybit&apos;s affiliate portal:
+        <div className="flex flex-1 items-center justify-center bg-gray-50 p-8">
+          <div className="max-w-lg text-center">
+            <div className="mb-8">
+              <Image
+                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
+                alt="Bybit affiliate dashboard preview"
+                width={500}
+                height={300}
+                className="mx-auto rounded-lg shadow-lg"
+              />
+            </div>
+            <h2 className="mb-4 text-2xl font-bold text-gray-900">
+              Calculate and Receive Your<br />Earnings Daily
             </h2>
-            <p className="text-base text-gray-700">
-              Gain insights, access campaigns, assets, and products.
+            <p className="mb-6 text-base leading-relaxed text-gray-600">
+              Gain insights, access campaigns, assets, and products with Bybit&apos;s 
+              comprehensive affiliate portal designed for maximum performance.
             </p>
-            <div className="mx-auto mt-6 h-1 w-24 rounded-full bg-gradient-to-r from-yellow-400 to-gray-300" />
+            <div className="mx-auto h-1 w-16 rounded-full bg-[#F7931A]" />
           </div>
         </div>
 
         {/* Right Section */}
         <div className="flex flex-1 items-center justify-center p-8">
           <div className="w-full max-w-md">
-            <h2 className="mb-6 text-3xl font-bold text-gray-900">Log In</h2>
+            <h2 className="mb-8 text-3xl font-bold text-gray-900">Log In</h2>
 
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="space-y-6">
               {/* Email Input */}
-              <input
-                type="email"
-                value={email}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                  setEmail(e.target.value)
-                }
-                placeholder="Email"
-                className="mb-4 w-full rounded-md bg-[#eaf1fe] px-4 py-3 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
-                required
-              />
+              <div>
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                    setEmail(e.target.value)
+                  }
+                  placeholder="Email"
+                  className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-[#F7931A] focus:outline-none focus:ring-2 focus:ring-[#F7931A]/20"
+                  required
+                />
+              </div>
 
               {/* Password Input */}
-              <div className="relative mb-4">
+              <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
@@ -127,21 +133,21 @@ const BybitAffiliateLogin = () => {
                     setPassword(e.target.value)
                   }
                   placeholder="Password"
-                  className="w-full rounded-md bg-[#eaf1fe] px-4 py-3 pr-10 text-gray-800 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+                  className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 pr-12 text-gray-900 placeholder-gray-500 focus:border-[#F7931A] focus:outline-none focus:ring-2 focus:ring-[#F7931A]/20"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-3 text-gray-600"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
               </div>
 
               {/* Forgot Password */}
-              <div className="mb-6 text-right">
-                <a href="#" className="text-sm text-yellow-500 hover:underline">
+              <div className="text-right">
+                <a href="#" className="text-sm font-medium text-[#F7931A] hover:underline">
                   Forgot Password?
                 </a>
               </div>
@@ -150,12 +156,12 @@ const BybitAffiliateLogin = () => {
               <Button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center rounded-md bg-yellow-400 py-3 font-semibold text-black transition duration-200 hover:bg-yellow-500 disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full rounded-md bg-[#F7931A] py-3 text-base font-semibold text-white transition duration-200 hover:bg-[#e8870f] disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? (
-                  <>
+                  <div className="flex items-center justify-center">
                     <svg
-                      className="-ml-1 mr-3 h-5 w-5 animate-spin text-black"
+                      className="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -175,7 +181,7 @@ const BybitAffiliateLogin = () => {
                       ></path>
                     </svg>
                     Logging in...
-                  </>
+                  </div>
                 ) : (
                   "LOG IN"
                 )}
@@ -183,14 +189,14 @@ const BybitAffiliateLogin = () => {
             </form>
 
             {/* Agreements */}
-            <p className="mt-4 text-center text-xs text-gray-500">
+            <p className="mt-6 text-center text-xs leading-relaxed text-gray-500">
               By continuing, you agree to our{" "}
-              <a href="#" className="text-yellow-500 underline">
+              <a href="#" className="font-medium text-[#F7931A] underline hover:no-underline">
                 Affiliate Agreement
               </a>{" "}
               and{" "}
-              <a href="#" className="text-yellow-500 underline">
-                Privacy Policysss
+              <a href="#" className="font-medium text-[#F7931A] underline hover:no-underline">
+                Privacy Policy
               </a>
               .
             </p>

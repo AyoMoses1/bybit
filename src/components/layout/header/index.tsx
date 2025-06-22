@@ -1,55 +1,153 @@
 "use client";
 
-import React, { useState } from "react";
-import { ChevronDown } from "lucide-react";
+import React, { useState, useRef } from "react";
+import { Globe, Shield, LogOut } from "lucide-react";
 
 const Header = () => {
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+
+  const languageRef = useRef<HTMLDivElement>(null);
+  const userRef = useRef<HTMLDivElement>(null);
+
+  // Language options based on the image
+  const languages = [
+    { code: "EN", name: "English", active: true },
+    { code: "MY", name: "中文(马来西亚)" },
+    { code: "ZH", name: "繁體中文" },
+    { code: "JA", name: "日本語" },
+    { code: "RU", name: "Русский" },
+    { code: "ES", name: "Español Internacional" },
+    { code: "VI", name: "Tiếng Việt" },
+    { code: "BR", name: "Português" },
+    { code: "ID", name: "Bahasa Indonesia" },
+    { code: "UA", name: "українська" },
+    { code: "MX", name: "Español (México)" },
+    { code: "PL", name: "Polski" },
+    { code: "RO", name: "Romania" },
+    { code: "KA", name: "Kazakhstan" },
+  ];
+
+  // Handle mouse enter/leave for language dropdown
+  const handleLanguageMouseEnter = () => {
+    setLanguageDropdownOpen(true);
+    setUserDropdownOpen(false);
+  };
+
+  const handleLanguageMouseLeave = () => {
+    setLanguageDropdownOpen(false);
+  };
+
+  // Handle mouse enter/leave for user dropdown
+  const handleUserMouseEnter = () => {
+    setUserDropdownOpen(true);
+    setLanguageDropdownOpen(false);
+  };
+
+  const handleUserMouseLeave = () => {
+    setUserDropdownOpen(false);
+  };
 
   return (
-    <header className="flex h-16 items-center justify-between border-b border-gray-200 bg-white px-6 font-inter">
+    <header className="flex h-16 items-center justify-between border-b border-gray-100 bg-white px-6 font-inter">
       <div className="flex items-center gap-4">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded bg-yellow-400"></div>
-            <span className="text-lg font-bold text-gray-900">BYBIT</span>
-          </div>
-          <span className="text-lg font-normal text-gray-600">AFFILIATES</span>
+        <div className="flex items-center gap-2">
+          <span className="text-xl font-bold text-black">
+            <span className="font-bold text-[#F7931A]">BYB</span>IT
+          </span>
+          <span className="text-lg font-normal tracking-wide text-gray-700">
+            AFFILIATES
+          </span>
         </div>
       </div>
 
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-4">
         {/* Language Selector */}
-        <div className="relative">
-          <button
-            onClick={() => setLanguageDropdownOpen(!languageDropdownOpen)}
-            className="flex items-center gap-2 rounded px-2 py-1 hover:bg-gray-50"
-          >
-            <div className="flex h-5 w-5 items-center justify-center rounded-full bg-gray-200">
-              🌐
-            </div>
-            <span className="text-sm text-gray-700">EN</span>
-            <ChevronDown className="h-4 w-4 text-gray-500" />
+        <div
+          className="relative"
+          ref={languageRef}
+          onMouseEnter={handleLanguageMouseEnter}
+          onMouseLeave={handleLanguageMouseLeave}
+        >
+          <button className="flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50">
+            <Globe className="h-4 w-4" />
+            <span className="font-medium">EN</span>
           </button>
 
           {languageDropdownOpen && (
-            <div className="absolute right-0 z-10 mt-2 w-32 rounded-md border border-gray-200 bg-white shadow-lg">
-              <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50">
-                English
-              </button>
-              <button className="w-full px-4 py-2 text-left text-sm hover:bg-gray-50">
-                Français
-              </button>
+            <div className="absolute right-0 z-50 mt-2 w-64 rounded-lg border border-gray-200 bg-white shadow-lg">
+              <div className="max-h-200 overflow-y-auto py-2">
+                {languages.map((language) => (
+                  <button
+                    key={language.code}
+                    onClick={() => {
+                      setLanguageDropdownOpen(false);
+                      // Handle language change here
+                    }}
+                    className={`flex w-full items-center gap-3 px-4 py-2.5 text-left text-sm transition-colors hover:bg-gray-50 ${
+                      language.active
+                        ? "bg-orange-50 font-medium text-[#F7931A]"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    <span className="w-8 font-mono text-xs text-gray-500">
+                      {language.code}
+                    </span>
+                    <span>{language.name}</span>
+                  </button>
+                ))}
+              </div>
             </div>
           )}
         </div>
 
         {/* User Profile */}
-        <div className="flex items-center gap-2">
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-yellow-400 text-sm font-semibold text-black">
-            WO
-          </div>
-          <ChevronDown className="h-4 w-4 text-gray-500" />
+        <div
+          className="relative"
+          ref={userRef}
+          onMouseEnter={handleUserMouseEnter}
+          onMouseLeave={handleUserMouseLeave}
+        >
+          <button className="rounded-lg p-1 transition-colors hover:bg-gray-50">
+            <img
+              src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+              alt="User Avatar"
+              className="h-10 w-10 rounded-full object-cover"
+            />
+          </button>
+
+          {userDropdownOpen && (
+            <div className="absolute right-0 z-50 mt-2 w-60 rounded-lg border border-gray-200 bg-white shadow-lg">
+              <div className="p-4">
+                {/* Account Section */}
+                <div className="mb-4">
+                  <h3 className="mb-3 text-sm font-medium text-gray-500">
+                    Account
+                  </h3>
+
+                  <button className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-gray-50">
+                    <div className="flex items-center gap-3">
+                      <Shield className="h-4 w-4 text-gray-600" />
+                      <span className="text-sm font-medium text-gray-900">
+                        Account Security
+                      </span>
+                    </div>
+                    <div className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-xs font-bold text-white">
+                      1
+                    </div>
+                  </button>
+                </div>
+
+                {/* Logout Section */}
+                <div className="border-t border-gray-100 pt-3">
+                  <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-red-600 transition-colors hover:bg-red-50">
+                    <LogOut className="h-4 w-4" />
+                    <span className="text-sm font-medium">Logout</span>
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </header>
