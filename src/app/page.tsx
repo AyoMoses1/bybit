@@ -1,8 +1,6 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import { Eye, EyeOff } from "lucide-react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { Eye, EyeOff, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const BybitAffiliateLogin = () => {
@@ -10,49 +8,97 @@ const BybitAffiliateLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const [currentSlide, setCurrentSlide] = useState(0);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  // Carousel data
+  const carouselData = [
+    {
+      title: "Calculate and Receive Your\nEarnings Daily",
+      description:
+        "Gain insights, access campaigns, assets, and products with Bybit's comprehensive affiliate portal designed for maximum performance.",
+      image:
+        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+      title:
+        "Grow your audience with Bybit's\naffiliate portal: gain insights, access\ncampaigns, assets, and products.",
+      description:
+        "Maximize your earning potential with our comprehensive suite of affiliate tools and resources.",
+      image:
+        "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+    },
+    {
+      title: "Advanced Analytics &\nReal-time Tracking",
+      description:
+        "Monitor your performance with detailed analytics and real-time tracking capabilities for better decision making.",
+      image:
+        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
+    },
+  ];
+
+  // Auto-advance carousel
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % carouselData.length);
+    }, 5000);
+    return () => clearInterval(timer);
+  }, []);
+
+  const handleSubmit = async () => {
     setIsLoading(true);
 
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-
-      // Route to dashboard after successful login
-      router.push("/dashboard");
+      console.log("Login successful - routing to dashboard");
     } catch (error) {
       console.error("Login failed:", error);
-      // Handle error here (show error message, etc.)
     } finally {
       setIsLoading(false);
     }
   };
 
+  const nextSlide = () => {
+    setCurrentSlide((prev) => (prev + 1) % carouselData.length);
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide(
+      (prev) => (prev - 1 + carouselData.length) % carouselData.length,
+    );
+  };
+
   return (
-    <div className="min-h-screen bg-white font-inter">
+    <div className="flex h-screen flex-col overflow-hidden bg-white">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+      <header className="flex flex-shrink-0 items-center justify-between border-b border-gray-100 px-8 py-5">
         {/* Left - Logo */}
-        <div className="flex items-center space-x-2">
-          <span className="text-xl font-bold text-black">
-            <span className="font-bold text-[#F7931A]">BYB</span>IT
+        <div className="flex items-center space-x-3">
+          <span className="text-2xl font-black tracking-tight text-black">
+            <span className="font-black text-[#F7931A]">BYB</span>IT
           </span>
-          <span className="text-lg font-normal tracking-wide text-gray-700">AFFILIATES</span>
+          <span className="text-lg font-semibold uppercase tracking-wider text-gray-600">
+            AFFILIATES
+          </span>
         </div>
 
         {/* Right - Navigation */}
-        <div className="flex items-center space-x-6">
-          <a href="#" className="text-sm font-medium text-gray-600 hover:text-black">
+        <div className="flex items-center space-x-8">
+          <a
+            href="#"
+            className="text-sm font-semibold text-gray-600 transition-colors hover:text-black"
+          >
             FAQ
           </a>
-          <a href="#" className="text-sm font-medium text-gray-600 hover:text-black">
+          <a
+            href="#"
+            className="text-sm font-semibold text-gray-600 transition-colors hover:text-black"
+          >
             Contact Us
           </a>
 
           {/* Language Toggle */}
-          <div className="flex cursor-pointer items-center space-x-1 rounded border border-gray-200 px-3 py-1.5 text-sm text-gray-700 hover:bg-gray-50">
+          <div className="flex cursor-pointer items-center space-x-2 rounded-full border border-gray-200 px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-gray-50">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-4 w-4"
@@ -67,60 +113,106 @@ const BybitAffiliateLogin = () => {
                 d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"
               />
             </svg>
-            <span className="font-medium">EN</span>
+            <span className="font-bold">EN</span>
           </div>
 
-          {/* Log In + Apply Buttons */}
-          <button className="rounded border border-gray-300 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50">
+          {/* Buttons */}
+          <Button
+            onClick={() => console.log("clicked")}
+            variant="outline"
+            className="rounded-md border border-gray-300 px-6 py-2.5 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50"
+          >
             Log In
-          </button>
-          <button className="rounded bg-[#F7931A] px-4 py-2 text-sm font-semibold text-white hover:bg-[#e8870f]">
+          </Button>
+          <Button
+            onClick={() => console.log("clicked")}
+            className="rounded-md bg-[#F7931A] px-6 py-2.5 text-sm font-bold text-white shadow-lg transition-colors hover:bg-[#e8870f]"
+          >
             Apply
-          </button>
+          </Button>
         </div>
       </header>
 
-      <div className="flex min-h-screen flex-col bg-white font-inter lg:flex-row">
-        {/* Left Section */}
-        <div className="flex flex-1 items-center justify-center bg-gray-50 p-8">
-          <div className="max-w-lg text-center">
-            <div className="mb-8">
-              <Image
-                src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"
+      <div className="flex flex-1 overflow-hidden bg-white">
+        {/* Left Section - Carousel */}
+        <div className="relative flex flex-1 items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 p-12">
+          <div className="relative z-10 flex h-full max-w-xl flex-col justify-center text-center">
+            <div className="mb-12 flex-shrink-0">
+              <img
+                src={carouselData[currentSlide].image}
                 alt="Bybit affiliate dashboard preview"
-                width={500}
-                height={300}
-                className="mx-auto rounded-lg shadow-lg"
+                className="mx-auto h-80 w-full max-w-lg rounded-2xl object-cover shadow-2xl"
               />
             </div>
-            <h2 className="mb-4 text-2xl font-bold text-gray-900">
-              Calculate and Receive Your<br />Earnings Daily
-            </h2>
-            <p className="mb-6 text-base leading-relaxed text-gray-600">
-              Gain insights, access campaigns, assets, and products with Bybit&apos;s 
-              comprehensive affiliate portal designed for maximum performance.
-            </p>
-            <div className="mx-auto h-1 w-16 rounded-full bg-[#F7931A]" />
+
+            {/* Fixed height container for text content to prevent layout shifts */}
+            <div className="flex min-h-[240px] flex-1 flex-col justify-center">
+              <h2 className="mb-8 text-3xl font-black leading-tight text-gray-900">
+                {carouselData[currentSlide].title
+                  .split("\n")
+                  .map((line, index) => (
+                    <React.Fragment key={index}>
+                      {line}
+                      {index <
+                        carouselData[currentSlide].title.split("\n").length -
+                          1 && <br />}
+                    </React.Fragment>
+                  ))}
+              </h2>
+
+              <p className="mb-10 text-lg font-medium leading-relaxed text-gray-600">
+                {carouselData[currentSlide].description}
+              </p>
+            </div>
+
+            {/* Carousel Controls */}
+            <div className="flex flex-shrink-0 items-center justify-center space-x-6">
+              <button
+                onClick={prevSlide}
+                className="rounded-full bg-white p-2 shadow-lg transition-shadow hover:shadow-xl"
+              >
+                <ChevronLeft className="h-5 w-5 text-gray-600" />
+              </button>
+
+              {/* Dots */}
+              <div className="flex space-x-3">
+                {carouselData.map((_, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setCurrentSlide(index)}
+                    className={`h-3 w-3 rounded-full transition-colors ${
+                      index === currentSlide ? "bg-[#F7931A]" : "bg-gray-300"
+                    }`}
+                  />
+                ))}
+              </div>
+
+              <button
+                onClick={nextSlide}
+                className="rounded-full bg-white p-2 shadow-lg transition-shadow hover:shadow-xl"
+              >
+                <ChevronRight className="h-5 w-5 text-gray-600" />
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Right Section */}
-        <div className="flex flex-1 items-center justify-center p-8">
+        {/* Right Section - Login Form */}
+        <div className="flex flex-1 items-center justify-center p-12">
           <div className="w-full max-w-md">
-            <h2 className="mb-8 text-3xl font-bold text-gray-900">Log In</h2>
+            <h2 className="mb-12 text-3xl font-black tracking-tight text-gray-900">
+              Log In
+            </h2>
 
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="space-y-8">
               {/* Email Input */}
               <div>
                 <input
                   type="email"
                   value={email}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setEmail(e.target.value)
-                  }
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
-                  className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 text-gray-900 placeholder-gray-500 focus:border-[#F7931A] focus:outline-none focus:ring-2 focus:ring-[#F7931A]/20"
-                  required
+                  className="w-full rounded-xl border-2 border-gray-200 bg-white px-6 py-4 text-lg font-medium text-gray-900 placeholder-gray-400 transition-all focus:border-[#F7931A] focus:outline-none focus:ring-4 focus:ring-[#F7931A]/10"
                 />
               </div>
 
@@ -129,39 +221,39 @@ const BybitAffiliateLogin = () => {
                 <input
                   type={showPassword ? "text" : "password"}
                   value={password}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                    setPassword(e.target.value)
-                  }
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="w-full rounded-md border border-gray-200 bg-white px-4 py-3 pr-12 text-gray-900 placeholder-gray-500 focus:border-[#F7931A] focus:outline-none focus:ring-2 focus:ring-[#F7931A]/20"
-                  required
+                  className="w-full rounded-xl border-2 border-gray-200 bg-white px-6 py-4 pr-14 text-lg font-medium text-gray-900 placeholder-gray-400 transition-all focus:border-[#F7931A] focus:outline-none focus:ring-4 focus:ring-[#F7931A]/10"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  className="absolute right-5 top-1/2 -translate-y-1/2 text-gray-400 transition-colors hover:text-gray-600"
                 >
-                  {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                  {showPassword ? <EyeOff size={22} /> : <Eye size={22} />}
                 </button>
               </div>
 
               {/* Forgot Password */}
               <div className="text-right">
-                <a href="#" className="text-sm font-medium text-[#F7931A] hover:underline">
+                <a
+                  href="#"
+                  className="text-base font-bold text-[#F7931A] transition-colors hover:underline"
+                >
                   Forgot Password?
                 </a>
               </div>
 
               {/* Login Button */}
               <Button
-                type="submit"
+                onClick={handleSubmit}
                 disabled={isLoading}
-                className="w-full rounded-md bg-[#F7931A] py-3 text-base font-semibold text-white transition duration-200 hover:bg-[#e8870f] disabled:cursor-not-allowed disabled:opacity-50"
+                className="w-full transform rounded-xl bg-[#F7931A] py-5 text-lg font-black text-white shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#e8870f] hover:shadow-xl disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">
                     <svg
-                      className="-ml-1 mr-3 h-5 w-5 animate-spin text-white"
+                      className="-ml-1 mr-3 h-6 w-6 animate-spin text-white"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -186,16 +278,22 @@ const BybitAffiliateLogin = () => {
                   "LOG IN"
                 )}
               </Button>
-            </form>
+            </div>
 
             {/* Agreements */}
-            <p className="mt-6 text-center text-xs leading-relaxed text-gray-500">
+            <p className="mt-8 text-center text-sm font-medium leading-relaxed text-gray-500">
               By continuing, you agree to our{" "}
-              <a href="#" className="font-medium text-[#F7931A] underline hover:no-underline">
+              <a
+                href="#"
+                className="font-bold text-[#F7931A] underline transition-colors hover:no-underline"
+              >
                 Affiliate Agreement
               </a>{" "}
               and{" "}
-              <a href="#" className="font-medium text-[#F7931A] underline hover:no-underline">
+              <a
+                href="#"
+                className="font-bold text-[#F7931A] underline transition-colors hover:no-underline"
+              >
                 Privacy Policy
               </a>
               .
