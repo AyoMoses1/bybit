@@ -116,7 +116,7 @@ const AppSidebar = () => {
       </nav>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-600/30 p-4 flex-1">
+      <div className="border-t border-gray-600/30 bg-gray-600/30 p-4 flex-1">
         {/* Help Section */}
         <div className="mb-6">
           <div className="mb-1 text-xs text-gray-400">Need help?</div>
