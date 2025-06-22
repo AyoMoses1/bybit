@@ -173,8 +173,8 @@ const Dashboard = () => {
 
       {/* Four Equal Height Cards */}
       <div className="mb-8 grid grid-cols-1 gap-6 lg:grid-cols-2">
-        <Card className="h-full border-0 shadow-lg">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-4">
+        <Card className="h-full border-0 px-4 shadow-lg">
+          <CardHeader className="mb-4 flex flex-row items-center justify-between space-y-0 border-b pb-4">
             <CardTitle className="text-lg font-semibold text-gray-900">
               Account Overview
             </CardTitle>
@@ -226,8 +226,8 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="h-full border-0 shadow-sm">
-          <CardHeader>
+        <Card className="h-full border-0 px-4 shadow-sm">
+          <CardHeader className="mb-4 border-b">
             <CardTitle className="text-lg font-semibold text-gray-900">
               Account Balance
             </CardTitle>
@@ -278,8 +278,8 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="h-full border-0 shadow-sm">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0">
+        <Card className="h-full border-0 px-4 shadow-sm">
+          <CardHeader className="mb-4 flex flex-row items-center justify-between space-y-0 border-b">
             <CardTitle className="text-lg font-semibold text-gray-900">
               My Promotion Tools
             </CardTitle>
@@ -339,8 +339,8 @@ const Dashboard = () => {
           </CardContent>
         </Card>
 
-        <Card className="h-full border-0 shadow-sm">
-          <CardHeader>
+        <Card className="h-full border-0 px-4 shadow-sm">
+          <CardHeader className="mb-4 border-b">
             <CardTitle className="text-lg font-semibold text-gray-900">
               My Commission Tier
             </CardTitle>
