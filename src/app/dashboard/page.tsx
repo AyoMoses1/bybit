@@ -19,7 +19,7 @@ import { Badge } from "@/components/ui/badge";
 const Dashboard = () => {
   const [timeFilter, setTimeFilter] = useState("All");
 
-  const timeFilters = ["24H", "7D", "1M", "1Y", "All"];
+  const timeFilters = ["7D", "1M", "1Y", "All"];
 
   // Mock data for charts
   const recentData = [
@@ -187,8 +187,8 @@ const Dashboard = () => {
                   onClick={() => setTimeFilter(period)}
                   className={
                     timeFilter === period
-                      ? "h-8 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
-                      : "h-8 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+                      ? "h-8 rounded-md border-[#F4B968] bg-[#ffe4ad] text-xs text-[#ec8729] hover:bg-[#ffe4ad]"
+                      : "h-8 rounded-md border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                   }
                 >
                   {period}
@@ -513,12 +513,13 @@ const Dashboard = () => {
               {timeFilters.map((period) => (
                 <Button
                   key={period}
-                  variant={period === "7D" ? "default" : "outline"}
+                  variant={timeFilter === period ? "default" : "outline"}
                   size="sm"
+                  onClick={() => setTimeFilter(period)}
                   className={
-                    period === "7D"
-                      ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
-                      : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+                    timeFilter === period
+                      ? "h-8 rounded-md border-[#F4B968] bg-[#ffe4ad] text-xs text-[#ec8729] hover:bg-[#ffe4ad]"
+                      : "h-8 rounded-md border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                   }
                 >
                   {period}
@@ -585,12 +586,13 @@ const Dashboard = () => {
                 {timeFilters.map((period) => (
                   <Button
                     key={period}
-                    variant={period === "7D" ? "default" : "outline"}
+                    variant={timeFilter === period ? "default" : "outline"}
                     size="sm"
+                    onClick={() => setTimeFilter(period)}
                     className={
-                      period === "7D"
-                        ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
-                        : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+                      timeFilter === period
+                        ? "h-8 rounded-md border-[#F4B968] bg-[#ffe4ad] text-xs text-[#ec8729] hover:bg-[#ffe4ad]"
+                        : "h-8 rounded-md border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                     }
                   >
                     {period}
@@ -645,12 +647,13 @@ const Dashboard = () => {
                 {timeFilters.map((period) => (
                   <Button
                     key={period}
-                    variant={period === "7D" ? "default" : "outline"}
+                    variant={timeFilter === period ? "default" : "outline"}
                     size="sm"
+                    onClick={() => setTimeFilter(period)}
                     className={
-                      period === "7D"
-                        ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
-                        : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+                      timeFilter === period
+                        ? "h-8 rounded-md border-[#F4B968] bg-[#ffe4ad] text-xs text-[#ec8729] hover:bg-[#ffe4ad]"
+                        : "h-8 rounded-md border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                     }
                   >
                     {period}
@@ -705,12 +708,13 @@ const Dashboard = () => {
                 {timeFilters.map((period) => (
                   <Button
                     key={period}
-                    variant={period === "7D" ? "default" : "outline"}
+                    variant={timeFilter === period ? "default" : "outline"}
                     size="sm"
+                    onClick={() => setTimeFilter(period)}
                     className={
-                      period === "7D"
-                        ? "h-7 border-[#F7931A] bg-[#F7931A] text-xs text-white hover:bg-[#e8870f]"
-                        : "h-7 border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+                      timeFilter === period
+                        ? "h-8 rounded-md border-[#F4B968] bg-[#ffe4ad] text-xs text-[#ec8729] hover:bg-[#ffe4ad]"
+                        : "h-8 rounded-md border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
                     }
                   >
                     {period}

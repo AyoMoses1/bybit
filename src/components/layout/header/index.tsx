@@ -3,6 +3,8 @@
 import React, { useState, useRef } from "react";
 import { Globe, Shield, LogOut } from "lucide-react";
 import { useRouter } from "next/navigation";
+import logo from "../../../assets/svgs/bybit.svg";
+import Image from "next/image";
 
 const Header = () => {
   const [languageDropdownOpen, setLanguageDropdownOpen] = useState(false);
@@ -54,12 +56,7 @@ const Header = () => {
     <header className="flex h-16 items-center justify-between border-b border-gray-100 bg-white px-6 font-inter">
       <div className="flex items-center gap-4">
         <div className="flex items-center gap-2">
-          <span className="text-xl font-bold text-black">
-            <span className="font-bold text-[#F7931A]">BYB</span>IT
-          </span>
-          <span className="text-lg font-normal tracking-wide text-gray-700">
-            AFFILIATES
-          </span>
+          <Image src={logo} width={164} height={24} alt="" />
         </div>
       </div>
 

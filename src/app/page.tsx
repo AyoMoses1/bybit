@@ -3,6 +3,8 @@ import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
+import logo from "../assets/svgs/bybit.svg";
+import Image from "next/image";
 
 const BybitAffiliateLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -71,12 +73,7 @@ const BybitAffiliateLogin = () => {
       {/* Header */}
       <header className="flex flex-shrink-0 items-center justify-between border-b border-gray-100 px-8 py-5">
         <div className="flex items-center space-x-3">
-          <span className="text-2xl font-black tracking-tight text-black">
-            <span className="font-black text-[#F7931A]">BYB</span>IT
-          </span>
-          <span className="text-lg font-semibold uppercase tracking-wider text-gray-600">
-            AFFILIATES
-          </span>
+          <Image src={logo} width={164} height={24} alt="" />
         </div>
 
         <div className="flex items-center space-x-8">
