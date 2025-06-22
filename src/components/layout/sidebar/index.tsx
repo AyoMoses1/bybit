@@ -77,7 +77,7 @@ const AppSidebar = () => {
   return (
     <div className="flex h-screen w-42 flex-col bg-[#1a1f2e] font-inter text-white">
       {/* Navigation Menu */}
-      <nav className="flex-1 py-4">
+      <nav className="flex-2 py-4">
         <ul className="space-y-1">
           {sidebarItems.map((item, index) => (
             <li key={index}>
@@ -116,7 +116,7 @@ const AppSidebar = () => {
       </nav>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-600/30 p-4">
+      <div className="border-t border-gray-600/30 p-4 flex-1">
         {/* Help Section */}
         <div className="mb-6">
           <div className="mb-1 text-xs text-gray-400">Need help?</div>
