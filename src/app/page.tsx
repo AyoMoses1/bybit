@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { Eye, EyeOff, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 
 const BybitAffiliateLogin = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,6 +10,7 @@ const BybitAffiliateLogin = () => {
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  const router = useRouter();
 
   // Carousel data
   const carouselData = [
@@ -48,9 +50,8 @@ const BybitAffiliateLogin = () => {
     setIsLoading(true);
 
     try {
-      // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      console.log("Login successful - routing to dashboard");
+      router.push("/dashboard");
     } catch (error) {
       console.error("Login failed:", error);
     } finally {
