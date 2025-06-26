@@ -15,6 +15,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { Badge } from "@/components/ui/badge";
+import betaLogo from "../../assets/beta-usd-logo.svg";
 
 const Dashboard = () => {
   const [timeFilter, setTimeFilter] = useState("All");
@@ -246,25 +247,34 @@ const Dashboard = () => {
                 Recent Transactions
               </div>
               <div className="flex items-center space-x-3">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                </div>
+                <Image
+                  src={betaLogo}
+                  alt={"beta usd logo"}
+                  width={20}
+                  height={20}
+                />
                 <span className="text-xs text-gray-600">+ 0.00001434 USDT</span>
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-600">Commission</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                </div>
+                <Image
+                  src={betaLogo}
+                  alt={"beta usd logo"}
+                  width={20}
+                  height={20}
+                />
                 <span className="text-xs text-gray-600">+ 0.00001446 USDT</span>
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-600">Commission</span>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100">
-                  <div className="h-2 w-2 rounded-full bg-green-500"></div>
-                </div>
+                <Image
+                  src={betaLogo}
+                  alt={"beta usd logo"}
+                  width={20}
+                  height={20}
+                />
                 <span className="text-xs text-gray-600">+ 0.02913994 USDT</span>
                 <span className="text-xs text-gray-400">•</span>
                 <span className="text-xs text-gray-600">Commission</span>
