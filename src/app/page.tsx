@@ -225,7 +225,7 @@ const BybitAffiliateLogin = () => {
               <Button
                 onClick={handleSubmit}
                 disabled={isLoading}
-                className="w-full rounded-xl bg-[#F7931A] py-5 text-lg font-black text-white hover:bg-[#e8870f] disabled:opacity-50"
+                className="w-full rounded-xl bg-[#f7a600] py-5 text-lg font-black text-[#121214] hover:bg-[#e8870f] disabled:opacity-50"
               >
                 {isLoading ? (
                   <div className="flex items-center justify-center">

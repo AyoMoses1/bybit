@@ -19,7 +19,8 @@ import { Badge } from "@/components/ui/badge";
 const Dashboard = () => {
   const [timeFilter, setTimeFilter] = useState("All");
 
-  const timeFilters = ["7D", "1M", "1Y", "All"];
+  const timeFilters = ["24H", "7D", "1M", "1Y", "All"];
+  const timeFilters2 = ["7D", "1M", "1Y", "All"];
 
   // Mock data for charts
   const recentData = [
@@ -177,18 +178,21 @@ const Dashboard = () => {
           <CardHeader className="mb-4 flex flex-row items-center justify-between space-y-0 border-b pb-4">
             <CardTitle className="text-lg font-semibold text-gray-900">
               Account Overview
+              <div className="text-xs text-gray-500">
+                Data from 2025-06-21 - 2025-06-21
+              </div>
             </CardTitle>
             <div className="flex space-x-1">
               {timeFilters.map((period) => (
                 <Button
                   key={period}
-                  variant={timeFilter === period ? "default" : "outline"}
+                  variant={timeFilter === period ? "default" : "naked"}
                   size="sm"
                   onClick={() => setTimeFilter(period)}
                   className={
                     timeFilter === period
                       ? "h-8 rounded-md border-[#F4B968] bg-[#ffe4ad] text-xs text-[#ec8729] hover:bg-[#ffe4ad]"
-                      : "h-8 rounded-md border-gray-200 text-xs text-gray-600 hover:bg-gray-50"
+                      : "h-8 rounded-md border-none text-xs text-gray-600 hover:bg-gray-50"
                   }
                 >
                   {period}
@@ -197,9 +201,6 @@ const Dashboard = () => {
             </div>
           </CardHeader>
           <CardContent className="pt-2">
-            <div className="mb-6 text-xs text-gray-500">
-              Data from 2025-06-21 - 2025-06-21
-            </div>
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-1">
                 <div className="text-xs text-gray-500">No. of Sign-ups</div>
@@ -285,13 +286,13 @@ const Dashboard = () => {
             </CardTitle>
             <div className="flex space-x-4">
               <Button
-                variant="link"
+                variant="naked"
                 className="p-0 text-sm text-[#F7931A] hover:text-[#e8870f]"
               >
                 Manage
               </Button>
               <Button
-                variant="link"
+                variant="naked"
                 className="p-0 text-sm text-[#F7931A] hover:text-[#e8870f]"
               >
                 Invite Sub-Affiliates
@@ -510,10 +511,10 @@ const Dashboard = () => {
               </p>
             </div>
             <div className="flex space-x-1">
-              {timeFilters.map((period) => (
+              {timeFilters2.map((period) => (
                 <Button
                   key={period}
-                  variant={timeFilter === period ? "default" : "outline"}
+                  variant={timeFilter === period ? "default" : "naked"}
                   size="sm"
                   onClick={() => setTimeFilter(period)}
                   className={
@@ -581,12 +582,12 @@ const Dashboard = () => {
                 Data from 2025-06-15 - 2025-06-22
               </p>
             </div>
-            <div className="flex items-center space-x-2">
+            <div className="flex flex-col items-center space-x-2">
               <div className="flex space-x-1">
-                {timeFilters.map((period) => (
+                {timeFilters2.map((period) => (
                   <Button
                     key={period}
-                    variant={timeFilter === period ? "default" : "outline"}
+                    variant={timeFilter === period ? "default" : "naked"}
                     size="sm"
                     onClick={() => setTimeFilter(period)}
                     className={
@@ -598,10 +599,10 @@ const Dashboard = () => {
                     {period}
                   </Button>
                 ))}
+                <select className="rounded border border-gray-200 px-2 py-1 text-xs">
+                  <option>All Coinssss</option>
+                </select>
               </div>
-              <select className="rounded border border-gray-200 px-2 py-1 text-xs">
-                <option>All Coins</option>
-              </select>
             </div>
           </CardHeader>
           <CardContent>
@@ -644,7 +645,7 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center space-x-2">
               <div className="flex space-x-1">
-                {timeFilters.map((period) => (
+                {timeFilters2.map((period) => (
                   <Button
                     key={period}
                     variant={timeFilter === period ? "default" : "outline"}
@@ -705,7 +706,7 @@ const Dashboard = () => {
             </div>
             <div className="flex items-center space-x-2">
               <div className="flex space-x-1">
-                {timeFilters.map((period) => (
+                {timeFilters2.map((period) => (
                   <Button
                     key={period}
                     variant={timeFilter === period ? "default" : "outline"}
