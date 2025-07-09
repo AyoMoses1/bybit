@@ -46,29 +46,25 @@ const AccountSecurity = () => {
 
       {/* Security Status Card */}
       <div className="mb-8 text-center">
-        <div className="mb-4">
-          <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gray-200">
-            <div className="relative">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-orange-400 to-red-500">
-                <div className="flex h-12 w-12 items-center justify-center rounded-full bg-white">
-                  <div className="text-lg font-bold text-orange-500">📊</div>
-                </div>
-              </div>
-              <div className="absolute -right-1 -top-1 text-xs font-bold text-orange-500">
-                THE POWER OF
-              </div>
-              <div className="absolute -bottom-1 -right-1 text-xs font-bold text-orange-500">
-                PICK REJECTION
+        <div className="mb-6">
+          <div className="mb-9">
+            <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gray-200">
+              <div className="relative">
+                <img
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
+                  alt="User Avatar"
+                  className="h-[100px] w-[100px] rounded-full object-cover"
+                />
               </div>
             </div>
           </div>
-        </div>
-        <h1 className="mb-2 text-3xl font-bold text-gray-900">
-          Welcome, Abdullateef Abdulgaffar
-        </h1>
-        <div className="flex items-center justify-center space-x-2 text-gray-600">
-          <span>AID: 49818</span>
-          <Copy className="h-4 w-4 cursor-pointer hover:text-gray-900" />
+          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+            Welcome, Abdullateef Abdulgaffar
+          </h1>
+          <div className="flex items-center justify-center space-x-2 text-gray-600">
+            <span>AID: 49818</span>
+            <Copy className="h-4 w-4 cursor-pointer hover:text-gray-900" />
+          </div>
         </div>
 
         {/* Security Status Cards */}
