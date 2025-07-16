@@ -71,15 +71,15 @@ const AccountSecurity = () => {
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
           {/* Security Level Card */}
           <Card className="relative overflow-hidden border-0 shadow-lg">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                Security Level: <span className="text-red-500">Low</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex items-start space-x-4">
-                {/* Left content */}
-                <div className="flex-1">
+            <div className="flex items-start space-x-4 p-6">
+              {/* Left content */}
+              <div className="flex-1">
+                <CardHeader className="p-0 pb-3">
+                  <CardTitle className="text-lg font-semibold text-gray-900">
+                    Security Level: <span className="text-red-500">Low</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
                   <div className="mb-3 flex space-x-4">
                     <div className="flex-1">
                       <div className="h-2 w-full rounded-full bg-gray-200">
@@ -137,48 +137,47 @@ const AccountSecurity = () => {
                       </p>
                     </div>
                   </div>
-                </div>
-
-                {/* Right image */}
-                <div className="flex-shrink-0">
-                  <img
-                    src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Safety_1-DcyG34RL.png"
-                    alt="Security Icon"
-                    className="h-20 w-20 object-contain"
-                  />
-                </div>
+                </CardContent>
               </div>
-            </CardContent>
+
+              {/* Right image */}
+              <div className="flex-shrink-0">
+                <img
+                  src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Safety_1-DcyG34RL.png"
+                  alt="Security Icon"
+                  className="h-48 w-48 object-contain"
+                />
+              </div>
+            </div>
           </Card>
 
-          {/* Sign-up Page Card */}
           <Card className="relative overflow-hidden border-0 shadow-lg">
-            <CardHeader className="pb-3">
-              <CardTitle className="text-lg font-semibold text-gray-900">
-                My Sign-up Page:{" "}
-                <span className="text-green-500">All Set!</span>
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="pt-0">
-              <div className="flex items-start space-x-4">
-                {/* Left content */}
-                <div className="flex-1">
+            <div className="flex items-start space-x-4 p-6">
+              {/* Left content */}
+              <div className="flex-1">
+                <CardHeader className="p-0 pb-3">
+                  <CardTitle className="text-lg font-semibold text-gray-900">
+                    My Sign-up Page:{" "}
+                    <span className="text-green-500">All Set!</span>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="p-0">
                   <p className="text-sm text-gray-600">
                     A customized sign-up page enhances sign-up conversion by
                     approximately 60% according to our previous analysis.
                   </p>
-                </div>
-
-                {/* Right image */}
-                <div className="flex-shrink-0">
-                  <img
-                    src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Signup_2-BGhjLXdn.png"
-                    alt="Sign-up Icon"
-                    className="h-20 w-20 object-contain opacity-80"
-                  />
-                </div>
+                </CardContent>
               </div>
-            </CardContent>
+
+              {/* Right image */}
+              <div className="flex-shrink-0">
+                <img
+                  src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Signup_2-BGhjLXdn.png"
+                  alt="Sign-up Icon"
+                  className="h-48 w-48 object-contain opacity-80"
+                />
+              </div>
+            </div>
           </Card>
         </div>
       </div>
