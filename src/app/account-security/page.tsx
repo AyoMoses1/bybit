@@ -48,7 +48,7 @@ const AccountSecurity = () => {
               </div>
             </div>
           </div>
-          <h1 className="mb-2 text-3xl font-bold text-gray-900">
+          <h1 className="mb-2 text-center text-3xl font-bold text-gray-900">
             Welcome, Abdullateef Abdulgaffar
           </h1>
           <div className="flex items-center justify-center space-x-2 text-gray-600">
