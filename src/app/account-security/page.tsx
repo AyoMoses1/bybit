@@ -45,7 +45,7 @@ const AccountSecurity = () => {
       </h1>
 
       {/* Security Status Card */}
-      <div className="mb-8 text-center">
+      <div className="text mb-8">
         <div className="mb-6">
           <div className="mb-9">
             <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gray-200">
@@ -69,97 +69,116 @@ const AccountSecurity = () => {
 
         {/* Security Status Cards */}
         <div className="mb-8 grid grid-cols-1 gap-6 md:grid-cols-2">
+          {/* Security Level Card */}
           <Card className="relative overflow-hidden border-0 shadow-lg">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="text-lg font-semibold text-gray-900">
-                    Security Level: <span className="text-red-500">Low</span>
-                  </CardTitle>
-                  <div className="mt-1">
-                    <div className="h-2 w-32 rounded-full bg-gray-200">
-                      <div className="h-2 w-6 rounded-full bg-red-500"></div>
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                Security Level: <span className="text-red-500">Low</span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="pt-0">
+              <div className="flex items-start space-x-4">
+                {/* Left content */}
+                <div className="flex-1">
+                  <div className="mb-3 flex space-x-4">
+                    <div className="flex-1">
+                      <div className="h-2 w-full rounded-full bg-gray-200">
+                        <div className="h-2 w-full rounded-full bg-red-500"></div>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="h-2 w-full rounded-full bg-gray-200">
+                        <div className="h-2 w-[40%] rounded-full bg-gray-200"></div>
+                      </div>
+                    </div>
+                    <div className="flex-1">
+                      <div className="h-2 w-full rounded-full bg-gray-200">
+                        <div className="h-2 w-[40%] rounded-full bg-gray-200"></div>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="mb-4 text-sm text-gray-600">
+                    Please take the following steps promptly to enhance your
+                    account security:
+                  </p>
+                  <div className="flex items-center space-x-4">
+                    <div className="flex items-center justify-start">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-red-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <p className="text-sm font-bold text-gray-900">
+                        Reset Password
+                      </p>
+                    </div>
+                    <div className="flex items-center justify-start">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6 text-red-500"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                      >
+                        <path
+                          fillRule="evenodd"
+                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z"
+                          clipRule="evenodd"
+                        />
+                      </svg>
+                      <p className="text-sm font-bold text-gray-900">
+                        Enable Google 2FA
+                      </p>
                     </div>
                   </div>
                 </div>
-                <div className="text-4xl">+</div>
-              </div>
-            </CardHeader>
-            <CardContent className="pt-1">
-              <div className="mb-4">
-                <p className="text-sm text-gray-700">
-                  Please take the following steps promptly to enhance your
-                  account security:
-                </p>
-              </div>
-              <div className="space-y-3">
-                <div className="flex items-center space-x-3">
-                  <div className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500">
-                    <div className="h-2 w-2 rounded-full bg-white"></div>
-                  </div>
-                  <label className="text-sm font-medium text-red-500">
-                    Reset Password
-                  </label>
-                </div>
-                <div className="flex items-center space-x-3">
-                  <div className="flex h-4 w-4 items-center justify-center rounded-full bg-red-500">
-                    <div className="h-2 w-2 rounded-full bg-white"></div>
-                  </div>
-                  <label className="text-sm font-medium text-red-500">
-                    Enable Google 2FA
-                  </label>
+
+                {/* Right image */}
+                <div className="flex-shrink-0">
+                  <img
+                    src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Safety_1-DcyG34RL.png"
+                    alt="Security Icon"
+                    className="h-20 w-20 object-contain"
+                  />
                 </div>
               </div>
             </CardContent>
-
-            {/* Security Icon */}
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 transform opacity-20">
-              <div className="relative">
-                <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-800">
-                  <Shield className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-orange-500">
-                  <AlertTriangle className="h-3 w-3 text-white" />
-                </div>
-                <div className="absolute -bottom-2 -left-2 flex h-6 w-6 items-center justify-center rounded-full bg-orange-500">
-                  <Lock className="h-3 w-3 text-white" />
-                </div>
-              </div>
-            </div>
           </Card>
 
           {/* Sign-up Page Card */}
           <Card className="relative overflow-hidden border-0 shadow-lg">
             <CardHeader className="pb-3">
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-lg font-semibold text-gray-900">
-                  My Sign-up Page:{" "}
-                  <span className="text-green-500">All Set!</span>
-                </CardTitle>
-                <div className="text-4xl">+</div>
-              </div>
+              <CardTitle className="text-lg font-semibold text-gray-900">
+                My Sign-up Page:{" "}
+                <span className="text-green-500">All Set!</span>
+              </CardTitle>
             </CardHeader>
-            <CardContent className="pt-1">
-              <p className="mb-4 text-sm text-gray-700">
-                A customized sign-up page enhances sign-up conversion by
-                approximately 60% according to our previous analysis.
-              </p>
-            </CardContent>
+            <CardContent className="pt-0">
+              <div className="flex items-start space-x-4">
+                {/* Left content */}
+                <div className="flex-1">
+                  <p className="text-sm text-gray-600">
+                    A customized sign-up page enhances sign-up conversion by
+                    approximately 60% according to our previous analysis.
+                  </p>
+                </div>
 
-            {/* Sign-up Icon */}
-            <div className="absolute right-4 top-1/2 -translate-y-1/2 transform opacity-20">
-              <div className="relative">
-                <div className="flex h-20 w-20 items-center justify-center rounded-lg bg-gray-800">
-                  <Users className="h-8 w-8 text-white" />
-                </div>
-                <div className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-orange-500">
-                  <Settings className="h-3 w-3 text-white" />
-                </div>
-                <div className="absolute -bottom-2 -left-2 flex h-6 w-6 items-center justify-center rounded-full bg-green-500">
-                  <CheckCircle className="h-3 w-3 text-white" />
+                {/* Right image */}
+                <div className="flex-shrink-0">
+                  <img
+                    src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Signup_2-BGhjLXdn.png"
+                    alt="Sign-up Icon"
+                    className="h-20 w-20 object-contain opacity-80"
+                  />
                 </div>
               </div>
-            </div>
+            </CardContent>
           </Card>
         </div>
       </div>

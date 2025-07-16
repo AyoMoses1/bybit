@@ -52,6 +52,17 @@ const Header = () => {
     setUserDropdownOpen(false);
   };
 
+  // Handle navigation
+  const handleAccountSecurityClick = () => {
+    setUserDropdownOpen(false);
+    router.push("/account-security");
+  };
+
+  const handleLogoutClick = () => {
+    setUserDropdownOpen(false);
+    router.push("/");
+  };
+
   return (
     <header className="flex h-16 items-center justify-between border-b border-gray-100 bg-white px-6 font-inter">
       <div className="flex items-center gap-4">
@@ -124,7 +135,10 @@ const Header = () => {
                     Account
                   </h3>
 
-                  <button className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-gray-50">
+                  <button
+                    onClick={handleAccountSecurityClick}
+                    className="flex w-full items-center justify-between rounded-lg px-3 py-2.5 text-left transition-colors hover:bg-gray-50"
+                  >
                     <div className="flex items-center gap-3">
                       <Shield className="h-4 w-4 text-gray-600" />
                       <span className="text-sm font-medium text-gray-900">
@@ -139,14 +153,12 @@ const Header = () => {
 
                 {/* Logout Section */}
                 <div className="border-t border-gray-100 pt-3">
-                  <button className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-red-600 transition-colors hover:bg-red-50">
+                  <button
+                    onClick={handleLogoutClick}
+                    className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-left text-red-600 transition-colors hover:bg-red-50"
+                  >
                     <LogOut className="h-4 w-4" />
-                    <span
-                      className="text-sm font-medium"
-                      onClick={() => router.push("/")}
-                    >
-                      Logout
-                    </span>
+                    <span className="text-sm font-medium">Logout</span>
                   </button>
                 </div>
               </div>
