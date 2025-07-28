@@ -105,7 +105,7 @@ const BybitAffiliateLogin = () => {
         {/* Right Section - Login */}
         <div className="flex flex-1 items-center justify-center p-12">
           <div className="w-full max-w-md">
-            <h2 className="mb-12 text-3xl font-black tracking-tight text-gray-900">
+            <h2 className="mb-12 text-4xl font-bold tracking-tight text-gray-900">
               Log In
             </h2>
 
