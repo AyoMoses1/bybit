@@ -205,24 +205,24 @@ const Dashboard = () => {
             <div className="grid grid-cols-2 gap-6">
               <div className="space-y-1">
                 <div className="text-xs text-gray-500">No. of Sign-ups</div>
-                <div className="text-4xl font-bold text-gray-900">0</div>
+                <div className="text-3xl font-bold text-gray-900">0</div>
               </div>
               <div className="space-y-1">
                 <div className="text-xs text-gray-500">
                   Clients&apos; Trading Volume
                 </div>
-                <div className="text-4xl font-bold text-gray-900">0</div>
+                <div className="text-3xl font-bold text-gray-900">0</div>
                 <div className="text-xs text-gray-500">USDT</div>
               </div>
               <div className="space-y-1">
                 <div className="text-xs text-gray-500">
                   No. of First Time Deposits
                 </div>
-                <div className="text-4xl font-bold text-gray-900">0</div>
+                <div className="text-3xl font-bold text-gray-900">0</div>
               </div>
               <div className="space-y-1">
                 <div className="text-xs text-gray-500">Clients Who Traded</div>
-                <div className="text-4xl font-bold text-gray-900">0</div>
+                <div className="text-3xl font-bold text-gray-900">0</div>
               </div>
             </div>
           </CardContent>
@@ -235,7 +235,7 @@ const Dashboard = () => {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="mb-2 text-4xl font-bold text-gray-900">
+            <div className="mb-2 text-3xl font-bold text-gray-900">
               ≈ 0.06097805{" "}
               <span className="text-sm font-normal text-gray-500">USDT</span>
             </div>
@@ -316,7 +316,7 @@ const Dashboard = () => {
                   <div className="mb-1 text-xs text-gray-500">
                     Referral Code
                   </div>
-                  <div className="text-4xl font-bold text-gray-900">49818</div>
+                  <div className="text-3xl font-bold text-gray-900">49818</div>
                 </div>
                 <div className="mb-4">
                   <div className="mb-1 text-xs text-gray-500">
