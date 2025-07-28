@@ -97,7 +97,7 @@ const Dashboard = () => {
   const campaigns = [
     {
       title: "Exclusive Pre-Sale Access to Tomorrow Brasil experience",
-      status: "Hot",
+      status: "Exclusive",
       type: "Ongoing",
       period: "2025-03-21 08:00:00 - 2025-10-31 23:59:59",
       image:
@@ -106,7 +106,7 @@ const Dashboard = () => {
     },
     {
       title: "Position Airdrop Campaign - Exclusive",
-      status: "Hot",
+      status: "Exclusive",
       type: "Ongoing",
       period: "2025-03-10 10:00:00 - 2025-06-06 23:59:59",
       image:
@@ -114,7 +114,7 @@ const Dashboard = () => {
     },
     {
       title: "Bybit Starter Rewards",
-      status: "Hot",
+      status: "Exclusive",
       type: "Ongoing",
       period: "2023-02-20 21:30:00 - 2025-12-31 21:30:00",
       image:

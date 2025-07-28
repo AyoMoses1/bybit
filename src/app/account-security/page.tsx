@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
 import Image from "next/image";
+import Flag from "../../assets/svgs/nigeria.svg";
 
 const AccountSecurity = () => {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -138,8 +139,8 @@ const AccountSecurity = () => {
                 <Image
                   src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Safety_1-DcyG34RL.png"
                   alt="Security Icon"
-                  width={48}
-                  height={48}
+                  width={150}
+                  height={150}
                   className="object-contain"
                 />
               </div>
@@ -169,8 +170,8 @@ const AccountSecurity = () => {
                 <Image
                   src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Signup_2-BGhjLXdn.png"
                   alt="Sign-up Icon"
-                  width={48}
-                  height={48}
+                  width={150}
+                  height={150}
                   className="object-contain opacity-80"
                 />
               </div>
@@ -233,9 +234,7 @@ const AccountSecurity = () => {
                 </div>
                 <div className="flex w-2/3 items-center justify-start space-x-1">
                   <Image
-                    src={
-                      "https://affiliates.bybit.com/bycsi-root/affiliates/country/nigeria.svg"
-                    }
+                    src={Flag}
                     alt="Nigerian Flag"
                     width={20}
                     height={20}
@@ -258,9 +257,7 @@ const AccountSecurity = () => {
                 </div>
                 <div className="flex w-2/3 items-center justify-start space-x-1">
                   <Image
-                    src={
-                      "https://affiliates.bybit.com/bycsi-root/affiliates/country/nigeria.svg"
-                    }
+                    src={Flag}
                     alt="Nigerian Flag"
                     width={20}
                     height={20}
