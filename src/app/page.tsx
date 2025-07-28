@@ -80,10 +80,12 @@ const BybitAffiliateLogin = () => {
         {/* Left Section - Single Image */}
         <div className="relative flex flex-1 items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
           <div className="w-full max-w-xl px-8 text-center">
-            <img
+            <Image
               src="https://bybit13.netlify.app/token_bundle-CIkxhYnB.svg"
               alt="Bybit affiliate dashboard"
-              className="mx-auto h-80 w-full max-w-lg rounded-2xl object-contain shadow"
+              width={80}
+              height={80}
+              className="mx-auto  w-full max-w-lg rounded-2xl object-contain shadow"
             />
             <div className="mt-8">
               <h2 className="text-2xl font-black text-gray-900">
@@ -93,7 +95,7 @@ const BybitAffiliateLogin = () => {
               </h2>
               <p className="mt-4 px-4 text-gray-600">
                 Gain insights, access campaigns, assets, and products with
-                Bybit's comprehensive affiliate portal designed for maximum
+                Bybits comprehensive affiliate portal designed for maximum
                 performance.
               </p>
             </div>

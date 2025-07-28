@@ -119,10 +119,12 @@ const Header = () => {
           onMouseLeave={handleUserMouseLeave}
         >
           <button className="rounded-lg p-1 transition-colors hover:bg-gray-50">
-            <img
+            <Image
               src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
               alt="User Avatar"
-              className="h-10 w-10 rounded-full object-cover"
+              width={50}
+              height={50}
+              className="rounded-full object-cover"
             />
           </button>
 

@@ -41,10 +41,12 @@ const AccountSecurity = () => {
           <div className="mb-9">
             <div className="mx-auto mb-4 flex h-24 w-24 items-center justify-center rounded-full bg-gray-200">
               <div className="relative">
-                <img
+                <Image
                   src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80"
                   alt="User Avatar"
-                  className="h-[100px] w-[100px] rounded-full object-cover"
+                  width={200}
+                  height={200}
+                  className="rounded-full object-contain"
                 />
               </div>
             </div>
@@ -133,10 +135,12 @@ const AccountSecurity = () => {
 
               {/* Right image */}
               <div className="flex-shrink-0">
-                <img
+                <Image
                   src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Safety_1-DcyG34RL.png"
                   alt="Security Icon"
-                  className="h-48 w-48 object-contain"
+                  width={48}
+                  height={48}
+                  className="object-contain"
                 />
               </div>
             </div>
@@ -162,10 +166,12 @@ const AccountSecurity = () => {
 
               {/* Right image */}
               <div className="flex-shrink-0">
-                <img
+                <Image
                   src="https://affiliates.bybit.com/common-static/frontend-web/affiliate-portal-vite/assets/Signup_2-BGhjLXdn.png"
                   alt="Sign-up Icon"
-                  className="h-48 w-48 object-contain opacity-80"
+                  width={48}
+                  height={48}
+                  className="object-contain opacity-80"
                 />
               </div>
             </div>
