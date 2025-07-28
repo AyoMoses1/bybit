@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Copy } from "lucide-react";
+import Image from "next/image";
 
 const AccountSecurity = () => {
   const [showPasswordForm, setShowPasswordForm] = useState(false);
@@ -188,7 +189,7 @@ const AccountSecurity = () => {
                   <p className="text-sm font-medium text-gray-700">Name</p>
                 </div>
                 <div className="flex w-2/3 items-center justify-start">
-                  <p className="text-sm font-medium text-gray-900">
+                  <p className="text-sm font-bold text-gray-900">
                     Abdullateef Abdulgaffar
                   </p>
                 </div>
@@ -208,7 +209,7 @@ const AccountSecurity = () => {
                   <p className="text-sm font-medium text-gray-700">Bybit UID</p>
                 </div>
                 <div className="flex w-2/3 items-center justify-start space-x-1">
-                  <p className="text-sm text-gray-900">52896383</p>
+                  <p className="text-sm font-bold text-gray-900">52896383</p>
                   <span className="text-green-500">✓</span>
                 </div>
                 <div className="flex w-1/3 justify-end">
@@ -225,8 +226,17 @@ const AccountSecurity = () => {
                   </p>
                 </div>
                 <div className="flex w-2/3 items-center justify-start space-x-1">
-                  <span className="text-green-500">🟩</span>
-                  <p className="text-sm text-gray-900">Nigeria (KYC1)</p>
+                  <Image
+                    src={
+                      "https://affiliates.bybit.com/bycsi-root/affiliates/country/nigeria.svg"
+                    }
+                    alt="Nigerian Flag"
+                    width={20}
+                    height={20}
+                  />
+                  <p className="text-sm font-bold text-gray-900">
+                    Nigeria (KYC1)
+                  </p>
                 </div>
                 <div className="flex w-1/3 justify-end">
                   <div className="w-12"></div>
@@ -241,8 +251,15 @@ const AccountSecurity = () => {
                   </p>
                 </div>
                 <div className="flex w-2/3 items-center justify-start space-x-1">
-                  <span className="text-green-500">🟩</span>
-                  <p className="text-sm text-gray-900">Nigeria</p>
+                  <Image
+                    src={
+                      "https://affiliates.bybit.com/bycsi-root/affiliates/country/nigeria.svg"
+                    }
+                    alt="Nigerian Flag"
+                    width={20}
+                    height={20}
+                  />{" "}
+                  <p className="text-sm font-bold text-gray-900">Nigeria</p>
                 </div>
                 <div className="flex w-1/3 justify-end">
                   <Button

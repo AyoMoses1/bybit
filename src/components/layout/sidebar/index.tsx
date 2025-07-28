@@ -14,6 +14,7 @@ import {
   Mail,
   MessageCircle,
 } from "lucide-react";
+import Image from "next/image";
 
 const AppSidebar = () => {
   const [activeItem, setActiveItem] = useState("Overview");
@@ -75,7 +76,7 @@ const AppSidebar = () => {
   };
 
   return (
-    <div className="flex h-screen w-42 flex-col bg-[#1a1f2e] font-inter text-white">
+    <div className="w-42 flex h-screen flex-col bg-[#1a1f2e] font-inter text-white">
       {/* Navigation Menu */}
       <nav className="flex-2 py-4">
         <ul className="space-y-1">
@@ -116,7 +117,7 @@ const AppSidebar = () => {
       </nav>
 
       {/* Bottom Section */}
-      <div className="border-t border-gray-600/30 bg-gray-600/30 p-4 flex-1">
+      <div className="flex-1 border-t border-gray-600/30 bg-gray-600/30 p-4">
         {/* Help Section */}
         <div className="mb-6">
           <div className="mb-1 text-xs text-gray-400">Need help?</div>
@@ -149,7 +150,14 @@ const AppSidebar = () => {
 
           {/* Telegram/Social */}
           <div className="flex items-center space-x-2 pl-1">
-            <MessageCircle className="h-4 w-4 text-[#0088cc]" />
+            <Image
+              src={
+                "data:image/svg+xml,%3csvg%20enable-background='new%200%200%2024%2024'%20height='512'%20viewBox='0%200%2024%2024'%20width='512'%20xmlns='http://www.w3.org/2000/svg'%3e%3ccircle%20cx='12'%20cy='12'%20fill='%23039be5'%20r='12'/%3e%3cpath%20d='m5.491%2011.74%2011.57-4.461c.537-.194%201.006.131.832.943l.001-.001-1.97%209.281c-.146.658-.537.818-1.084.508l-3-2.211-1.447%201.394c-.16.16-.295.295-.605.295l.213-3.053%205.56-5.023c.242-.213-.054-.333-.373-.121l-6.871%204.326-2.962-.924c-.643-.204-.657-.643.136-.953z'%20fill='%23fff'/%3e%3c/svg%3e"
+              }
+              alt="telegram icon"
+              width={20}
+              height={20}
+            />
             <span className="text-xs text-gray-400">Honourable_Minister</span>
           </div>
         </div>

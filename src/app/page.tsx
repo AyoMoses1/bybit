@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Eye, EyeOff, ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useState } from "react";
+import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import logo from "../assets/svgs/bybit.svg";
@@ -11,40 +11,7 @@ const BybitAffiliateLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
   const router = useRouter();
-
-  const carouselData = [
-    {
-      title: "Calculate and Receive Your\nEarnings Daily",
-      description:
-        "Gain insights, access campaigns, assets, and products with Bybit's comprehensive affiliate portal designed for maximum performance.",
-      image:
-        "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      title:
-        "Grow your audience with Bybit's\naffiliate portal: gain insights, access\ncampaigns, assets, and products.",
-      description:
-        "Maximize your earning potential with our comprehensive suite of affiliate tools and resources.",
-      image:
-        "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
-    },
-    {
-      title: "Advanced Analytics &\nReal-time Tracking",
-      description:
-        "Monitor your performance with detailed analytics and real-time tracking capabilities for better decision making.",
-      image:
-        "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=800&q=80",
-    },
-  ];
-
-  useEffect(() => {
-    const timer = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % carouselData.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [carouselData.length]);
 
   const handleSubmit = async () => {
     setIsLoading(true);
@@ -56,16 +23,6 @@ const BybitAffiliateLogin = () => {
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const nextSlide = () => {
-    setCurrentSlide((prev) => (prev + 1) % carouselData.length);
-  };
-
-  const prevSlide = () => {
-    setCurrentSlide(
-      (prev) => (prev - 1 + carouselData.length) % carouselData.length,
-    );
   };
 
   return (
@@ -120,62 +77,25 @@ const BybitAffiliateLogin = () => {
       </header>
 
       <div className="flex flex-1 overflow-hidden bg-white">
-        {/* Left Section - Carousel */}
+        {/* Left Section - Single Image */}
         <div className="relative flex flex-1 items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100">
-          <div className="w-full max-w-xl overflow-hidden px-8">
-            <div
-              className="flex transition-transform duration-700 ease-in-out"
-              style={{ transform: `translateX(-${currentSlide * 100}%)` }}
-            >
-              {carouselData.map((item, index) => (
-                <div
-                  key={index}
-                  className="flex min-w-full flex-col items-center space-y-8 text-center"
-                >
-                  <img
-                    src={item.image}
-                    alt="carousel visual"
-                    className="h-80 w-full max-w-lg rounded-2xl object-cover shadow-2xl"
-                  />
-                  <div className="min-h-[140px]">
-                    <h2 className="whitespace-pre-line text-2xl font-black text-gray-900">
-                      {item.title}
-                    </h2>
-                    <p className="mt-4 px-4 text-gray-600">
-                      {item.description}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Carousel Controls */}
-            <div className="mt-10 flex items-center justify-center space-x-6">
-              <button
-                onClick={prevSlide}
-                className="rounded-full bg-white p-2 shadow-lg hover:shadow-xl"
-              >
-                <ChevronLeft className="h-5 w-5 text-gray-600" />
-              </button>
-              <div className="flex w-36 justify-center space-x-2">
-                {carouselData.map((_, index) => (
-                  <div
-                    key={index}
-                    onClick={() => setCurrentSlide(index)}
-                    className={`h-1 cursor-pointer rounded-full transition-all duration-300 ${
-                      index === currentSlide
-                        ? "w-16 bg-[#F7931A]"
-                        : "w-8 bg-gray-300"
-                    }`}
-                  ></div>
-                ))}
-              </div>
-              <button
-                onClick={nextSlide}
-                className="rounded-full bg-white p-2 shadow-lg hover:shadow-xl"
-              >
-                <ChevronRight className="h-5 w-5 text-gray-600" />
-              </button>
+          <div className="w-full max-w-xl px-8 text-center">
+            <img
+              src="https://bybit13.netlify.app/token_bundle-CIkxhYnB.svg"
+              alt="Bybit affiliate dashboard"
+              className="mx-auto h-80 w-full max-w-lg rounded-2xl object-contain shadow"
+            />
+            <div className="mt-8">
+              <h2 className="text-2xl font-black text-gray-900">
+                Calculate and Receive Your
+                <br />
+                Earnings Daily
+              </h2>
+              <p className="mt-4 px-4 text-gray-600">
+                Gain insights, access campaigns, assets, and products with
+                Bybit's comprehensive affiliate portal designed for maximum
+                performance.
+              </p>
             </div>
           </div>
         </div>
